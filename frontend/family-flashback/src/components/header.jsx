@@ -8,7 +8,7 @@ const navigation = [
   { name: 'Tree', href: '/tree' },
   { name: 'Map', href: '/map' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Support', href: '#' },
+  { name: 'Support', href: '/support' },
 ]
 
 export default function Header() {
