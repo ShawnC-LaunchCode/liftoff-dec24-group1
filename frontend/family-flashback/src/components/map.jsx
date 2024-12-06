@@ -15,7 +15,7 @@ const Map = () => {
         return () => map.remove();
     }, []);
 
-    return <div id="map" style={{ width: '100%', height: '400px' }} />; // Set the size of the map
+    return <div id="map" style={{ width: '100%', height: '800px' }} />;
 };
 
 export default Map;
