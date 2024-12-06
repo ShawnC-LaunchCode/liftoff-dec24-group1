@@ -6,10 +6,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZ3JheXNvbmtlYXRvbiIsImEiOiJjbTFzMGs1NWUwMWJzM
 const Map = () => {
     useEffect(() => {
         const map = new mapboxgl.Map({
-            container: 'map', // ID of the div where the map will be rendered
-            style: 'mapbox://styles/graysonkeaton/cm4c5alzt00q701rccelp32if', // Map style
-            center: [-74.5, 40], // Starting position [lng, lat]
-            zoom: 9 // Starting zoom level
+            container: 'map',
+            style: 'mapbox://styles/graysonkeaton/cm4c5alzt00q701rccelp32if',
+            center: [-95, 40],
+            zoom: 4
         });
 
         return () => map.remove();
