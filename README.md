@@ -30,20 +30,6 @@ git clone https://github.com/ShawnC-LaunchCode/liftoff-dec24-group1.git
 cd liftoff-dec24-group1
 ```
 
-### Database Setup
-
-1. Create a MySQL database:
-```sql
-CREATE DATABASE family_flashback;
-```
-
-2. Create a database user and grant privileges:
-```sql
-CREATE USER 'ff_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON family_flashback.* TO 'ff_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
 ### Backend Setup (Java/Spring Boot)
 
 1. Navigate to the backend directory:
@@ -75,14 +61,7 @@ The backend server will start on `http://localhost:8080`
 cd frontend
 ```
 
-2. Create a `.env` file in the frontend root directory:
-```
-REACT_APP_API_URL=http://localhost:8080
-REACT_APP_MAPBOX_TOKEN=your_mapbox_token
-REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
-```
-
-3. Install dependencies and start the development server:
+2. Install dependencies and start the development server:
 ```bash
 npm install
 npm start
@@ -97,18 +76,13 @@ The frontend development server will start on `http://localhost:3000`
 git pull origin main
 ```
 
-2. Create a new branch for your feature:
-```bash
-git checkout -b feature/your-feature-name
-```
-
-3. Make your changes and commit them:
+2. Make your changes and commit them:
 ```bash
 git add .
 git commit -m "Description of your changes"
 ```
 
-4. Push your changes and create a pull request:
+3. Push your changes and create a pull request:
 ```bash
 git push origin feature/your-feature-name
 ```
