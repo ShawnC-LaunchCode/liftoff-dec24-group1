@@ -50,3 +50,6 @@ FOREIGN KEY (related_image) REFERENCES image(id)
 
 
 
+
+
+
