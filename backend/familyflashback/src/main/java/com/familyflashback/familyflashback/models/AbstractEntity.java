@@ -1,5 +1,6 @@
 package com.familyflashback.familyflashback.models;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.MappedSuperclass;
@@ -11,10 +12,11 @@ import java.util.Objects;
 @MappedSuperclass
 public class AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Autowired
-    private String id;
-    //private int id;
+    private String id = NanoIdUtils.randomNanoId();
+
+    public AbstractEntity(NanoIdService nanoIdService) {
+        this.id = nanoIdService.generateNanoId();
+    }
 
     public String getId() {
         return id;
