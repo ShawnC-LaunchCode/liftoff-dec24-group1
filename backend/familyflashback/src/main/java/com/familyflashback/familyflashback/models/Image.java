@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class Image extends AbstractEntity {
 
-    @ManyToMany
+//    @ManyToMany
     private List<Person> persons = new ArrayList<>();
 
     @NotBlank(message = "Url is required")
