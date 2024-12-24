@@ -1,8 +1,6 @@
 package com.familyflashback.familyflashback.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,15 +10,17 @@ import java.util.List;
 
 @Entity
 public class Person extends AbstractEntity {
-
-    @ManyToMany
-    private List<Image> images = new ArrayList<>();
+//
+//    @ManyToMany
+//    private List<Image> images = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany
-    private List<Person> persons = new ArrayList<>();
+    private List<Person> person = new ArrayList<>();
+
 
     @NotBlank(message = "Name is required.")
     @Size(max = 50, message = "Name cannot exceed 50 characters")
@@ -39,24 +39,16 @@ public class Person extends AbstractEntity {
 
     public Person() {}
 
-    public Person(List<Image> images, List<Person> persons, User user, String name, LocalDate birthDate, LocalDate deathDate, String birthTown, String bio) {
-        this.images = images;
-        this.persons = persons;
-        this.user = user;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.deathDate = deathDate;
-        this.birthTown = birthTown;
+    public Person(String bio, String birthTown, LocalDate deathDate, LocalDate birthDate, String name, List<Person> person, User user) {
         this.bio = bio;
+        this.birthTown = birthTown;
+        this.deathDate = deathDate;
+        this.birthDate = birthDate;
+        this.name = name;
+        this.person = person;
+        this.user = user;
     }
 
-    public List<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
 
     public String getBio() {
         return bio;
@@ -99,11 +91,11 @@ public class Person extends AbstractEntity {
     }
 
     public List<Person> getPersons() {
-        return persons;
+        return person;
     }
 
     public void setPersons(List<Person> persons) {
-        this.persons = persons;
+        this.person = persons;
     }
 
     public User getUser() {
@@ -117,9 +109,8 @@ public class Person extends AbstractEntity {
     @Override
     public String toString() {
         return "Person{" +
-                "images=" + images +
                 ", user=" + user +
-                ", persons=" + persons +
+                ", persons=" + person +
                 ", name='" + name + '\'' +
                 ", birthDate=" + birthDate +
                 ", deathDate=" + deathDate +

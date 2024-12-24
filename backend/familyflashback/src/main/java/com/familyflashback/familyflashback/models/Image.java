@@ -1,7 +1,6 @@
 package com.familyflashback.familyflashback.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,7 +11,11 @@ import java.util.List;
 public class Image extends AbstractEntity {
 
 //    @ManyToMany
-    private List<Person> persons = new ArrayList<>();
+//    private List<Person> person = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotBlank(message = "Url is required")
     @Size(max = 248, message = "Cannot exceed 248 characters")
@@ -20,9 +23,9 @@ public class Image extends AbstractEntity {
 
     public Image() {}
 
-    public Image(String url, List<Person> somePersons) {
+    public Image(User user, String url) {
+        this.user = user;
         this.url = url;
-        this.persons = somePersons;
     }
 
     public String getUrl() {
@@ -36,7 +39,7 @@ public class Image extends AbstractEntity {
     @Override
     public String toString() {
         return "Image{" +
-                "persons=" + persons +
+                "user=" + user +
                 ", url='" + url + '\'' +
                 '}';
     }
