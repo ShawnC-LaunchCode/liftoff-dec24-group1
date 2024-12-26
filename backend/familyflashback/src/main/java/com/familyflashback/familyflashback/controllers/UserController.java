@@ -18,10 +18,13 @@
       @Autowired
       UserRepository userRepository;
 
+    //   @Valid @RequestBody User user
       @PostMapping
-      public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-          User createdUser = userRepository.save(user);
-          return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+      public ResponseEntity<User> createUser() {
+            System.out.println("Creating User");
+            return null;
+            // User createdUser = userRepository.save(user);
+            // return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
       }
 
       @GetMapping("/{id}")
@@ -30,4 +33,9 @@
           return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
       }
 
- }
+     @GetMapping("/test")
+     public ResponseEntity<String> testEndpoint() {
+         return ResponseEntity.ok("Test endpoint hit");
+     }
+
+}
