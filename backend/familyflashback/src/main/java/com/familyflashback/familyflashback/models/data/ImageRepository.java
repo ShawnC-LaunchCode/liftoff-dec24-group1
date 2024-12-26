@@ -1,10 +1,10 @@
-// package com.familyflashback.familyflashback.models.data;
+ package com.familyflashback.familyflashback.models.data;
 
-// import com.familyflashback.familyflashback.models.Image;
+ import com.familyflashback.familyflashback.models.Image;
 
-// import org.springframework.data.repository.CrudRepository;
-// import org.springframework.stereotype.Repository;
+ import org.springframework.data.repository.CrudRepository;
+ import org.springframework.stereotype.Repository;
 
-// @Repository
-// public interface ImageRepository extends CrudRepository<Image, Integer> {
-// }
+ @Repository
+ public interface ImageRepository extends CrudRepository<Image, Integer> {
+ }

@@ -1,26 +1,14 @@
 package com.familyflashback.familyflashback.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 public class User extends AbstractEntity {
-
-//    @OneToMany
-//    @JoinColumn(name = "person_id")
-//    private final List<Person> person = new ArrayList<>();
-
-//    @NotBlank(message = "Name is required.")
-//    @Size(max = 50, message = "Name cannot exceed 50 characters")
-//    private String name;
 
     @NotBlank(message = "Email is required.")
     @Size(max = 100, message = "Email cannot exceed 100 characters")

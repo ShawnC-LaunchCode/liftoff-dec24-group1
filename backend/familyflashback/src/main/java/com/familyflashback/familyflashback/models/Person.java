@@ -5,21 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Person extends AbstractEntity {
-//
-//    @ManyToMany
-//    private List<Image> images = new ArrayList<>();
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    // @ManyToMany
-    // private List<Person> person = new ArrayList<>();
 
 
     @NotBlank(message = "Name is required.")
