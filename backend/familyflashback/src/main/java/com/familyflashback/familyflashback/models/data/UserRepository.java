@@ -1,9 +1,9 @@
-package com.familyflashback.familyflashback.models.data;
+// package com.familyflashback.familyflashback.models.data;
 
-import com.familyflashback.familyflashback.models.User;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+// import com.familyflashback.familyflashback.models.User;
+// import org.springframework.data.repository.CrudRepository;
+// import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends CrudRepository<User, Integer> {
-}
+// @Repository
+// public interface UserRepository extends CrudRepository<User, Integer> {
+// }

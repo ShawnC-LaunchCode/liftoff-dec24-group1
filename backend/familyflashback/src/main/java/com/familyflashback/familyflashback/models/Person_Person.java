@@ -1,106 +1,109 @@
-package com.familyflashback.familyflashback.models;
+// package com.familyflashback.familyflashback.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+// import jakarta.persistence.Column;
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.IdClass;
 
-import java.io.Serializable;
-import java.util.Objects;
+// import java.io.Serializable;
+// import java.util.Objects;
 
-@Entity
-@IdClass(Person_Person.CompositeKey.class)
-public class Person_Person {
+// @Entity
+// @IdClass(Person_Person.CompositeKey.class)
+// public class Person_Person {
 
-    @Id
-    private String rootPerson;
+//     @Id
+//     private String rootPerson;
 
-    @Id
-    private String relatedPerson;
+//     @Id
+//     private String relatedPerson;
 
-    private String value;
+//     private String value;
 
-    public Person_Person() {}
+//     @Column(name = "person_person_id", insertable = false, updatable = false)
+//     private String personPersonId;
 
-    public Person_Person(String value, String relatedPerson, String rootPerson) {
-        this.value = value;
-        this.relatedPerson = relatedPerson;
-        this.rootPerson = rootPerson;
-    }
+//     public Person_Person() {}
 
-    public String getValue() {
-        return value;
-    }
+//     public Person_Person(String value, String relatedPerson, String rootPerson) {
+//         this.value = value;
+//         this.relatedPerson = relatedPerson;
+//         this.rootPerson = rootPerson;
+//     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+//     public String getValue() {
+//         return value;
+//     }
 
-    public String getRelatedPerson() {
-        return relatedPerson;
-    }
+//     public void setValue(String value) {
+//         this.value = value;
+//     }
 
-    public void setRelatedPerson(String relatedPerson) {
-        this.relatedPerson = relatedPerson;
-    }
+//     public String getRelatedPerson() {
+//         return relatedPerson;
+//     }
 
-    public String getRootPerson() {
-        return rootPerson;
-    }
+//     public void setRelatedPerson(String relatedPerson) {
+//         this.relatedPerson = relatedPerson;
+//     }
 
-    public void setRootPerson(String rootPerson) {
-        this.rootPerson = rootPerson;
-    }
+//     public String getRootPerson() {
+//         return rootPerson;
+//     }
 
-    public static class CompositeKey implements Serializable {
+//     public void setRootPerson(String rootPerson) {
+//         this.rootPerson = rootPerson;
+//     }
 
-        private String rootPerson;
+//     public static class CompositeKey implements Serializable {
 
-        private String relatedPerson;
+//         private String rootPerson;
 
-        public CompositeKey() {}
+//         private String relatedPerson;
 
-        public CompositeKey(String relatedPerson, String rootPerson) {
-            this.relatedPerson = relatedPerson;
-            this.rootPerson = rootPerson;
-        }
+//         public CompositeKey() {}
 
-        public String getRelatedPerson() {
-            return relatedPerson;
-        }
+//         public CompositeKey(String relatedPerson, String rootPerson) {
+//             this.relatedPerson = relatedPerson;
+//             this.rootPerson = rootPerson;
+//         }
 
-        public void setRelatedPerson(String relatedPerson) {
-            this.relatedPerson = relatedPerson;
-        }
+//         public String getRelatedPerson() {
+//             return relatedPerson;
+//         }
 
-        public String getRootPerson() {
-            return rootPerson;
-        }
+//         public void setRelatedPerson(String relatedPerson) {
+//             this.relatedPerson = relatedPerson;
+//         }
 
-        public void setRootPerson(String rootPerson) {
-            this.rootPerson = rootPerson;
-        }
+//         public String getRootPerson() {
+//             return rootPerson;
+//         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CompositeKey that = (CompositeKey) o;
-            return Objects.equals(getRootPerson(), that.getRootPerson()) && Objects.equals(getRelatedPerson(), that.getRelatedPerson());
-        }
+//         public void setRootPerson(String rootPerson) {
+//             this.rootPerson = rootPerson;
+//         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(getRootPerson(), getRelatedPerson());
-        }
+//         @Override
+//         public boolean equals(Object o) {
+//             if (this == o) return true;
+//             if (o == null || getClass() != o.getClass()) return false;
+//             CompositeKey that = (CompositeKey) o;
+//             return Objects.equals(getRootPerson(), that.getRootPerson()) && Objects.equals(getRelatedPerson(), that.getRelatedPerson());
+//         }
 
-        @Override
-        public String toString() {
-            return "CompositeKey{" +
-                    "rootPerson='" + rootPerson + '\'' +
-                    ", relatedPerson='" + relatedPerson + '\'' +
-                    '}';
-        }
-    }
+//         @Override
+//         public int hashCode() {
+//             return Objects.hash(getRootPerson(), getRelatedPerson());
+//         }
 
-}
+//         @Override
+//         public String toString() {
+//             return "CompositeKey{" +
+//                     "rootPerson='" + rootPerson + '\'' +
+//                     ", relatedPerson='" + relatedPerson + '\'' +
+//                     '}';
+//         }
+//     }
+
+// }

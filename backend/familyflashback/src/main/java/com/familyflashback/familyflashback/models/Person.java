@@ -18,8 +18,8 @@ public class Person extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
-    private List<Person> person = new ArrayList<>();
+    // @ManyToMany
+    // private List<Person> person = new ArrayList<>();
 
 
     @NotBlank(message = "Name is required.")
@@ -45,7 +45,7 @@ public class Person extends AbstractEntity {
         this.deathDate = deathDate;
         this.birthDate = birthDate;
         this.name = name;
-        this.person = person;
+        // this.person = person;
         this.user = user;
     }
 
@@ -90,13 +90,13 @@ public class Person extends AbstractEntity {
         this.name = name;
     }
 
-    public List<Person> getPersons() {
-        return person;
-    }
+    // public List<Person> getPersons() {
+    //     return person;
+    // }
 
-    public void setPersons(List<Person> persons) {
-        this.person = persons;
-    }
+    // public void setPersons(List<Person> persons) {
+    //     this.person = persons;
+    // }
 
     public User getUser() {
         return user;
@@ -110,7 +110,7 @@ public class Person extends AbstractEntity {
     public String toString() {
         return "Person{" +
                 ", user=" + user +
-                ", persons=" + person +
+                // ", persons=" + person +
                 ", name='" + name + '\'' +
                 ", birthDate=" + birthDate +
                 ", deathDate=" + deathDate +
