@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Entity
 public class User extends AbstractEntity {
 
+    private String name;
+
     @NotBlank(message = "Email is required.")
     @Size(max = 100, message = "Email cannot exceed 100 characters")
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+)\\.[a-zA-Z]{2,}$", message = "Invalid email format")
@@ -23,12 +25,20 @@ public class User extends AbstractEntity {
 
     public User() {}
 
-    public User(LocalDate lastLogin, String password, String email) {
+    public User(LocalDate lastLogin, String password, String name, String email) {
         this.lastLogin = lastLogin;
         this.password = password;
+        this.name = name;
         this.email = email;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getEmail() {
         return email;

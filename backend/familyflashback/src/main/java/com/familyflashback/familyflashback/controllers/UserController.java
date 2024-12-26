@@ -20,11 +20,10 @@
 
     //   @Valid @RequestBody User user
       @PostMapping
-      public ResponseEntity<User> createUser() {
+      public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
             System.out.println("Creating User");
-            return null;
-            // User createdUser = userRepository.save(user);
-            // return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+            User createdUser = userRepository.save(user);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
       }
 
       @GetMapping("/{id}")
