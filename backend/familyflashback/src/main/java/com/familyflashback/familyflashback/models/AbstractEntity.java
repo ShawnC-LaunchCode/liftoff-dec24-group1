@@ -1,6 +1,7 @@
 package com.familyflashback.familyflashback.models;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Id;
 
@@ -9,6 +10,7 @@ import java.util.Objects;
 @MappedSuperclass
 public class AbstractEntity {
     @Id
+    @Column(name = "person_id", insertable=false, updatable=false)
     private String id = NanoIdUtils.randomNanoId();
 
     public String getId() {
