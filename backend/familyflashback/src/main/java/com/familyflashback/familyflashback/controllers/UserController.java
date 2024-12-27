@@ -18,7 +18,6 @@
       @Autowired
       UserRepository userRepository;
 
-    //   @Valid @RequestBody User user
       @PostMapping
       public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
             System.out.println("Creating User");
