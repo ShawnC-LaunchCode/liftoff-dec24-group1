@@ -18,7 +18,6 @@
       @Autowired
       UserRepository userRepository;
 
-      // Grayson Test comment
       @PostMapping
       public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
             System.out.println("Creating User");
@@ -27,8 +26,8 @@
       }
 
       @GetMapping("/{id}")
-      public ResponseEntity<User> getUser(@PathVariable String Id) {
-          Optional<User> user = userRepository.findById(Integer.valueOf(Id));
+      public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
+          Optional<User> user = userRepository.findById(Id);
           return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
       }
 
