@@ -1,6 +1,5 @@
  package com.familyflashback.familyflashback.controllers;
 
-
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.UserRepository;
  import jakarta.validation.Valid;
@@ -20,7 +19,6 @@
 
       @PostMapping
       public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-            System.out.println("Creating User");
             User createdUser = userRepository.save(user);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
       }
@@ -29,6 +27,22 @@
       public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
           Optional<User> user = userRepository.findById(Id);
           return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+      }
+
+      @PutMapping("/{id}")
+      public ResponseEntity<User> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
+          Optional<User> user = userRepository.findById(Id);
+          if (user.isPresent()) {
+              User existingUser = user.get();
+              existingUser.setName(updatedUser.getName());
+              existingUser.setPassword(updatedUser.getPassword());
+              existingUser.setEmail(existingUser.getEmail());
+
+              User savedUpdatedUser = userRepository.save(existingUser);
+              return new ResponseEntity<>(savedUpdatedUser, HttpStatus.OK);
+          } else {
+              return ResponseEntity.notFound().build();
+          }
       }
 
      @GetMapping("/test")

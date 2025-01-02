@@ -2,7 +2,6 @@
 
  import com.familyflashback.familyflashback.models.Person;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
- import com.familyflashback.familyflashback.models.data.UserRepository;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.http.HttpStatus;
@@ -17,20 +16,29 @@
      @Autowired
      private PersonRepository personRepository;
 
-     @Autowired
-     private UserRepository userRepository;
 
      @PostMapping("/create")
      public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
-         System.out.println("Creating Person");
          Person createdPerson = personRepository.save(person);
          return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
      }
 
-     @PostMapping("/update")
-     public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
+     @PutMapping("/{id}")
+     public ResponseEntity<Person> updatePerson(@PathVariable("id") String Id, @Valid @RequestBody Person updatedPerson) {
+         Optional<Person> person = personRepository.findById(Id);
+         if (person.isPresent()) {
+             Person existingPerson = person.get();
+             existingPerson.setName(updatedPerson.getName());
+             existingPerson.setBio(updatedPerson.getBio());
+             existingPerson.setBirthTown(updatedPerson.getBirthTown());
+             existingPerson.setBirthDate(updatedPerson.getBirthDate());
+             existingPerson.setDeathDate(updatedPerson.getDeathDate());
 
-         return null;
+             Person savedUpdatedPerson = personRepository.save(existingPerson);
+             return new ResponseEntity<>(savedUpdatedPerson, HttpStatus.OK);
+         } else {
+             return ResponseEntity.notFound().build();
+         }
      }
 
      @DeleteMapping("/{id}")
