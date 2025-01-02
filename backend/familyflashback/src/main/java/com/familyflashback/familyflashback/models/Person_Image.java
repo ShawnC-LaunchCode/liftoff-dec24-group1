@@ -18,22 +18,11 @@
      @Id
      private String relatedImage;
 
-     private String relatedPerson;
-
      public Person_Image() {}
 
-     public Person_Image( String rootPerson, String relatedImage, String relatedPerson) {
+     public Person_Image( String rootPerson, String relatedImage) {
          this.rootPerson = rootPerson;
          this.relatedImage = relatedImage;
-         this.relatedPerson = relatedPerson;
-     }
-
-     public String getRelatedPerson() {
-         return relatedPerson;
-     }
-
-     public void setRelatedPerson(String relatedPerson) {
-         this.relatedPerson = relatedPerson;
      }
 
      public String getRelatedImage() {
