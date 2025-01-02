@@ -96,7 +96,7 @@
 
          @Override
          public String toString() {
-             return "CompositeKey{" +
+             return "CompositeKeyRootRelated{" +
                      "rootPerson='" + rootPerson + '\'' +
                      ", relatedImage='" + relatedImage + '\'' +
                      '}';

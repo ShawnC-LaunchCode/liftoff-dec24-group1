@@ -1,6 +1,8 @@
  package com.familyflashback.familyflashback.controllers;
 
+ import com.familyflashback.familyflashback.models.Person;
  import com.familyflashback.familyflashback.models.User;
+ import com.familyflashback.familyflashback.models.data.PersonRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.util.HashMap;
+ import java.util.Map;
  import java.util.Optional;
 
  @RestController
@@ -17,10 +21,22 @@
       @Autowired
       UserRepository userRepository;
 
+      @Autowired
+     PersonRepository personRepository;
+
       @PostMapping
-      public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
             User createdUser = userRepository.save(user);
-            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+            Person personCopy = new Person();
+            personCopy.setName(user.getName());
+            personCopy.setUser(user);
+            Person createdPerson = personRepository.save(personCopy);
+
+          Map<String, Object> createdResponse = new HashMap<>();
+          createdResponse.put("createdUser", createdUser);
+          createdResponse.put("createdPerson", createdPerson);
+
+            return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }
 
       @GetMapping("/{id}")
