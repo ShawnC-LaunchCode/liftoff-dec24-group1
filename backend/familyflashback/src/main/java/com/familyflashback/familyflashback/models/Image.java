@@ -8,8 +8,7 @@
  @Entity
  public class Image extends AbstractEntity {
 
-
-     @OneToOne
+     @ManyToOne
      @JoinColumn(name = "user_id")
      private User user;
 
@@ -19,9 +18,17 @@
 
      public Image() {}
 
-     public Image(User user, String url) {
-         this.user = user;
+     public Image(String url, User user) {
          this.url = url;
+         this.user = user;
+     }
+
+     public User getUser() {
+         return user;
+     }
+
+     public void setUser(User user) {
+         this.user = user;
      }
 
      public String getUrl() {

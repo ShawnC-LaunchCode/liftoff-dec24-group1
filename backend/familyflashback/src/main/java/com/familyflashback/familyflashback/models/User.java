@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -26,7 +27,7 @@ public class User extends AbstractEntity {
     public User() {}
 
     public User(LocalDate lastLogin, String password, String name, String email) {
-        this.lastLogin = lastLogin;
+        this.lastLogin = LocalDate.now();
         this.password = password;
         this.name = name;
         this.email = email;

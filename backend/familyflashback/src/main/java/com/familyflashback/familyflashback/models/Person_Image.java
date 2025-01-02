@@ -18,22 +18,11 @@
      @Id
      private String relatedImage;
 
-     private String value;
-
      public Person_Image() {}
 
-     public Person_Image(String relatedImage, String value, String rootPerson) {
-         this.relatedImage = relatedImage;
-         this.value = value;
+     public Person_Image( String rootPerson, String relatedImage) {
          this.rootPerson = rootPerson;
-     }
-
-     public String getValue() {
-         return value;
-     }
-
-     public void setValue(String value) {
-         this.value = value;
+         this.relatedImage = relatedImage;
      }
 
      public String getRelatedImage() {
@@ -52,6 +41,7 @@
          this.rootPerson = rootPerson;
      }
 
+     @IdClass(Person_Person.CompositeKey.class)
      public static class CompositeKey implements Serializable {
 
          private String rootPerson;
@@ -96,7 +86,7 @@
 
          @Override
          public String toString() {
-             return "CompositeKey{" +
+             return "CompositeKeyRootRelated{" +
                      "rootPerson='" + rootPerson + '\'' +
                      ", relatedImage='" + relatedImage + '\'' +
                      '}';
