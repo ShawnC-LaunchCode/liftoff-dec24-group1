@@ -13,9 +13,9 @@
  @RestController
  @RequestMapping("persons")
  public class PersonController {
+
      @Autowired
      private PersonRepository personRepository;
-
 
      @PostMapping("/create")
      public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
