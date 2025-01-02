@@ -18,22 +18,22 @@
      @Id
      private String relatedPerson;
 
-     private String value;
+     private String relationship;
 
      public Person_Person() {}
 
-     public Person_Person(String value, String relatedPerson, String rootPerson) {
-         this.value = value;
+     public Person_Person(String relationship, String relatedPerson, String rootPerson) {
+         this.relationship = relationship;
          this.relatedPerson = relatedPerson;
          this.rootPerson = rootPerson;
      }
 
-     public String getValue() {
-         return value;
+     public String getRelationship() {
+         return relationship;
      }
 
-     public void setValue(String value) {
-         this.value = value;
+     public void setRelationship(String relationship) {
+         this.relationship = relationship;
      }
 
      public String getRelatedPerson() {

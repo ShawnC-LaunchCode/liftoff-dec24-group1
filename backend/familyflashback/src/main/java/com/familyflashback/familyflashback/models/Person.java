@@ -9,11 +9,9 @@ import java.time.LocalDate;
 @Entity
 public class Person extends AbstractEntity {
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @NotBlank(message = "Name is required.")
     @Size(max = 50, message = "Name cannot exceed 50 characters")
