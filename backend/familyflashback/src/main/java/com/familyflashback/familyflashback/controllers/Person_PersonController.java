@@ -17,13 +17,13 @@ public class Person_PersonController {
     @Autowired
     private Person_PersonRepository person_personRepository;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Person_Person> addRelation(@Valid @RequestBody Person_Person person_person) {
         Person_Person addedRelation = person_personRepository.save(person_person);
         return new ResponseEntity<>(addedRelation, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{rootPersonId}/{relatedPersonId}")
+    @PutMapping("/{rootPersonId}/{relatedPersonId}")
     public ResponseEntity<Person_Person> updateRelation(@PathVariable("rootPersonId") String rootId, @PathVariable("relatedPersonId") String relatedId, @Valid @RequestBody Person_Person updatedRelation){
 
         Person_Person.CompositeKey compositeKey = new Person_Person.CompositeKey(rootId, relatedId);

@@ -18,11 +18,11 @@ public class Person_ImageController {
     @Autowired
     private Person_ImageRepository person_imageRepository;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Person_Image> addImage(@Valid @RequestBody Person_Image person_image) {
         Person_Image.CompositeKey compositeKey = new Person_Image.CompositeKey(person_image.getRootPerson(), person_image.getRelatedImage());
-
         Optional<Person_Image> image = person_imageRepository.findById(compositeKey);
+
         if (image.isEmpty()) {
             Person_Image addedImage = person_imageRepository.save(person_image);
             return new ResponseEntity<>(addedImage, HttpStatus.CREATED);

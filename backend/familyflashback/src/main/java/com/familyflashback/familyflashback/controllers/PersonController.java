@@ -17,7 +17,7 @@
      @Autowired
      private PersonRepository personRepository;
 
-     @PostMapping("/create")
+     @PostMapping
      public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
          Person createdPerson = personRepository.save(person);
          return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);

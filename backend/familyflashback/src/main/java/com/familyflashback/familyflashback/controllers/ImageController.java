@@ -18,7 +18,7 @@
      @Autowired
      private ImageRepository imageRepository;
 
-     @PostMapping("/add")
+     @PostMapping
      public ResponseEntity<Image> addImage(@Valid @RequestBody Image image) {
          Image addedImage = imageRepository.save(image);
          return new ResponseEntity<>(addedImage, HttpStatus.CREATED);
