@@ -71,6 +71,7 @@
 
               return new ResponseEntity<>(updatedResponse, HttpStatus.OK);
           } else {
+              System.out.println("User " + Id + " does not exist.");
               return ResponseEntity.notFound().build();
           }
       }
@@ -82,6 +83,7 @@
              userRepository.deleteById(Id);
              return ResponseEntity.noContent().build();
          } else {
+             System.out.println("User " + Id + " does not exist.");
              return ResponseEntity.notFound().build();
          }
      }

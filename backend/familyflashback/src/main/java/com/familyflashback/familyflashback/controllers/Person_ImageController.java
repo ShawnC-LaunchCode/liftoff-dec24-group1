@@ -27,7 +27,7 @@ public class Person_ImageController {
             Person_Image addedImage = person_imageRepository.save(person_image);
             return new ResponseEntity<>(addedImage, HttpStatus.CREATED);
         }else {
-            System.out.println(person_image.getRootPerson() + " Is trying to add an relationship that already exists for " + person_image.getRelatedImage());
+            System.out.println(person_image.getRootPerson() + " is trying to add a image that already exists at " + person_image.getRelatedImage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
