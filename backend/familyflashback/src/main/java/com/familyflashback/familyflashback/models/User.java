@@ -1,11 +1,11 @@
 package com.familyflashback.familyflashback.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 @Entity
@@ -22,6 +22,9 @@ public class User extends AbstractEntity {
     @Size(max = 60, message = "Invalid Password")
     private String password;
 
+    @Column(name = "person_id")
+    private String personID;
+
     private LocalDate lastLogin;
 
     public User() {}
@@ -31,6 +34,14 @@ public class User extends AbstractEntity {
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    public String getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 
     public String getName() {

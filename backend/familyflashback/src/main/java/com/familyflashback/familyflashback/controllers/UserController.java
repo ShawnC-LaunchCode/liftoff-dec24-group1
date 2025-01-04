@@ -31,6 +31,10 @@
             personCopy.setName(user.getName());
             personCopy.setUser(user);
             Person createdPerson = personRepository.save(personCopy);
+            System.out.println("Person Id for user " + createdUser.getId() + " is " + createdPerson.getId());
+
+            createdUser.setPersonID(createdPerson.getId());
+            userRepository.save(createdUser);
 
           Map<String, Object> createdResponse = new HashMap<>();
           createdResponse.put("createdUser", createdUser);
@@ -60,6 +64,17 @@
               return ResponseEntity.notFound().build();
           }
       }
+
+     @DeleteMapping("/{id}")
+     public ResponseEntity<User> deleteUser(@PathVariable("id") String Id) {
+         Optional<User> user = userRepository.findById(Id);
+         if (user.isPresent()) {
+             userRepository.deleteById(Id);
+             return ResponseEntity.noContent().build();
+         } else {
+             return ResponseEntity.notFound().build();
+         }
+     }
 
      @GetMapping("/test")
      public ResponseEntity<String> testEndpoint() {

@@ -6,4 +6,5 @@
 
  @Repository
  public interface PersonRepository extends CrudRepository<Person, String> {
+
  }
