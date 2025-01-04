@@ -50,16 +50,26 @@
       }
 
       @PutMapping("/{id}")
-      public ResponseEntity<User> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
+      public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
           Optional<User> user = userRepository.findById(Id);
+
           if (user.isPresent()) {
               User existingUser = user.get();
               existingUser.setName(updatedUser.getName());
               existingUser.setPassword(updatedUser.getPassword());
               existingUser.setEmail(existingUser.getEmail());
-
               User savedUpdatedUser = userRepository.save(existingUser);
-              return new ResponseEntity<>(savedUpdatedUser, HttpStatus.OK);
+
+              Optional<Person> person = personRepository.findByUsersPersonId(existingUser.getPersonID());
+              Person existingPerson = person.get();
+              existingPerson.setName(updatedUser.getName());
+              Person savedUpdatedPerson = personRepository.save(existingPerson);
+
+              Map<String, Object> updatedResponse = new HashMap<>();
+              updatedResponse.put("updatedUser", savedUpdatedUser);
+              updatedResponse.put("updatedPerson", savedUpdatedPerson);
+
+              return new ResponseEntity<>(updatedResponse, HttpStatus.OK);
           } else {
               return ResponseEntity.notFound().build();
           }
