@@ -1,5 +1,6 @@
 package com.familyflashback.familyflashback.controllers;
 
+import com.familyflashback.familyflashback.models.Image;
 import com.familyflashback.familyflashback.models.Person_Person;
 import com.familyflashback.familyflashback.models.data.Person_PersonRepository;
 import jakarta.validation.Valid;
@@ -36,6 +37,20 @@ public class Person_PersonController {
             Person_Person savedUpdatedRelation = person_personRepository.save(existingRelation);
             return new ResponseEntity<>(savedUpdatedRelation, HttpStatus.OK);
         } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{rootPersonId}/{relatedPersonId}")
+    public ResponseEntity<String> getRelation(@PathVariable("rootPersonId") String rootId, @PathVariable("relatedPersonId") String relatedId) {
+        Person_Person.CompositeKey compositeKey = new Person_Person.CompositeKey(rootId, relatedId);
+        Optional<Person_Person> relation = person_personRepository.findById(compositeKey);
+
+        if (relation.isPresent()) {
+            String relationship = relation.get().getRelationship();
+            return new ResponseEntity<>(relationship, HttpStatus.OK);
+        } else {
+            System.out.println("Resource " + compositeKey + " does not exist.");
             return ResponseEntity.notFound().build();
         }
     }
