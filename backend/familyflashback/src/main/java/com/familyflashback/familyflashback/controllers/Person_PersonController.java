@@ -1,6 +1,5 @@
 package com.familyflashback.familyflashback.controllers;
 
-import com.familyflashback.familyflashback.models.Image;
 import com.familyflashback.familyflashback.models.Person_Person;
 import com.familyflashback.familyflashback.models.data.Person_PersonRepository;
 import jakarta.validation.Valid;
@@ -24,17 +23,26 @@ public class Person_PersonController {
         return new ResponseEntity<>(addedRelation, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{rootPersonId}/{relatedPersonId}")
+    @PatchMapping("/{rootPersonId}/{relatedPersonId}")
     public ResponseEntity<Person_Person> updateRelation(@PathVariable("rootPersonId") String rootId, @PathVariable("relatedPersonId") String relatedId, @Valid @RequestBody Person_Person updatedRelation){
 
         Person_Person.CompositeKey compositeKey = new Person_Person.CompositeKey(rootId, relatedId);
-
         Optional<Person_Person> relation = person_personRepository.findById(compositeKey);
+
         if (relation.isPresent()) {
             Person_Person existingRelation = relation.get();
-            existingRelation.setRelationship(updatedRelation.getRelationship());
 
+            if (updatedRelation.getRelationship() != null) {
+                existingRelation.setRelationship(updatedRelation.getRelationship());
+            }
+            if (updatedRelation.getRootPerson() != null) {
+               existingRelation.setRootPerson(updatedRelation.getRootPerson());
+            }
+            if (updatedRelation.getRelatedPerson() != null) {
+               existingRelation.setRelatedPerson(updatedRelation.getRelatedPerson());
+            }
             Person_Person savedUpdatedRelation = person_personRepository.save(existingRelation);
+
             return new ResponseEntity<>(savedUpdatedRelation, HttpStatus.OK);
         } else {
             return ResponseEntity.notFound().build();
