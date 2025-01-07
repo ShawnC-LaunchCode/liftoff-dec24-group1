@@ -4,6 +4,8 @@ import Tree from './components/tree';
 import Map from './components/map';
 import Blog from './components/blog';
 import Support from './components/support';
+import Signup from './components/signup';
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
                 <Route path="/map" element={<Map />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/support" element={<Support />} />
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </Router>
     </>
