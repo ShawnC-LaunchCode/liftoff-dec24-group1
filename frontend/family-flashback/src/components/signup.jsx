@@ -1,5 +1,11 @@
 import React from 'react'
 
+import "./signup.css"
+
+import userIcon from "../components/assets/person.png"
+import emailIcon from "../components/assets/email.png"
+import passwordIcon from "../components/assets/password.png"
+
 export default function Signup() {
 
     const handleSubmit = (event) => {
@@ -12,29 +18,42 @@ export default function Signup() {
         }).then((data) => {
             console.log(data);
         });*/
-        
+
+     }
+
+     const handleClick = (event) => {
+        alert("Forgot Password triggered");
      }
 
     return (
-        <div className='container'>
-            <div classname='header'>
+        <div className='signup-form'>
+            <div className='signup-header'>
                 <h1>Sign Up</h1>
             </div>
-            <div classname='textfields'>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <input type="text"/>
+            <div>
+                <form className='signup-textfields' onSubmit={handleSubmit}>
+                    <div className='signup-textfield'>
+                        <img src={userIcon} alt='' />
+                        <input type='text' placeholder='name'/>
                     </div>
-                    <div>
-                        <input type="email" />
+                    <div className='signup-textfield'>
+                        <img src={emailIcon} alt='' />
+                        <input type="email" placeholder='email' />
                     </div>
-                    <div>
-                        <input type="password" />
+                    <div className='signup-textfield'>
+                        <img src={passwordIcon} alt='' />
+                        <input type='password' placeholder='password'/>
                     </div>
-                    <input type="submit" />
+                    <div className='signup-textfield'>
+                        <img src={passwordIcon} alt='' />
+                        <input type='password' placeholder='confirm password'/>
+                    </div>
+                    <div className='submit-button'>
+                        <input type='submit' />
+                    </div>
                 </form>
             </div>
-            <div classname="recover-password">Forgot Password? Click Here.</div>
+            <div className='recover-password'>Forgot Password? <span onClick={handleClick}>Click Here.</span></div>
         </div>
     )
 }
