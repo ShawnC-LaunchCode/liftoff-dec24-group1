@@ -51,8 +51,20 @@
     width: 300px;
     height: 50px;
     border-radius: 8px;
+    color: 797979;
+    background: #eaeaea;
+}
+
+.submit-button-validated{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    width: 300px;
+    height: 50px;
+    border-radius: 8px;
     color: white;
-    background: #505050;
+    background: #444444;
 }
 
 .recover-password{

@@ -13,18 +13,38 @@ export default function Signup() {
         console.log("test");
         event.preventDefault();
 
-        /*fetch("http://localhost:8080/user/1", {mode: 'no-cors'}).then((response) => {
+        /*fetch("http://localhost:8080/user", {mode: 'no-cors'}).then((response) => {
             return response;
         }).then((data) => {
             console.log(data);
         });*/
 
-     }
+    }
 
-     const handleClick = (event) => {
+    const handleClick = (event) => {
         alert("Forgot Password triggered");
-     }
+    }
 
+    const handleChange = (event) => {
+        const user = document.getElementById("user");
+        alert({user});
+    }
+
+    const validateUser = (event) => {
+
+
+    }
+
+    const handlePassConfirmChange = (event) => {
+        const password = document.getElementById("pass").value;
+        const passwordConfirm = document.getElementById("passConfirm").value;
+
+        if (password === passwordConfirm) {
+            alert("Passwords Match!");
+        }
+    }
+
+    
     return (
         <div className='signup-form'>
             <div className='signup-header'>
@@ -34,19 +54,19 @@ export default function Signup() {
                 <form className='signup-textfields' onSubmit={handleSubmit}>
                     <div className='signup-textfield'>
                         <img src={userIcon} alt='' />
-                        <input type='text' placeholder='name'/>
+                        <input type='text' id='user' placeholder='name' onBlur={validateUser}/>
                     </div>
                     <div className='signup-textfield'>
                         <img src={emailIcon} alt='' />
-                        <input type="email" placeholder='email' />
+                        <input type="email" placeholder='email' onBlur={validateUser} />
                     </div>
                     <div className='signup-textfield'>
                         <img src={passwordIcon} alt='' />
-                        <input type='password' placeholder='password'/>
+                        <input type='password' id='pass' placeholder='password' onBlur={validateUser}/>
                     </div>
                     <div className='signup-textfield'>
                         <img src={passwordIcon} alt='' />
-                        <input type='password' placeholder='confirm password'/>
+                        <input type='password' id='passConfirm' placeholder='confirm password' onBlur={validateUser} onChange={handlePassConfirmChange}/>
                     </div>
                     <div className='submit-button'>
                         <input type='submit' />
