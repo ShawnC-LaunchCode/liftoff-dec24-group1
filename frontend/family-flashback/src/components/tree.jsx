@@ -12,12 +12,16 @@ const canvasWidth = 800; // Set your canvas width
 const canvasHeight = 600; // Set your canvas height
 
 const initialNodes = [
-  { id: '1', position: { x: canvasWidth / 2, y: canvasHeight / 2 }, data: { label: '1' } },
-  { id: '2', position: { x: canvasWidth / 2, y: canvasHeight / 2 + 100 }, data: { label: '2' } },
+  { id: '1', position: { x: canvasWidth / 2, y: canvasHeight / 2 }, data: { label: 'Root User' } },
+  { id: '2', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 1' } },
+  { id: '3', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 2' } },
 ];
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+const initialEdges = [
+  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e1-3', source: '1', target: '3' }
+];
  
-export default function App() {
+export default function Tree() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
  
