@@ -29,7 +29,7 @@ public class User extends AbstractEntity {
 
     public User() {}
 
-    public User(LocalDate lastLogin, String password, String name, String email) {
+    public User(String password, String name, String email) {
         this.lastLogin = LocalDate.now();
         this.password = password;
         this.name = name;
