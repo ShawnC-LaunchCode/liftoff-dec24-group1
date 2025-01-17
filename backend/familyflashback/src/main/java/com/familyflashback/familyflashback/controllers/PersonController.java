@@ -8,6 +8,7 @@
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.util.List;
  import java.util.Optional;
 
  @RestController
@@ -20,6 +21,7 @@
      @PostMapping
      public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
          Person createdPerson = personRepository.save(person);
+         createdPerson.getUser().setPassword(null);
          return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
      }
 
@@ -63,10 +65,28 @@
          }
      }
 
+     @GetMapping()
+     public ResponseEntity<List<Person>> getAllPersons() {
+         List<Person> persons = (List<Person>) personRepository.findAll();
+         if (!persons.isEmpty()) {
+             for (Person person : persons) {
+                 person.getUser().setPassword(null);
+             }
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
      @GetMapping("/{id}")
      public ResponseEntity<Person> getPerson(@PathVariable("id") String Id) {
          Optional<Person> person = personRepository.findById(Id);
-         return person.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+         if (person.isPresent()) {
+            Person requestedPerson = person.get();
+            requestedPerson.getUser().setPassword(null);
+            return ResponseEntity.ok(requestedPerson);
+         } else {
+             return ResponseEntity.notFound().build();
+         }
      }
 
      @GetMapping("/test")
