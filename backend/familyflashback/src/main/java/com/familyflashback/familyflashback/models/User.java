@@ -80,7 +80,6 @@ public class User extends AbstractEntity {
     public String toString() {
         return "User{" +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
     }
