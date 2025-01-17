@@ -5,6 +5,7 @@
  import org.springframework.data.repository.CrudRepository;
  import org.springframework.stereotype.Repository;
 
+ import java.util.List;
  import java.util.Optional;
 
  @Repository
@@ -12,5 +13,8 @@
 
   @Query("SELECT person FROM Person person WHERE person.id =:userPersonId")
   Optional<Person> findByUsersPersonId(String userPersonId);
+
+  @Query("SELECT persons FROM Person persons WHERE persons.user.id =:userId")
+  List<Person> findAllByUserId(String userId);
 
  }
