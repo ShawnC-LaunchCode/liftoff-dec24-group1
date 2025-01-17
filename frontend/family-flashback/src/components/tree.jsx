@@ -1,3 +1,4 @@
+import Footer from './footer';
 import React, { useState } from 'react';
 
 const FamilyTree = () => {
@@ -118,6 +119,7 @@ const FamilyTree = () => {
       <div className="flex justify-center min-w-max">
         <TreeNode node={familyData} />
       </div>
+      <Footer/>
     </div>
   );
 };
