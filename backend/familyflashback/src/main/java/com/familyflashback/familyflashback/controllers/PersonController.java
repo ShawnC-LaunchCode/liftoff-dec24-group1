@@ -21,7 +21,6 @@
      @PostMapping
      public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
          Person createdPerson = personRepository.save(person);
-         createdPerson.getUser().setPassword(null);
          return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
      }
 
@@ -69,9 +68,6 @@
      public ResponseEntity<List<Person>> getAllPersons() {
          List<Person> persons = (List<Person>) personRepository.findAll();
          if (!persons.isEmpty()) {
-             for (Person person : persons) {
-                 person.getUser().setPassword(null);
-             }
              return ResponseEntity.ok(persons);
          }
          return ResponseEntity.notFound().build();
@@ -82,7 +78,6 @@
          Optional<Person> person = personRepository.findById(Id);
          if (person.isPresent()) {
             Person requestedPerson = person.get();
-            requestedPerson.getUser().setPassword(null);
             return ResponseEntity.ok(requestedPerson);
          } else {
              return ResponseEntity.notFound().build();
