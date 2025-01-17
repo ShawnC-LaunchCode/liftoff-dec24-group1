@@ -1,5 +1,6 @@
 package com.familyflashback.familyflashback.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class User extends AbstractEntity {
 
     @NotBlank(message = "Password is required.")
     @Size(max = 60, message = "Invalid Password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "person_id")
@@ -80,7 +82,6 @@ public class User extends AbstractEntity {
     public String toString() {
         return "User{" +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
     }
