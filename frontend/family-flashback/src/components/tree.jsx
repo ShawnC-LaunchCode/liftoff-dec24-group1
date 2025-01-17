@@ -16,11 +16,12 @@ const initialNodes = [
   { id: '2', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 1' } },
   { id: '3', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 2' } },
 ];
+
 const initialEdges = [
   { id: 'e1-2', source: '1', target: '2' },
   { id: 'e1-3', source: '1', target: '3' }
 ];
- 
+
 export default function Tree() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
