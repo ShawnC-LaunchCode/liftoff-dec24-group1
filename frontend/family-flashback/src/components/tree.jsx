@@ -28,16 +28,24 @@ export default function Tree() {
  
   useEffect(() => {
     fetch('http://localhost:8080/user/LOTxIUI-uvUtkU1h5QScK')
-      .then(response => {
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
         fetch(`http://localhost:8080/persons/${data.personID}`)
-          .then(response => {
-            return response.json();
-          })
-          .then(data => {
-            console.log('Person API NAME:', data.user.name);
+          .then(response => response.json())
+          .then(personData => {
+            console.log('Person API Response data:', personData);
+            
+            // Update the node with id '1' to include the person's name
+            setNodes((nds) =>
+              nds.map((node) => {
+                if (node.id === '1') {
+                  return { ...node, data: { ...node.data, label: personData.user.name } };
+                }
+                return node;
+              })
+            );
+
+            console.log('User Name:', personData.user.name);
           })
           .catch(error => {
             console.error('Error fetching person data:', error);
