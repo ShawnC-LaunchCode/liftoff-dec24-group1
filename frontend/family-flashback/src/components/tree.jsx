@@ -27,13 +27,25 @@ export default function Tree() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
  
   useEffect(() => {
-    fetch('http://localhost:8080/user/test')
-      .then(response => response.json())
+    fetch('http://localhost:8080/user/LOTxIUI-uvUtkU1h5QScK')
+      .then(response => {
+        return response.json();
+      })
       .then(data => {
-        console.log('API Response:', data);
+        fetch(`http://localhost:8080/persons/${data.personID}`)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            console.log('Person API NAME:', data.user.name);
+          })
+          .catch(error => {
+            console.error('Error fetching person data:', error);
+          });
+        console.log('User API Response data:', data);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching user data:', error);
       });
   }, []);
 
