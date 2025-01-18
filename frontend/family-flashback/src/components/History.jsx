@@ -1,11 +1,13 @@
-import TitleButtons from "./family_history/Title";
+import ImageUpload from "./family_history/ImageUpload";
+import Title from "./family_history/Title";
 
 const HistoryMain = () => {
 
   return (
     <main>
       <div>
-       <TitleButtons /> 
+       <Title /> 
+       <ImageUpload/>
       </div>
     </main>
   );
