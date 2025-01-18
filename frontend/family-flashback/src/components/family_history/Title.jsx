@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-const StoryPage = () => {
+const Title = () => {
 
-  const [storyTitle, setStoryTitle] = useState('Family Story');
+  const [historyTitle, setHistoryTitle] = useState('Family History');
   const [editing, setEditing] = useState(false);
 
   const handleTitleInput = event => {
-    setStoryTitle(event.target.value)
+    setHistoryTitle(event.target.value)
   };
 
   const handleOpenForm = () => {
@@ -21,12 +21,12 @@ const StoryPage = () => {
 
   return (
     <main>
-      <div className="story-title">
-        <h3>{storyTitle}</h3>
+      <div className="history-title">
+        <h3>{historyTitle}</h3>
         <button onClick={handleOpenForm}>Edit</button>
       </div>
       {editing && <form>
-        <input value={storyTitle} onInput={handleTitleInput} />
+        <input value={historyTitle} onInput={handleTitleInput} />
         <button onClick={handleCloseForm}>Save</button>
       </form>}
     </main>
@@ -34,6 +34,4 @@ const StoryPage = () => {
 
 };
 
-export default StoryPage;
-
-  
+export default Title;
