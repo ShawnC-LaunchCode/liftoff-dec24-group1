@@ -73,6 +73,15 @@
          return ResponseEntity.notFound().build();
      }
 
+     @GetMapping("/user/{id}")
+     public ResponseEntity<List<Person>> getAllPersonsForUser(@PathVariable("id") String Id) {
+        List<Person> persons = personRepository.findAllByUserId(Id);
+         if (!persons.isEmpty()) {
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
      @GetMapping("/{id}")
      public ResponseEntity<Person> getPerson(@PathVariable("id") String Id) {
          Optional<Person> person = personRepository.findById(Id);
