@@ -21,7 +21,7 @@ const Title = () => {
 
   return (
     <main>
-      <div className="history-title">
+      <div>
         <h3>{historyTitle}</h3>
         <button onClick={handleOpenForm}>Edit</button>
       </div>

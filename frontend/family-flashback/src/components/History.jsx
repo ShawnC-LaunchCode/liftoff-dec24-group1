@@ -5,15 +5,12 @@ import "../history.css";
 const HistoryMain = () => {
 
   return (
-    <main>
-      <div className="historyTitle">
-       <Title /> 
-      </div>
-      <div className="imageUpload">
-      <ImageUpload/>
-      </div>
-      
-    </main>
+    <body className="wrapper">
+        <h1 className="historyTitle"><Title /></h1> 
+        <section>
+          <div className="imageUpload"><ImageUpload/></div>
+        </section>
+    </body>
   );
 
 };

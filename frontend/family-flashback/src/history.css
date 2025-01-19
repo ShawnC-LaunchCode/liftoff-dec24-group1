@@ -1,7 +1,23 @@
-.historyTitle {
+.wrapper {
+    display: flex;
+    flex-flow: row wrap;
     text-align: center;
 }
 
-/* .imageUpload {
+.wrapper > * {
+    padding: 10px;
+    flex: 1 100%;
+  }
+
+.historyTitle {
+    margin:auto;
+
+}
+
+.imageUpload {
     margin: auto;
-} */
+    width: 80%;
+    padding: 1px;
+
+}
+
