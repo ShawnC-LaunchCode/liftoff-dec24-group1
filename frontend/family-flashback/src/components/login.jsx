@@ -2,24 +2,22 @@ import React from 'react'
 
 import "./signup.css"
 
-import userIcon from "../components/assets/person.png"
 import emailIcon from "../components/assets/email.png"
 import passwordIcon from "../components/assets/password.png"
 
-export default function Signup() {
+export default function Login() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         const userData = {
             password: document.getElementById("pass").value,
-            name: document.getElementById("user").value,
             email: document.getElementById("email").value,
           };
 
         console.log(userData);
 
-        const response = await fetch("http://localhost:8080/user", {
+        const response = await fetch("http://localhost:8080/auth", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -51,18 +49,13 @@ export default function Signup() {
         }
     }
 
-    
     return (
         <div className='signup-form'>
             <div className='signup-header'>
-                <h1>Sign Up</h1>
+                <h1>Login</h1>
             </div>
             <div>
                 <form className='signup-textfields' onSubmit={handleSubmit}>
-                    <div className='signup-textfield'>
-                        <img src={userIcon} alt='' />
-                        <input type='text' id='user' placeholder='name' onBlur={validateUser}/>
-                    </div>
                     <div className='signup-textfield'>
                         <img src={emailIcon} alt='' />
                         <input type="email" id='email' placeholder='email' onBlur={validateUser} />
@@ -70,10 +63,6 @@ export default function Signup() {
                     <div className='signup-textfield'>
                         <img src={passwordIcon} alt='' />
                         <input type='password' id='pass' placeholder='password' onBlur={validateUser}/>
-                    </div>
-                    <div className='signup-textfield'>
-                        <img src={passwordIcon} alt='' />
-                        <input type='password' id='passConfirm' placeholder='confirm password' onBlur={validateUser} onChange={handlePassConfirmChange}/>
                     </div>
                     <div className='submit-button'>
                         <input type='submit' />

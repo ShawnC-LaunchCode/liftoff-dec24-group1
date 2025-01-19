@@ -5,6 +5,7 @@ import Map from './components/map';
 import Blog from './components/blog';
 import Support from './components/support';
 import Signup from './components/signup';
+import Login from './components/login';
 import Footer from './components/footer';
 import About from './components/about';
 import Privacy from './components/privacy';
@@ -26,6 +27,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/support" element={<Support />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />

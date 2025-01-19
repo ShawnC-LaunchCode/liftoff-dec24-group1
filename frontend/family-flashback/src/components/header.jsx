@@ -12,6 +12,11 @@ const navigation = [
   { name: 'Support', href: '/support' },
 ]
 
+const authNavigation = [
+  { name: 'Login', href: '/login'},
+  { name: 'Sign Up', href: '/signup'},
+]
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -45,8 +50,12 @@ export default function Header() {
             </a>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/signup" className="text-sm/6 font-semibold text-gray-900">Log in / Sign Up</a>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+          {authNavigation.map((item) => (
+            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+              {item.name}
+            </a>
+          ))}
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

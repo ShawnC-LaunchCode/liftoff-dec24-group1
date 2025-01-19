@@ -8,6 +8,11 @@
     padding-bottom: 50px;
 }
 
+.forms{
+    display: flex;
+    flex-direction: row;
+}
+
 .signup-header{
     display: flex;
     flex-direction: column;
