@@ -1,5 +1,6 @@
-import Footer from './footer';
 import React, { useState } from 'react';
+import Footer from './footer';
+import ModalManager from './modalManager';
 
 const FamilyTree = () => {
   const [familyData, setFamilyData] = useState({
@@ -119,7 +120,9 @@ const FamilyTree = () => {
       <div className="flex justify-center min-w-max">
         <TreeNode node={familyData} />
       </div>
-      <Footer/>
+      <ModalManager>
+        <Footer />
+      </ModalManager>
     </div>
   );
 };

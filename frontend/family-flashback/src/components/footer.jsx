@@ -1,10 +1,15 @@
 import React from 'react';
 
-function Footer() {
+
+function Footer({ onOpenModal }) {
+
   return (
     <footer style={footerStyle}>
       <div style={linkContainerStyle}>
-        <a href="./addPerson" style={linkStyle}>Add Person</a>
+        {/* <a href="./addPerson" style={linkStyle}>Add Person</a> */}
+        <a href="#!" onClick={onOpenModal} style={linkStyle}>
+        Add Person
+      </a>
         <a href="/update-person" style={linkStyle}>Update Person</a>
       </div>
     </footer>

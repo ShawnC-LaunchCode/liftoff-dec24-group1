@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-function AddPersonForm() {
+function AddPersonForm({ handleClose }) {
+  // Get rootPerson (The person the relationship will be added to)
+
+  // Set rootPerson in relationshipData and add rootPerson name to form
+
+  // Get authenticated user information
+
+  // Update user id in useState
+
   const [formData, setFormData] = useState({
     name: '',
     birthDate: '',
@@ -11,17 +18,11 @@ function AddPersonForm() {
     relationship: '',
     user: {
       id: 'ht-vvKg8UMPr4PissxDbN',
-      name: 'grayson',
-      email: 'gkeaton23@gmail.com',
-      password: '12345678',
-      lastLogin: null,
     },
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +36,7 @@ function AddPersonForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(''); 
+    setError('');
 
     try {
       const response = await fetch('http://localhost:8080/persons', {
@@ -59,7 +60,7 @@ function AddPersonForm() {
         relatedPerson: result.id,
         relationship: formData.relationship,
       };
-      
+
       console.log(relationshipData);
 
       try {
@@ -77,15 +78,13 @@ function AddPersonForm() {
 
         const result = await response.json();
         console.log('Response:', result);
-
       } catch (error) {
         setError(error.message);
         console.error('Error:', error);
       }
 
-      // Navigate back to see new addition on tree
-      navigate('/tree');
-
+      // Close modal
+      handleClose();
     } catch (error) {
       setError(error.message);
       console.error('Error:', error);
@@ -95,6 +94,8 @@ function AddPersonForm() {
   };
 
   return (
+    <div>
+        <p style={pStyle}>Add a new relationship to rootPersonName</p>
     <form onSubmit={handleSubmit} style={formStyle}>
       <div style={inputGroupStyle}>
         <label htmlFor='name'>Name:</label>
@@ -185,9 +186,9 @@ function AddPersonForm() {
         Submit
       </button>
     </form>
+    </div>
   );
 }
-
 
 const formStyle = {
   display: 'flex',
@@ -195,7 +196,7 @@ const formStyle = {
   width: '300px',
   margin: '0 auto',
   padding: '20px',
-  border: '1px solid #ccc',
+  border: '1px solid #cccccc',
   borderRadius: '8px',
   backgroundColor: '#f9f9f9',
 };
@@ -204,9 +205,16 @@ const inputGroupStyle = {
   marginBottom: '15px',
 };
 
+const pStyle = {
+    marginBottom: '20px',
+    fontSize: '18px',
+    fontWeight: 'bolder',
+    color: 'purple',
+  };
+
 const buttonStyle = {
   padding: '10px 20px',
-  backgroundColor: '#4CAF50',
+  backgroundColor: '#4caf50',
   color: 'white',
   border: 'none',
   borderRadius: '4px',
