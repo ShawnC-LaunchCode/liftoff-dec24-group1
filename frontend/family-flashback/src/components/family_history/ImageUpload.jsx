@@ -31,8 +31,7 @@ const ImageUpload = () => {
             <button
                 type='submit'
                 onClick={handleImageUpload}
-                //adjust sizing after fixing css sizing & padding for title and image
-                className="flex-center absolute bottom-12 right-10 h-9 w-9 rounded-full">
+                className="flex-center absolute bottom-10 right-10 h-5 w-5">
             
                 <img
                     src={UploadIcon}
