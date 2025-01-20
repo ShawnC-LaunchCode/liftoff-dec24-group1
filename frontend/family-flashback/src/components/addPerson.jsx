@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 function AddPersonForm({ handleClose }) {
   // Get rootPerson (The person the relationship will be added to)
 
-  // Set rootPerson in relationshipData and add rootPerson name to form
+  // Set rootPerson in relationshipData and add rootPerson name on the form
 
   // Get authenticated user information
 
