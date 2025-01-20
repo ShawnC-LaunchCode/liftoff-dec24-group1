@@ -4,6 +4,7 @@
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
+ import jakarta.servlet.http.HttpServletRequest;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.http.HttpStatus;
@@ -14,6 +15,8 @@
  import java.util.Map;
  import java.util.Optional;
 
+ import static com.familyflashback.familyflashback.controllers.AuthController.setUserInSession;
+
  @RestController
  @RequestMapping("user")
  public class UserController {
@@ -22,10 +25,11 @@
       UserRepository userRepository;
 
       @Autowired
-     PersonRepository personRepository;
+      PersonRepository personRepository;
 
       @PostMapping
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, HttpServletRequest request) {
+            user.hashPass();
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
             personCopy.setName(user.getName());
@@ -35,6 +39,7 @@
 
             createdUser.setPersonID(createdPerson.getId());
             userRepository.save(createdUser);
+            setUserInSession(request.getSession(), createdUser);
 
           Map<String, Object> createdResponse = new HashMap<>();
           createdResponse.put("createdUser", createdUser);

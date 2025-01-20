@@ -5,11 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.time.LocalDate;
 
 
 @Entity
 public class User extends AbstractEntity {
+
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private String name;
 
@@ -31,7 +35,7 @@ public class User extends AbstractEntity {
 
     public User(LocalDate lastLogin, String password, String name, String email) {
         this.lastLogin = LocalDate.now();
-        this.password = password;
+        this.password = encoder.encode(password);
         this.name = name;
         this.email = email;
     }
@@ -83,5 +87,13 @@ public class User extends AbstractEntity {
                 ", password='" + password + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
+    }
+
+    public void hashPass() {
+        this.password = encoder.encode(this.password);
+    }
+
+    public boolean isMatchingPassword(String password) {
+        return encoder.matches(password, this.password);
     }
 }

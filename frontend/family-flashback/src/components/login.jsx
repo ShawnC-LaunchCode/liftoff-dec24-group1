@@ -1,4 +1,5 @@
 import React from 'react'
+import { useCookies } from 'react-cookie'
 
 import "./signup.css"
 
@@ -7,6 +8,8 @@ import passwordIcon from "../components/assets/password.png"
 
 export default function Login() {
 
+    const [cookies, setCookie] = useCookies(['user'])
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -14,8 +17,6 @@ export default function Login() {
             password: document.getElementById("pass").value,
             email: document.getElementById("email").value,
           };
-
-        console.log(userData);
 
         const response = await fetch("http://localhost:8080/auth", {
             method: 'POST',
@@ -28,6 +29,7 @@ export default function Login() {
 
         const result = await response.json();
         console.log(result);
+        setCookie('user', result)
         alert("Form submitted");
     }
 
