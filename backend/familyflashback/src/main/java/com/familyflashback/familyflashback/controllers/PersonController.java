@@ -8,6 +8,7 @@
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.util.List;
  import java.util.Optional;
 
  @RestController
@@ -23,16 +24,27 @@
          return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
      }
 
-     @PutMapping("/{id}")
+     @PatchMapping("/{id}")
      public ResponseEntity<Person> updatePerson(@PathVariable("id") String Id, @Valid @RequestBody Person updatedPerson) {
          Optional<Person> person = personRepository.findById(Id);
          if (person.isPresent()) {
              Person existingPerson = person.get();
-             existingPerson.setName(updatedPerson.getName());
-             existingPerson.setBio(updatedPerson.getBio());
-             existingPerson.setBirthTown(updatedPerson.getBirthTown());
-             existingPerson.setBirthDate(updatedPerson.getBirthDate());
-             existingPerson.setDeathDate(updatedPerson.getDeathDate());
+
+             if (updatedPerson.getName() != null) {
+                 existingPerson.setName(updatedPerson.getName());
+             }
+             if (updatedPerson.getBio() != null) {
+                 existingPerson.setBio(updatedPerson.getBio());
+             }
+             if (updatedPerson.getBirthTown() != null) {
+                 existingPerson.setBirthTown(updatedPerson.getBirthTown());
+             }
+             if (updatedPerson.getBirthDate() != null) {
+                 existingPerson.setBirthDate(updatedPerson.getBirthDate());
+             }
+             if (updatedPerson.getDeathDate() != null) {
+                 existingPerson.setDeathDate(updatedPerson.getDeathDate());
+             }
 
              Person savedUpdatedPerson = personRepository.save(existingPerson);
              return new ResponseEntity<>(savedUpdatedPerson, HttpStatus.OK);
@@ -52,10 +64,33 @@
          }
      }
 
+     @GetMapping()
+     public ResponseEntity<List<Person>> getAllPersons() {
+         List<Person> persons = (List<Person>) personRepository.findAll();
+         if (!persons.isEmpty()) {
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
+     @GetMapping("/user/{id}")
+     public ResponseEntity<List<Person>> getAllPersonsForUser(@PathVariable("id") String Id) {
+        List<Person> persons = personRepository.findAllByUserId(Id);
+         if (!persons.isEmpty()) {
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
      @GetMapping("/{id}")
      public ResponseEntity<Person> getPerson(@PathVariable("id") String Id) {
          Optional<Person> person = personRepository.findById(Id);
-         return person.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+         if (person.isPresent()) {
+            Person requestedPerson = person.get();
+            return ResponseEntity.ok(requestedPerson);
+         } else {
+             return ResponseEntity.notFound().build();
+         }
      }
 
      @GetMapping("/test")
