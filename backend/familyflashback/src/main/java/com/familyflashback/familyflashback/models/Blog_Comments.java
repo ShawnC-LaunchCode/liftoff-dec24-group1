@@ -19,7 +19,7 @@ public class Blog_Comments extends AbstractEntity {
     @NotNull
     private String body;
 
-    @Column(name = "update_dt", insertable = false)
+    @Column(name = "update_dt")
     private LocalDateTime dateUpdated;
 
     public Blog_Comments() {}
