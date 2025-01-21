@@ -8,6 +8,7 @@
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.util.List;
  import java.util.Optional;
 
  @RestController
@@ -63,10 +64,33 @@
          }
      }
 
+     @GetMapping()
+     public ResponseEntity<List<Person>> getAllPersons() {
+         List<Person> persons = (List<Person>) personRepository.findAll();
+         if (!persons.isEmpty()) {
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
+     @GetMapping("/user/{id}")
+     public ResponseEntity<List<Person>> getAllPersonsForUser(@PathVariable("id") String Id) {
+        List<Person> persons = personRepository.findAllByUserId(Id);
+         if (!persons.isEmpty()) {
+             return ResponseEntity.ok(persons);
+         }
+         return ResponseEntity.notFound().build();
+     }
+
      @GetMapping("/{id}")
      public ResponseEntity<Person> getPerson(@PathVariable("id") String Id) {
          Optional<Person> person = personRepository.findById(Id);
-         return person.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+         if (person.isPresent()) {
+            Person requestedPerson = person.get();
+            return ResponseEntity.ok(requestedPerson);
+         } else {
+             return ResponseEntity.notFound().build();
+         }
      }
 
      @GetMapping("/test")

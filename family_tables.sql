@@ -1,9 +1,10 @@
 CREATE TABLE user (
 id VARCHAR (21) NOT NULL PRIMARY KEY,
+person_id VARCHAR(21),
 name VARCHAR (50)NOT NULL,
 email VARCHAR (100) NOT NULL UNIQUE,
 password VARCHAR (60) NOT NULL,
-last_login DATETIME NULL DEFAULT NULL
+last_login DATETIME NULL DEFAULT NULL,
 );
 
 CREATE TABLE person (
@@ -56,15 +57,5 @@ user_id VARCHAR(21),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
+ALTER TABLE user
+ADD CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES person(id);
