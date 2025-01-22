@@ -1,7 +1,6 @@
 import React from 'react';
 
 function AddPersonButton({ onOpenModal }) {
-
   return (
     <div>
     <button onClick={onOpenModal} style={addPersonButtonStyle} title="Add new relationship">&#43;</button>
