@@ -209,7 +209,7 @@ const pStyle = {
     marginBottom: '20px',
     fontSize: '18px',
     fontWeight: 'bolder',
-    color: 'purple',
+    color: '#5A4FCF',
   };
 
 const buttonStyle = {

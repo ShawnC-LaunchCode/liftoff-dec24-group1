@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Footer from './footer';
+import AddPersonButton from './addPersonButton';
+import ViewPersonButton from './viewPersonButton';
 import ModalManager from './modalManager';
 
 const FamilyTree = () => {
@@ -121,10 +122,12 @@ const FamilyTree = () => {
         <TreeNode node={familyData} />
       </div>
       <ModalManager>
-        <Footer />
+        <AddPersonButton />
       </ModalManager>
+      <ViewPersonButton />
     </div>
   );
 };
+
 
 export default FamilyTree;
