@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddPersonButton from './addPersonButton';
 import ViewPersonButton from './viewPersonButton';
 import ModalManager from './modalManager';
 
-const rootPerson = 'dct4GZiwTnIvLg1YD7bAW';
-
 const FamilyTree = () => {
+
+  const [rootPerson, setRootPerson] = useState(null);
+  const handleRootPersonClick = (rootPersonId) => {
+    setRootPerson(rootPersonId); 
+  };
+  // I think something like <div onClick={() => handleRootPersonClick(rootId)}>Person thingy</div>
+  // But for testing in the meantime...
+  useEffect(() => {
+    setRootPerson('dct4GZiwTnIvLg1YD7bAW');
+  }, []);
+
 
   const [familyData, setFamilyData] = useState({
     name: "Me",
@@ -127,9 +136,11 @@ const FamilyTree = () => {
       <div className="flex justify-center min-w-max">
         <TreeNode node={familyData} />
       </div>
-      <ModalManager>
-        <AddPersonButton />
-      </ModalManager>
+      {rootPerson && (
+        <ModalManager rootPerson={rootPerson}>
+          <AddPersonButton />
+        </ModalManager>
+      )}
       <ViewPersonButton />
     </div>
   );
@@ -137,5 +148,3 @@ const FamilyTree = () => {
 
 
 export default FamilyTree;
-
-export { rootPerson };

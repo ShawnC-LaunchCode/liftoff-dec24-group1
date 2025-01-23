@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { rootPerson } from './tree';
 
-function AddPersonForm({ handleClose }) {
-  // Get rootPerson (The person the relationship will be added to)
+function AddPersonForm({ handleClose, rootPerson}) {
 
   const [rootPersonData, setRootPersonData] = useState(null);
   const [loading, setLoading] = useState(true);

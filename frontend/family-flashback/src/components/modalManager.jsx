@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Box, Button } from '@mui/material';
 import AddPersonForm from './addPerson'; 
 
-const ModalManager = ({ children }) => {
+const ModalManager = ({ children, rootPerson }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -35,20 +35,7 @@ const ModalManager = ({ children }) => {
             flexDirection: 'column',
           }}
         >
-          <AddPersonForm handleClose={handleClose}/>
-          {/* <Button 
-          onClick={handleClose} 
-          variant="contained" 
-          color="primary"
-          sx={{ 
-            backgroundColor: 'purple', 
-            width: '30%',
-            margin: 'auto',
-            marginTop: '10px',
-            '&:hover': { backgroundColor: '#ff4500' } }}
-          >
-            Cancel
-          </Button> */}
+          <AddPersonForm handleClose={handleClose} rootPerson={rootPerson}/>
         </Box>
       </Modal>
     </>
