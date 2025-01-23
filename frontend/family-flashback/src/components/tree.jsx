@@ -3,7 +3,10 @@ import AddPersonButton from './addPersonButton';
 import ViewPersonButton from './viewPersonButton';
 import ModalManager from './modalManager';
 
+const rootPerson = 'dct4GZiwTnIvLg1YD7bAW';
+
 const FamilyTree = () => {
+
   const [familyData, setFamilyData] = useState({
     name: "Me",
     parents: [
@@ -46,9 +49,11 @@ const FamilyTree = () => {
     ]
   });
 
+
   const TreeNode = ({ node, direction = 'root' }) => {
     const [isChildrenExpanded, setIsChildrenExpanded] = useState(true);
     const [isParentsExpanded, setIsParentsExpanded] = useState(true);
+
 
     return (
       <div className="flex flex-col items-center">
@@ -116,6 +121,7 @@ const FamilyTree = () => {
     );
   };
 
+
   return (
     <div className="p-8 w-full overflow-x-auto">
       <div className="flex justify-center min-w-max">
@@ -131,3 +137,5 @@ const FamilyTree = () => {
 
 
 export default FamilyTree;
+
+export { rootPerson };

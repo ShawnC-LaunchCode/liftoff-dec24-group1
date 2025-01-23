@@ -29,26 +29,26 @@ const ModalManager = ({ children }) => {
             bgcolor: 'background.paper',
             border: '2px solid #000',
             boxShadow: 24,
-            p: 4,
+            p: 1.5,
             width: 400,
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <AddPersonForm handleClose={handleClose} />
-          <Button 
+          <AddPersonForm handleClose={handleClose}/>
+          {/* <Button 
           onClick={handleClose} 
           variant="contained" 
           color="primary"
           sx={{ 
-            backgroundColor: '#b9b9b9', 
+            backgroundColor: 'purple', 
             width: '30%',
             margin: 'auto',
             marginTop: '10px',
             '&:hover': { backgroundColor: '#ff4500' } }}
           >
             Cancel
-          </Button>
+          </Button> */}
         </Box>
       </Modal>
     </>
