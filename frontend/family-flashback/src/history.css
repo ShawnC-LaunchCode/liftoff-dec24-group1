@@ -1,8 +1,8 @@
-.wrapper {
+/* .wrapper {
     display: flex;
     flex-flow: row wrap;
     text-align: center;
-}
+} */
 
 .wrapper > * {
     padding: 10px;
@@ -10,6 +10,7 @@
   }
 
 .historyTitle {
+    text-align: center;
     margin:auto;
     font-size: 72px;
 
@@ -23,6 +24,7 @@
 }
 
 .textbox {
+    text-align: center;
     margin: auto;
     padding: 10px;
     font-size: 18px;

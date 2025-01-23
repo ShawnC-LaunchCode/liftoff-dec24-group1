@@ -1,34 +1,23 @@
-import { useState } from "react";
-import "./comment.css";
+import "./commentSystem.css";
+import UserIcon from"../assets/user-icon.png";
 
-function Comment() {
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
+const Comment = ({comment}) => {
 
-  const onClickHandler = () => {
-    setComments((comments) => [...comments, comment]);
-  };
-  const onChangeHandler = (e) => {
-    setComment(e.target.value);
-  };
   return (
-    <div className="main-container">
-      {comments.map((text) => (
-        <div className="comment-container">{text}</div>
-      ))}
-      <div className="comment-flexbox">
-        <h3 className="comment-text">Comment</h3>
-        <textarea
-          value={comment}
-          onChange={onChangeHandler}
-          className="input-box"
-        />
-        <button onClick={onClickHandler} className="comment-button">
-          Submit
-        </button>
+    <div className="comment">
+      <div className="comment-image-container">
+        <img src={UserIcon}/>
+      </div>
+      <div className="comment-right-part">
+        <div className="comment-content">
+          <div className="comment-author">{comment.username}</div>
+          <div>{comment.createdAt}</div>
+        </div>
+        <div className="comment-text">{comment.body}</div>
       </div>
     </div>
-  );
-}
+  )
+
+};
 
 export default Comment;
