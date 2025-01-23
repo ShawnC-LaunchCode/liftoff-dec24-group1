@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
-const Textbox = () => {
+const Textbox = ({
+  
 
-  const [textbox, setTextbox] = useState('');
+}) => {
+
+  const [textbox, setTextbox] = useState('Write your family history here!');
   const [editing, setEditing] = useState(false);
 
   const handleTextInput = event => {
@@ -21,13 +24,13 @@ const Textbox = () => {
 
   return (
     <main>
-      <div>
-        <h3>{textbox}</h3>
-        <button onClick={handleOpenForm}>Edit</button>
+      <div className="textbox-container">
+        <h3 className="text-box">{textbox}</h3>
+        <button className="textbox-edit-button" onClick={handleOpenForm}>Edit</button>
       </div>
       {editing && <form>
         <input value={textbox} onInput={handleTextInput} />
-        <button onClick={handleCloseForm}>Save</button>
+        <button className="textbox-save-button" onClick={handleCloseForm}>Save</button>
       </form>}
     </main>
   );

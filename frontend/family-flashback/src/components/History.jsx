@@ -9,10 +9,10 @@ import "../history.css";
 const HistoryMain = () => {
 
   return (
-    <body className="wrapper">
-        <h1 className="historyTitle"><Title /></h1> 
+    <body>
+        <h1><Title /></h1> 
         <section>
-          <div className="imageUpload"><ImageUpload/></div>
+          <div><ImageUpload/></div>
         <h2 className="textbox"><Textbox/></h2>
         {/* this is a placeholder, user id will be fetched from backend */}
           <div><Comments currentUserId="1" /></div>

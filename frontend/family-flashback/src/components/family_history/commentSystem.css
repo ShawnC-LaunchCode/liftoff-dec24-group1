@@ -1,18 +1,17 @@
 .comments {
-  margin-top: 20px;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 .comments-title {
-  font-size: 30px;
-  margin-bottom: 20px;
+  font-size: 24px;
+  margin-bottom: 1px;
 }
 
 .comments-container {
-  margin-top: 40px;
-}
-
-.comment-form-title {
-  font-size: 22px;
+  margin-top: 20px;
+  margin-right: 100px;
 }
 
 .comment-form-textarea {
@@ -20,12 +19,13 @@
   height: 80px;
   margin-bottom: 8px;
   margin-top: 8px;
-  border: 1px solid rgb(107, 114, 12);
+  margin-right: 50px;
+  border: 1px solid rgb(0, 0, 0);
 }
 
 .comment-form-button {
   font-size: 16px;
-  padding: 8px 16px;
+  padding: 1px 10px;
   background: rgb(59, 130, 246);
   border-radius: 8px;
   color: white;

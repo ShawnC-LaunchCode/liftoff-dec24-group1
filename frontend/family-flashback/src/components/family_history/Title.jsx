@@ -21,13 +21,13 @@ const Title = () => {
 
   return (
     <main>
-      <div>
-        <h3>{historyTitle}</h3>
-        <button onClick={handleOpenForm}>Edit</button>
+      <div className="title-container">
+        <h3 className="title-input">{historyTitle}</h3>
+        <button className="title-edit-button" onClick={handleOpenForm}>Edit</button>
       </div>
       {editing && <form>
-        <input value={historyTitle} onInput={handleTitleInput} />
-        <button onClick={handleCloseForm}>Save</button>
+        <input className="title-input" value={historyTitle} onInput={handleTitleInput} />
+        <button className="title-save-button" onClick={handleCloseForm}>Save</button>
       </form>}
     </main>
   );
