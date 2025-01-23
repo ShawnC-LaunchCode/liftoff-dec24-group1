@@ -1,5 +1,7 @@
 package com.familyflashback.familyflashback.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 
 
 @Entity
+@JsonIgnoreProperties(value = { "password" }, allowSetters = true)
 public class User extends AbstractEntity {
 
     private String name;
@@ -80,7 +83,6 @@ public class User extends AbstractEntity {
     public String toString() {
         return "User{" +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
     }
