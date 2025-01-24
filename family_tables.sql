@@ -57,5 +57,23 @@ user_id VARCHAR(21),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
+
+-- ALTER queries
+
 ALTER TABLE user
 ADD CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES person(id);
+
+ALTER TABLE blog_comments
+ADD COLUMN id VARCHAR(21);
+
+ALTER TABLE blog_comments
+CHANGE user_id userId VARCHAR(21);
+
+ALTER TABLE blog_comments
+CHANGE update_dt createdAt TIMESTAMP;
+
+ALTER TABLE blog_comments
+ADD COLUMN username VARCHAR(21);
+
+ALTER TABLE blog_comments
+ADD COLUMN parentId VARCHAR(21);
