@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 
-
-function AddPersonForm({ handleClose, rootPerson}) {
-
+function AddPersonForm({ handleClose, rootPerson }) {
   const [rootPersonData, setRootPersonData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     birthDate: '',
@@ -26,10 +25,10 @@ function AddPersonForm({ handleClose, rootPerson}) {
   // Request for rootPersonData
   useEffect(() => {
     fetch(`http://localhost:8080/persons/${rootPerson}`)
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
-            throw new Error('Failed to get rootPerson details');
-          }
+          throw new Error('Failed to get rootPerson details');
+        }
         return response.json();
       })
       .then((data) => {
@@ -42,10 +41,10 @@ function AddPersonForm({ handleClose, rootPerson}) {
       });
   }, []);
 
-rootPersonName = rootPersonData?.name;
+  rootPersonName = rootPersonData?.name;
 
-// Update formData when rootPersonData is changed
-useEffect(() => {
+  // Update formData when rootPersonData is changed
+  useEffect(() => {
     if (rootPersonData) {
       const userId = rootPersonData?.user.id;
       setFormData((prevFormData) => ({
@@ -55,8 +54,7 @@ useEffect(() => {
         },
       }));
     }
-  }, [rootPersonData]); 
-
+  }, [rootPersonData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,12 +64,12 @@ useEffect(() => {
     }));
   };
 
-// Form submission
-const handleSubmit = (e) => {
+  // Form submission
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-  
+
     // Request to submit formData
     fetch('http://localhost:8080/persons', {
       method: 'POST',
@@ -92,7 +90,7 @@ const handleSubmit = (e) => {
           relatedPerson: result.id,
           relationship: formData.relationship,
         };
-  
+
         // Request to submit relationshipData
         return fetch('http://localhost:8080/relation', {
           method: 'POST',
@@ -109,8 +107,7 @@ const handleSubmit = (e) => {
         return response.json();
       })
       .then((result) => {
-        setOpen(true);
-        //alert(`New relationship has been added to ${rootPersonName}`);
+        setSuccess(true);
         console.log('Response:', result);
       })
       .catch((error) => {
@@ -118,6 +115,8 @@ const handleSubmit = (e) => {
         console.error('Error:', error);
       })
       .finally(() => {
+        setSuccess(true);
+        setOpenAlert(true);
         setLoading(false);
         handleClose(); // Close modal
       });
@@ -125,15 +124,37 @@ const handleSubmit = (e) => {
 
   return (
     <div>
-        <Snackbar open={open} 
+      <Snackbar
+        open={openAlert}
         autoHideDuration={2000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        sx={{ position: 'fixed', bottom: 0, left: 0 }}>
-    <Alert severity="success">New relationship has been added to {rootPersonName}</Alert>
-    </Snackbar>
+        sx={{
+          transform: 'translate(8%, -.5%)',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          width: '300px',
+          height: '467px',
+          borderRadius: '10px',
+        }}
+      >
+        {success ? (
+          <Alert severity='success' sx={{ width: '80%' }}>
+            New relationship has been added to {rootPersonName}
+          </Alert>
+        ) : (
+          <Alert severity='info' sx={{ width: '80%' }}>
+            Closing...
+          </Alert>
+        )}
+      </Snackbar>
       <div style={headingStyle}>
         <h2 style={h2Style}>Add a new relationship to {rootPersonName}</h2>
-        <button onClick={handleClose} style={closeButtonStyle}>
+        <button
+          onClick={() => {
+            setOpenAlert(true);
+            handleClose();
+          }}
+          style={closeButtonStyle}
+        >
           X
         </button>
       </div>
@@ -230,6 +251,10 @@ const handleSubmit = (e) => {
     </div>
   );
 }
+
+const snackbarBefore = {
+  content: 'This is the text set by CSS',
+};
 
 const headingStyle = {
   display: 'flex',
