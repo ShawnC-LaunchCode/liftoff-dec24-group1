@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { Modal, Box, Button } from '@mui/material';
+import { Modal, Box} from '@mui/material';
 import AddPersonForm from './addPerson'; 
 
 const ModalManager = ({ children, rootPerson }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000); 
+  };
 
   return (
     <>

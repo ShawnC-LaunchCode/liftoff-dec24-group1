@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+
 
 function AddPersonForm({ handleClose, rootPerson}) {
 
   const [rootPersonData, setRootPersonData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     birthDate: '',
@@ -105,6 +109,8 @@ const handleSubmit = (e) => {
         return response.json();
       })
       .then((result) => {
+        setOpen(true);
+        //alert(`New relationship has been added to ${rootPersonName}`);
         console.log('Response:', result);
       })
       .catch((error) => {
@@ -119,6 +125,12 @@ const handleSubmit = (e) => {
 
   return (
     <div>
+        <Snackbar open={open} 
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        sx={{ position: 'fixed', bottom: 0, left: 0 }}>
+    <Alert severity="success">New relationship has been added to {rootPersonName}</Alert>
+    </Snackbar>
       <div style={headingStyle}>
         <h2 style={h2Style}>Add a new relationship to {rootPersonName}</h2>
         <button onClick={handleClose} style={closeButtonStyle}>
