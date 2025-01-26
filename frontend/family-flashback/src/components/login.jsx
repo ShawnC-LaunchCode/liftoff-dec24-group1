@@ -8,7 +8,15 @@ import passwordIcon from "../components/assets/password.png"
 
 export default function Login() {
 
-    const [cookies, setCookie] = useCookies(['user'])
+    const [cookies, setCookie] = useCookies(['session'])
+
+    const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
+
+    console.log(cookieValue);
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -18,18 +26,19 @@ export default function Login() {
             email: document.getElementById("email").value,
           };
 
-        const response = await fetch("http://localhost:8080/auth", {
+        const response = await fetch("http://localhost:8080/login", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'session': cookieValue,
             },
             body: JSON.stringify(userData),
         });
 
         const result = await response.json();
         console.log(result);
-        setCookie('user', result)
+        setCookie('session', result["session"]);
         alert("Form submitted");
     }
 

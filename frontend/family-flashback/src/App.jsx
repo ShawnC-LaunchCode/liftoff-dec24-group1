@@ -13,8 +13,18 @@ import Terms from './components/terms';
 
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { CookiesProvider, useCookies } from 'react-cookie';
+
+
 
 function App() {
+
+  const cookieValue = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session="))
+  ?.split("=")[1];
+
+  
 
   return (
     <>
@@ -32,6 +42,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
             </Routes>
+            <h1>Session ID: {cookieValue}</h1>
             <Footer />
           </div>
         </Router>

@@ -4,7 +4,6 @@
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
- import jakarta.servlet.http.HttpServletRequest;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.http.HttpStatus;
@@ -14,8 +13,6 @@
  import java.util.HashMap;
  import java.util.Map;
  import java.util.Optional;
-
- import static com.familyflashback.familyflashback.controllers.AuthController.setUserInSession;
 
  @RestController
  @RequestMapping("user")
@@ -27,8 +24,11 @@
       @Autowired
       PersonRepository personRepository;
 
+      @Autowired
+      SessionController sessionController;
+
       @PostMapping
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, HttpServletRequest request) {
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
             user.hashPass();
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
@@ -39,7 +39,7 @@
 
             createdUser.setPersonID(createdPerson.getId());
             userRepository.save(createdUser);
-            setUserInSession(request.getSession(), createdUser);
+            sessionController.setUserInSession(createdUser);
 
           Map<String, Object> createdResponse = new HashMap<>();
           createdResponse.put("createdUser", createdUser);
@@ -50,8 +50,12 @@
 
       @GetMapping("/{id}")
       public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
-          Optional<User> user = userRepository.findById(Id);
-          return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+          if (sessionController.isSessionActive(Id)) {
+              Optional<User> user = userRepository.findById(Id);
+              return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+          }
+
+          return ResponseEntity.notFound().build();
       }
 
       @PatchMapping("/{id}")
@@ -100,7 +104,7 @@
          }
      }
 
-     @GetMapping("/test")
+     @GetMapping()
      public ResponseEntity<String> testEndpoint() {
          return ResponseEntity.ok("Test endpoint hit");
      }
