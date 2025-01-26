@@ -252,9 +252,6 @@ function AddPersonForm({ handleClose, rootPerson }) {
   );
 }
 
-const snackbarBefore = {
-  content: 'This is the text set by CSS',
-};
 
 const headingStyle = {
   display: 'flex',
