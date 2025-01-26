@@ -1,22 +1,10 @@
 import React from 'react'
-import { useCookies } from 'react-cookie'
-
 import "./signup.css"
 
 import emailIcon from "../components/assets/email.png"
 import passwordIcon from "../components/assets/password.png"
 
 export default function Login() {
-
-    const [cookies, setCookie] = useCookies(['session'])
-
-    const cookieValue = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("session="))
-    ?.split("=")[1];
-
-    console.log(cookieValue);
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -31,14 +19,13 @@ export default function Login() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'session': cookieValue,
             },
             body: JSON.stringify(userData),
         });
 
         const result = await response.json();
         console.log(result);
-        setCookie('session', result["session"]);
+        document.cookie = "session=" + result["session"];
         alert("Form submitted");
     }
 

@@ -6,7 +6,15 @@ import passwordIcon from "../components/assets/password.png"
 
 export default function About() {
 
-  const handleClick = async (event) => {
+  const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
+
+  console.log(cookieValue);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     const userData = {
       password: "test",
@@ -25,15 +33,14 @@ export default function About() {
       headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'session': '5_OjPrUiFNgvvTaH4jjoi',
+          'session': cookieValue,
       },
       body: JSON.stringify(imageData),
   });
   
     const result = await response.json();
     console.log(result);
-    //setCookie('session', result["session"]);
-    alert("Forgot Password triggered");
+    alert("Test");
   }
 
   return (
@@ -42,7 +49,7 @@ export default function About() {
                   <h1>Login</h1>
               </div>
               <div>
-                  <form className='signup-textfields'>
+                  <form className='signup-textfields' onSubmit={handleSubmit}>
                       <div className='signup-textfield'>
                           <img src={emailIcon} alt='' />
                           <input type="email" id='email' placeholder='email'/>
@@ -56,7 +63,7 @@ export default function About() {
                       </div>
                   </form>
               </div>
-              <div className='recover-password'>Forgot Password? <span onClick={handleClick}>Click Here.</span></div>
+              <div className='recover-password'>Forgot Password? <span>Click Here.</span></div>
           </div>
       )
 }
