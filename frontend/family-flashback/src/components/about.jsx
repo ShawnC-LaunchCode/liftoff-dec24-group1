@@ -28,14 +28,13 @@ export default function About() {
 
     console.log(imageData);
 
-    const response = await fetch("http://localhost:8080/images", {
-      method: 'POST',
+    const response = await fetch("http://localhost:8080/images/test", {
+      method: 'GET',
       headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'session': cookieValue,
       },
-      body: JSON.stringify(imageData),
   });
   
     const result = await response.json();

@@ -44,15 +44,16 @@ public class AuthFilter implements HandlerInterceptor {
         }
 
         // Check to see if the session id exists in the session table
-        Optional<Session> session = sessionRepository.findById(sessionID);
+        if(sessionID != null) {
+            Optional<Session> session = sessionRepository.findById(sessionID);
 
-        // Allows the user access if the session is present
-        if (session.isPresent()) {
-            return true;
+            if (session.isPresent()) {
+                return true;
+            }
         }
 
         // The user is NOT logged in
-        response.sendRedirect("");
+        //response.sendRedirect("");
         return false;
     }
 }
