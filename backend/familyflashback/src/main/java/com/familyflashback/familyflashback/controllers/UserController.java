@@ -41,9 +41,9 @@
             userRepository.save(createdUser);
             sessionController.setUserInSession(createdUser);
 
-          Map<String, Object> createdResponse = new HashMap<>();
-          createdResponse.put("createdUser", createdUser);
-          createdResponse.put("createdPerson", createdPerson);
+            Map<String, Object> createdResponse = new HashMap<>();
+            createdResponse.put("createdUser", createdUser);
+            createdResponse.put("createdPerson", createdPerson);
 
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }

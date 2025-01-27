@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("login")
+@RequestMapping("auth")
 public class SessionController {
 
     @Autowired
@@ -32,23 +33,11 @@ public class SessionController {
     }
 
     public boolean isSessionActive(String userId) {
-        List<Session> sessions = sessionRepository.findByUserId(userId);
-        return !sessions.isEmpty();
+        Optional<Session> session = sessionRepository.findByUserId(userId);
+        return session.isPresent();
     }
 
-    @GetMapping("/logout/{id}")
-    public ResponseEntity<String> removeUserFromSession(@PathVariable("id") String sessionId) {
-        sessionRepository.deleteById(sessionId);
-
-        return ResponseEntity.ok("User Logged Out");
-    }
-
-    @GetMapping
-    public ResponseEntity<String> viewSessions() {
-        return ResponseEntity.ok("Test endpoint hit");
-    }
-
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user) {
 
         List<User> users = (List<User>) userRepository.findAll();
@@ -71,13 +60,25 @@ public class SessionController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Test endpoint hit");
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserFromSession(@PathVariable("id") String Id) {
+        if (isSessionActive(Id)) {
+            Optional<User> user = sessionRepository.findUserById(Id);
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/test2")
-    public ResponseEntity<String> test2Endpoint() {
-        return ResponseEntity.ok("Test2 endpoint hit");
+    @GetMapping("/logout/{id}")
+    public ResponseEntity<String> removeUserFromSession(@PathVariable("id") String sessionId) {
+        sessionRepository.deleteById(sessionId);
+
+        return ResponseEntity.ok("User Logged Out");
+    }
+
+    @GetMapping("/sessions")
+    public ResponseEntity<String> viewSessions() {
+        return ResponseEntity.ok("Test endpoint hit");
     }
 }

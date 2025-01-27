@@ -14,7 +14,7 @@ export default function Login() {
             email: document.getElementById("email").value,
           };
 
-        const response = await fetch("http://localhost:8080/login", {
+        const response = await fetch("http://localhost:8080/auth/login", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

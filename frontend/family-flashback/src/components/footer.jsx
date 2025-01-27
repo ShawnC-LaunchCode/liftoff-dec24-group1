@@ -10,6 +10,25 @@ const navigation = [
 
 export default function Footer() {
 
+    const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
+
+    const handleClick = async (event) => {
+        console.log(cookieValue);
+        const response = await fetch("http://localhost:8080/auth/logout/" + cookieValue, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'session': cookieValue,
+            },
+        });
+
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
     return (
         <div className='web-footer'>
             <footer>
@@ -19,6 +38,7 @@ export default function Footer() {
                             {item.name}
                         </a>
                     ))}
+                    <div className="logout"><span onClick={handleClick}>Logout</span></div>
                 </div>
             </footer>
         </div>

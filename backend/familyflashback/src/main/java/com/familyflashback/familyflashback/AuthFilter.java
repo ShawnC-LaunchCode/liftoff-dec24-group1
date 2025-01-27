@@ -18,7 +18,7 @@ public class AuthFilter implements HandlerInterceptor {
     @Autowired
     SessionRepository sessionRepository;
 
-    private static final List<String> whitelist = Arrays.asList("/login", "/user");
+    private static final List<String> whitelist = Arrays.asList("/auth/login", "/user");
 
     private static boolean isWhitelisted(String path) {
         for (String pathRoot : whitelist) {
