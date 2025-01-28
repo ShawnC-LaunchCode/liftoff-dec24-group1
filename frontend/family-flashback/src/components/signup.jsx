@@ -77,7 +77,7 @@ export default function Signup() {
                         <input type='password' id='passConfirm' placeholder='confirm password' onBlur={validateUser} onChange={handlePassConfirmChange}/>
                     </div>
                     <div className='submit-button'>
-                        <input type='submit' />
+                        <button type='submit'>Sign up!</button>
                     </div>
                 </form>
             </div>
