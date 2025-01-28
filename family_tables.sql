@@ -57,6 +57,12 @@ user_id VARCHAR(21),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
+CREATE TABLE session (
+id VARCHAR(21) NOT NULL PRIMARY KEY,
+user_id VARCHAR(21) NOT NULL,
+FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 
 -- ALTER queries
 

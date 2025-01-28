@@ -1,0 +1,22 @@
+.web-footer{
+    margin-top: auto;
+    background: rgb(255, 255, 255);
+
+    height: 60px;
+}
+
+.footer-links{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+    gap: 30px;
+}
+
+.logout{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 300px;
+    gap: 30px;
+}

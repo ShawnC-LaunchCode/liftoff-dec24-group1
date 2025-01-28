@@ -22,10 +22,14 @@
       UserRepository userRepository;
 
       @Autowired
-     PersonRepository personRepository;
+      PersonRepository personRepository;
+
+      @Autowired
+      SessionController sessionController;
 
       @PostMapping
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
+            user.hashPass();
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
             personCopy.setName(user.getName());
@@ -35,18 +39,24 @@
 
             createdUser.setPersonID(createdPerson.getId());
             userRepository.save(createdUser);
+            String sessionId = sessionController.setUserInSession(createdUser);
 
-          Map<String, Object> createdResponse = new HashMap<>();
-          createdResponse.put("createdUser", createdUser);
-          createdResponse.put("createdPerson", createdPerson);
+            Map<String, Object> createdResponse = new HashMap<>();
+            createdResponse.put("createdUser", createdUser);
+            createdResponse.put("createdPerson", createdPerson);
+            createdResponse.put("session", sessionId);
 
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }
 
       @GetMapping("/{id}")
       public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
-          Optional<User> user = userRepository.findById(Id);
-          return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+          if (sessionController.isSessionActive(Id)) {
+              Optional<User> user = userRepository.findById(Id);
+              return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+          }
+
+          return ResponseEntity.notFound().build();
       }
 
       @PatchMapping("/{id}")
@@ -95,7 +105,7 @@
          }
      }
 
-     @GetMapping("/test")
+     @GetMapping()
      public ResponseEntity<String> testEndpoint() {
          return ResponseEntity.ok("Test endpoint hit");
      }
