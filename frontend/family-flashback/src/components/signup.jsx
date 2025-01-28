@@ -30,6 +30,7 @@ export default function Signup() {
 
         const result = await response.json();
         console.log(result);
+        document.cookie = "session=" + result["session"];
         alert("Form submitted");
     }
 
@@ -47,7 +48,7 @@ export default function Signup() {
         const passwordConfirm = document.getElementById("passConfirm").value;
 
         if (password === passwordConfirm) {
-            alert("Passwords Match!");
+            //alert("Passwords Match!");
         }
     }
 

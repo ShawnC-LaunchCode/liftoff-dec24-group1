@@ -39,11 +39,12 @@
 
             createdUser.setPersonID(createdPerson.getId());
             userRepository.save(createdUser);
-            sessionController.setUserInSession(createdUser);
+            String sessionId = sessionController.setUserInSession(createdUser);
 
             Map<String, Object> createdResponse = new HashMap<>();
             createdResponse.put("createdUser", createdUser);
             createdResponse.put("createdPerson", createdPerson);
+            createdResponse.put("session", sessionId);
 
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }
