@@ -10,10 +10,8 @@ import Footer from './components/footer';
 import About from './components/about';
 import Privacy from './components/privacy';
 import Terms from './components/terms';
-
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { CookiesProvider, useCookies } from 'react-cookie';
+
 
 
 
