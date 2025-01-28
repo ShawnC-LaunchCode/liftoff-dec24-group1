@@ -15,11 +15,15 @@ const initialNodes = [
   { id: '1', position: { x: canvasWidth / 2, y: canvasHeight / 2 }, data: { label: 'Root User' } },
   { id: '2', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 1' } },
   { id: '3', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 2' } },
+  { id: '4', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 - 100 }, data: { label: 'Child 1' } },
+  { id: '5', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 - 100 }, data: { label: 'Child 2' } },
 ];
 
 const initialEdges = [
   { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e1-3', source: '1', target: '3' }
+  { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e1-4', source: '1', target: '4' },
+  { id: 'e1-5', source: '1', target: '5' }
 ];
 
 export default function Tree() {
