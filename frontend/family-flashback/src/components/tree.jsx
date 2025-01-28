@@ -141,7 +141,9 @@ const FamilyTree = () => {
           <AddPersonButton />
         </ModalManager>
       )}
-      <ViewPersonButton />
+      {rootPerson && (
+      <ViewPersonButton rootPerson={rootPerson}/>
+      )}
     </div>
   );
 };

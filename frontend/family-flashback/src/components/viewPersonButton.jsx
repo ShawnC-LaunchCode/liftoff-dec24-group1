@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function ViewPersonButton() {
+function ViewPersonButton({rootPerson}) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/person-details'); 
+    navigate('/person-details', { state: { rootPerson } });
   };
 
   return (
