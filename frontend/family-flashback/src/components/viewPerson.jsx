@@ -15,25 +15,30 @@ import { useLocation } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-// import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { useNavigate } from 'react-router-dom';
+
 
 function ViewPerson() {
+  const navigate = useNavigate();
   const [isDisabled, setIsDisabled] = useState(true);
   const [rootPersonData, setRootPersonData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    // age: '',
     birthDate: '',
     deathDate: '',
     birthTown: '',
     bio: '',
   });
-  const [bio, setBio] = useState('');
-  const [name, setName] = useState('');
+
   const [warningIsOpen, setWarningIsOpen] = useState(false);
   const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [imgFilesData, setImageFilesData] = useState({
+    url: '',
+    userId: '',
+  });
+  const [file, setFile] = useState(null);
 
   const location = useLocation();
   const { rootPerson } = location.state || {};
@@ -50,6 +55,7 @@ function ViewPerson() {
         return response.json();
       })
       .then((data) => {
+        console.log(data);
         setRootPersonData(data);
         setLoading(false);
       })
@@ -63,14 +69,12 @@ function ViewPerson() {
   const age = () => {
     const birthDate = new Date(rootPersonData?.birthDate);
     const deathDate = new Date(rootPersonData?.deathDate);
-    
+
     let age;
     if (rootPersonData?.deathDate) {
-    //   console.log('person is deceased');
       age = deathDate.getFullYear() - birthDate.getFullYear();
       const monthDifference = deathDate.getMonth() - birthDate.getMonth();
 
-      // TEST THIS! -  MIGHT NOT NEED THIS HERE
       if (
         monthDifference < 0 ||
         (monthDifference === 0 && deathDate.getDate() < birthDate.getDate())
@@ -78,9 +82,7 @@ function ViewPerson() {
         age--;
       }
       return age;
-
     } else {
-    //   console.log('person is alive');
       const today = new Date();
       age = today.getFullYear() - birthDate.getFullYear();
       const monthDifference = today.getMonth() - birthDate.getMonth();
@@ -95,15 +97,12 @@ function ViewPerson() {
     }
   };
 
-
-
   // Update form data when rootPersonData is available
   useEffect(() => {
     if (rootPersonData) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         name: rootPersonData.name || '',
-        // age: age() || '',
         bio: rootPersonData.bio || '',
         birthDate: rootPersonData.birthDate || '',
         deathDate: rootPersonData.deathDate || '',
@@ -112,30 +111,26 @@ function ViewPerson() {
     }
   }, [rootPersonData]);
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value ? value : '',
     }));
   };
 
   const handleBioChange = (e) => {
-    setBio(e.target.value);
     setFormData((prevData) => ({
-        ...prevData,
-        bio: e.target.value,
-      }));
+      ...prevData,
+      bio: e.target.value,
+    }));
   };
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
     setFormData((prevData) => ({
-        ...prevData,
-        name: e.target.value,
-      }));
+      ...prevData,
+      name: e.target.value,
+    }));
   };
 
   const handleEditClick = () => {
@@ -148,86 +143,108 @@ function ViewPerson() {
 
   const handleDeleteClick = () => {
     setWarningIsOpen(true);
+  };
 
+  const handleDeleteUser = () => {
+    navigate('/tree');
+  };
+
+  // Form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    if (formData.name === null || formData.name === '') {
+      alert('Name is required');
+      return;
+    }
+
+    // Request to Patch rootPerson
+    const requestData = JSON.stringify(formData);
+
+    fetch(`http://localhost:8080/persons/${rootPerson}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to update ${rootPerson}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setRootPersonData(data);
+        setSuccessIsOpen(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+
+    console.log(requestData);
+
+    console.log(formData); // For testing
+    setIsDisabled(true);
   };
 
 
-    // Form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
 
-// Request to Patch rootPerson
-        
-            const requestData = JSON.stringify(formData);  // updateData should be the data you want to send
-        
-            fetch(`http://localhost:8080/persons/${rootPerson}`, {
-              method: 'PATCH',  // Change the method to PATCH
-              headers: {
-                'Content-Type': 'application/json',  // Send data as JSON
-              },
-              body: requestData,  // Attach the data to the body
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`Failed to update ${rootPerson}`);
-                }
-                return response.json();
-              })
-              .then((data) => {
-                setRootPersonData(data);  // Store the updated person data
-                setSuccessIsOpen(true);
-                setLoading(false);
-              })
-              .catch((error) => {
-                setError(error.message);  // Catch any error and display it
-                setLoading(false);
-              });
-         
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+    //   setImage(URL.createObjectURL(selectedFile)); // Preview image
+      setFile(selectedFile); // Store file for upload
+      console.log(selectedFile);
+    }
+  };
 
-
-
-       console.log(requestData);
-   
-        console.log(formData);
-        setIsDisabled(true);
-    };
-
-  
-//   const dataToSubmit = {
-//     ...formData,
-//     bio,
-//     name, // Include the bio from the extra field here
-//   };
-//   console.log('Form data:', dataToSubmit);
+  const handleFileUpload = () => {
+    if (rootPersonData?.user.id){
+        console.log("user is" + rootPersonData.user.id);
+        if (!file) {
+            alert('Please select an image file.');
+            return;
+          }
+          console.log("file to be uploaded" + file);  
+    }
+  };
 
   return (
     <div style={containerStyle}>
       <div style={contentStyle}>
         <div style={{ ...boxStyle, ...topStyle }}>
           <div style={profilePicStyle}>
-            <img src=''></img>
+            <div style={profilePicInnerStyle}>
+              <img src=''></img>
+            </div>
           </div>
           <div style={profileDetailsStyle}>
             <div style={profileHeadingStyle}>
               <input
-                    style={{...h2Style,
-                        ...(isDisabled ? inputStyle : activeInputStyle),
-                    }}
-                    type='text'
-                    id='name'
-                    name='name'
-                    disabled={isDisabled}
-                    value={formData.name}
-                    onChange={handleNameChange}
-                  />
+                style={{
+                  ...h2Style,
+                  ...(isDisabled ? inputStyle : activeInputStyle),
+                }}
+                type='text'
+                id='name'
+                name='name'
+                disabled={isDisabled}
+                value={formData.name}
+                onChange={handleNameChange}
+              />
               {isDisabled && (
                 <div style={buttonGroupStyle}>
                   <button onClick={handleEditClick} title='Edit person'>
                     &#9998;
                   </button>
-                  <button title='Delete person'>&#10060;</button>
+                  <button onClick={handleDeleteClick} title='Delete person'>
+                    &#10060;
+                  </button>
                 </div>
               )}
             </div>
@@ -259,20 +276,19 @@ function ViewPerson() {
                   />
                 </div>
 
-{/* This is functioning maybe. Will not accept show div until rootperson is updated after save. */}
-{(rootPersonData?.deathDate !== null || !isDisabled) && (
-                <div style={inputGroupStyle}>
-                  <label htmlFor='deathDate'>Death Date:</label>
-                  <input
-                    style={isDisabled ? inputStyle : activeInputStyle}
-                    type='date'
-                    id='deathDate'
-                    name='deathDate'
-                    disabled={isDisabled}
-                    value={formData.deathDate}
-                    onChange={handleChange}
-                  />
-                </div>
+                {(rootPersonData?.deathDate !== null || !isDisabled) && (
+                  <div style={inputGroupStyle}>
+                    <label htmlFor='deathDate'>Death Date:</label>
+                    <input
+                      style={isDisabled ? inputStyle : activeInputStyle}
+                      type='date'
+                      id='deathDate'
+                      name='deathDate'
+                      disabled={isDisabled}
+                      value={formData.deathDate || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
                 )}
 
                 <div style={inputGroupStyle}>
@@ -308,44 +324,115 @@ function ViewPerson() {
             <h2 style={h2Style}>Biography</h2>
             <textarea
               id='bio'
-            value={formData.bio}
-            // value='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+              value={formData.bio}
               disabled={isDisabled}
               onChange={handleBioChange}
               style={isDisabled ? bioContentStyle : activeBioContentStyle}
             />
           </div>
         </div>
-        <div style={{ ...boxStyle, ...bottomStyle }}>images</div>
-      </div>
-      <Stack sx={{ width: '100%'}} spacing={2}>
-      {/* <Alert
-        severity="warning"
-        action={
-            <div style={{display: 'flex', gap: '10px'}}>
-          <Button color="error" size="small" variant="outlined">
-            DELETE
-          </Button> 
-          <Button color="inherit" size="small" variant="outlined">
-            CANCEL
-          </Button>
+        <div style={{ ...boxStyle, ...bottomStyle }}>
+          <div style={imgBoxStyle}>
+            <div style={imgBoxHeaderStyle}>
+              {/* <label for='images'>Images</label> */}
+              <input
+                type='file'
+                id='images'
+                name='images'
+                accept='image/png, image/jpeg'
+                onChange={handleFileChange}
+              />
+              <Button variant='outlined' size='small' onClick={handleFileUpload}>
+                Upload
+              </Button>
+            </div>
+            <div style={imgContentStyle}>Images will be here</div>
           </div>
-        }
-      >
-        Are you sure you want to delete {rootPersonData?.name}? This cannot be undone.
-      </Alert> */}
-       {successIsOpen && (
-      <Alert severity="success" onClose={() => {setSuccessIsOpen(false)}}>Person profile for {rootPersonData?.name} has been updated.</Alert>
-       )}
-    </Stack>
+        </div>
+      </div>
+      {(successIsOpen || warningIsOpen) && (
+        <Stack
+          sx={{
+            width: '50%',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+            borderRadius: '5px',
+          }}
+          spacing={2}
+        >
+          {warningIsOpen && (
+            <Alert
+              severity='warning'
+              action={
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <Button
+                    color='error'
+                    size='small'
+                    variant='outlined'
+                    onClick={() => handleDeleteUser()}
+                  >
+                    DELETE
+                  </Button>
+                  <Button
+                    color='inherit'
+                    size='small'
+                    variant='outlined'
+                    onClick={() => setWarningIsOpen(false)}
+                  >
+                    CANCEL
+                  </Button>
+                </div>
+              }
+            >
+              Are you sure you want to permanently delete {rootPersonData?.name}
+              ? <br />
+              This action CANNOT be undone.
+            </Alert>
+          )}
+
+          {successIsOpen && (
+            <Alert severity='success' onClose={() => setSuccessIsOpen(false)}>
+              Person profile for {rootPersonData?.name} has been updated.
+            </Alert>
+          )}
+        </Stack>
+      )}
     </div>
   );
 }
 
+const profilePicInnerStyle = {
+  border: '1px solid black',
+  borderRadius: '5px',
+  padding: '10px',
+  margin: '10px auto',
+};
 
-// ---------ALERT STYLES----------
+const imgBoxHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+};
 
-// ---------FORM STYLES------------
+const imgContentStyle = {
+  backgroundColor: 'grey',
+  margin: '10px auto',
+  width: '100%',
+};
+
+const imgBoxStyle = {
+  border: '1px solid #5A4FCF',
+  borderRadius: '5px',
+  padding: '10px',
+  margin: '3px auto',
+  backgroundColor: 'white',
+  height: '98%',
+  display: 'flex',
+  flexDirection: 'column',
+};
+
 const formGroupStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -448,7 +535,7 @@ const profilePicStyle = {
   backgroundColor: 'white',
   padding: '10px',
   border: '1px solid #5A4FCF',
-  //minWidth: '225px',
+  minWidth: '150px',
   width: '20%',
   borderRadius: '10px',
 };
