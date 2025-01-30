@@ -5,10 +5,16 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Tree', href: '/tree'},
+  { name: 'Home', href: '/'},
+  { name: 'Tree', href: '/tree' },
   { name: 'Map', href: '/map' },
   { name: 'Blog', href: '/blog' },
   { name: 'Support', href: '/support' },
+]
+
+const authNavigation = [
+  { name: 'Login', href: '/login'},
+  { name: 'Sign Up', href: '/signup'},
 ]
 
 export default function Header() {
@@ -44,10 +50,12 @@ export default function Header() {
             </a>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+          {authNavigation.map((item) => (
+            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+              {item.name}
+            </a>
+          ))}
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
