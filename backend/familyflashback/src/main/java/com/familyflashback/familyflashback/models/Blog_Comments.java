@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -32,10 +34,15 @@ public class Blog_Comments extends AbstractEntity {
     @Column(name = "createdAt")
     private LocalDateTime dateUpdated;
 
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "name")
+    private User user;
+
     public Blog_Comments() {}
 
-    public Blog_Comments(String userId, String body, Integer parentId) {
+    public Blog_Comments(String userId, User user, String body, Integer parentId) {
         this.userId = userId;
+        this.user = user;
         this.dateUpdated = LocalDateTime.now();
         this.body = body;
         this.parentId = parentId;
@@ -56,6 +63,12 @@ public class Blog_Comments extends AbstractEntity {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
+
+    public String getName() { return user.getName(); }
 
     public LocalDateTime getDateUpdated() {
         return dateUpdated;
@@ -79,6 +92,7 @@ public class Blog_Comments extends AbstractEntity {
         return "Blog_Comments{" +
                 "id=" + id +
                 ", userId='" + userId + '\'' +
+                ", name='" + getName() + '\'' +
                 ", body='" + body + '\'' +
                 ", dateUpdated=" + dateUpdated +
                 ", parentId=" + parentId +
