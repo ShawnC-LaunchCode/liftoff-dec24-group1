@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Entity
 public class Blog_Comments extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+//    @Id
+////    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private int id;
 
-    @Column(name = "parentId", nullable = true)
-    private Integer parentId;
+//    @Column(name = "parentId", nullable = true)
+//    private Integer parentId;
 
     @Column(name = "userId")
     private String userId;
@@ -31,30 +31,24 @@ public class Blog_Comments extends AbstractEntity {
     @NotNull
     private String body;
 
-    @Column(name = "createdAt")
+    @Column(name = "update_dt")
     private LocalDateTime dateUpdated;
 
-    @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "name")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "username", referencedColumnName = "name")
+//    private User user;
 
     public Blog_Comments() {}
 
-    public Blog_Comments(String userId, User user, String body, Integer parentId) {
+    public Blog_Comments(String userId, String body) {
         this.userId = userId;
-        this.user = user;
+
         this.dateUpdated = LocalDateTime.now();
         this.body = body;
-        this.parentId = parentId;
+
     }
 
-    public int getCommentId() { return id; }
 
-    public void setCommentId(int id) { this.id = id; }
-
-    public Integer getParentId() { return parentId; }
-
-    public void setParentId(Integer parentId) { this.parentId = parentId; }
 
     public String getUserId() {
         return userId;
@@ -64,11 +58,6 @@ public class Blog_Comments extends AbstractEntity {
         this.userId = userId;
     }
 
-    public User getUser() { return user; }
-
-    public void setUser(User user) { this.user = user; }
-
-    public String getName() { return user.getName(); }
 
     public LocalDateTime getDateUpdated() {
         return dateUpdated;
@@ -90,12 +79,12 @@ public class Blog_Comments extends AbstractEntity {
     @Override
     public String toString() {
         return "Blog_Comments{" +
-                "id=" + id +
+
                 ", userId='" + userId + '\'' +
-                ", name='" + getName() + '\'' +
+
                 ", body='" + body + '\'' +
                 ", dateUpdated=" + dateUpdated +
-                ", parentId=" + parentId +
+
                 '}';
     }
 }

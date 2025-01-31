@@ -39,6 +39,9 @@ public class Blog_CommentsController {
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             if (user.isPresent()) {
                 String userId = user.get().getId();
+                List<Blog_Comments> requestedComment = blog_commentsRepository.findAllByUserId(userId);
+
+                response.put("comments", requestedComment);
 
             } else {
                 System.out.println("User not found for session ID: " + cookieValue);
@@ -49,9 +52,7 @@ public class Blog_CommentsController {
             response.put("error", "No cookie found");
         }
 
-        // Adding comments to the response (you can replace with actual comments)
-        List<Blog_Comments> comments = new ArrayList<>();
-        response.put("comments", comments);
+
 
         return ResponseEntity.ok(response);
     }
