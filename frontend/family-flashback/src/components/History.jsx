@@ -13,7 +13,7 @@ const HistoryMain = () => {
     const fetchCurrentUserId = async () => {
       try {
         //replace currentUserId with proper endpoint, or endpoint needs created
-        const response = await fetch('http://localhost:8080/id');
+        const response = await fetch('http://localhost:8080/');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
