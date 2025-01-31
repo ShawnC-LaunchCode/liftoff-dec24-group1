@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLOutput;
 import java.util.List;
 
 
@@ -17,13 +19,20 @@ public class Blog_CommentsController {
     @Autowired
     Blog_CommentsRepository blog_commentsRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Blog_Comments>> getAllComments (@PathVariable("id") String id) {
-        List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(id);
-        if (!comments.isEmpty()) {
-            return ResponseEntity.ok(comments);
+    @GetMapping("")
+    public ResponseEntity<List<Blog_Comments>> getAllComments (@CookieValue(name = "session", required = true) String cookieValue) {
+//        List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(id);
+//        if (!comments.isEmpty()) {
+//            return ResponseEntity.ok(comments);
+//        }
+//        return ResponseEntity.notFound().build();
+        System.out.println("lookee hereee");
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+        } else {
+            System.out.println("no cookie found");
         }
-        return ResponseEntity.notFound().build();
+        return null;
     }
 
     @PostMapping

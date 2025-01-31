@@ -22,7 +22,9 @@ const Comments = ({ currentUserId }) => {
   };
 
   const fetchComments = async () => {
-    const response = await fetch("http://localhost:8080/comments");
+    const response = await fetch("http://localhost:8080/comments", {
+        credentials: "include"
+    });
     const data = await response.json();
     setBackendComments(data);
   };
