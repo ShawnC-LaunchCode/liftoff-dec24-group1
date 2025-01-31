@@ -18,26 +18,16 @@ import java.util.List;
 public class Blog_CommentsController {
 
     public Blog_CommentsController() {
-        System.out.println("=== Blog_CommentsController initialized ===");
+        System.out.println("\n\n=== Blog_CommentsController initialized ===\n\n");
     }
 
     @Autowired
     Blog_CommentsRepository blog_commentsRepository;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Blog_Comments>> getAllComments () {
-        System.out.println("=== START: GET /comments endpoint accessed ===");
-        
-        try {
-            List<Blog_Comments> comments = new ArrayList<>();
-            System.out.println("=== PROCESSING: About to return response ===");
-            return ResponseEntity.ok(comments);
-        } catch (Exception e) {
-            System.out.println("=== ERROR: " + e.getMessage() + " ===");
-            return ResponseEntity.internalServerError().build();
-        } finally {
-            System.out.println("=== END: GET /comments endpoint completed ===");
-        }
+        System.out.println("\n\n=== START: GET /comments endpoint accessed ===\n\n");
+        return ResponseEntity.ok(new ArrayList<>());  // Just return empty list for now
     }
 
     @PostMapping
@@ -49,6 +39,13 @@ public class Blog_CommentsController {
 
     @GetMapping("/test")
     public ResponseEntity<String> test (){
+        System.out.println("\n\n=== TEST endpoint accessed ===\n\n");
         return ResponseEntity.ok("Test endpoint success");
+    }
+
+    @GetMapping("/print")
+    public ResponseEntity<String> testPrint() {
+        System.out.println("\n\n=== PRINT TEST ===\n\n");
+        return ResponseEntity.ok("Check your console!");
     }
 }
