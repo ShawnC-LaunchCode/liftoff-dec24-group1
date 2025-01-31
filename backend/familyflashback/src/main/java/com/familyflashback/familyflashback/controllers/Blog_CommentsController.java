@@ -14,19 +14,24 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("comments")
+@RequestMapping("/comments")
 public class Blog_CommentsController {
+
+    public Blog_CommentsController() {
+        System.out.println("=== Blog_CommentsController initialized ===");
+    }
 
     @Autowired
     Blog_CommentsRepository blog_commentsRepository;
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<List<Blog_Comments>> getAllComments () {
         System.out.println("=== START: GET /comments endpoint accessed ===");
         
         try {
+            List<Blog_Comments> comments = new ArrayList<>();
             System.out.println("=== PROCESSING: About to return response ===");
-            return ResponseEntity.ok(new ArrayList<>());
+            return ResponseEntity.ok(comments);
         } catch (Exception e) {
             System.out.println("=== ERROR: " + e.getMessage() + " ===");
             return ResponseEntity.internalServerError().build();
