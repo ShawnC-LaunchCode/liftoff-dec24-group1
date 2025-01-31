@@ -27,6 +27,7 @@ public class Blog_CommentsController {
     @Autowired
     SessionRepository sessionRepository;
 
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllComments(@CookieValue(name = "session", required = true) String cookieValue) {
         System.out.println("\n\n=== START: GET /comments endpoint accessed ===\n\n");
@@ -40,6 +41,9 @@ public class Blog_CommentsController {
             if (user.isPresent()) {
                 String userId = user.get().getId();
                 // Adding comments to the response (you can replace with actual comments)
+                List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
+                response.put("comments", comments);
+
                 List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
                 response.put("comments", comments);
 

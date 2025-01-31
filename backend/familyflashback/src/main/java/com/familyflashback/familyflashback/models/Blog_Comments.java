@@ -71,7 +71,10 @@ public class Blog_Comments extends AbstractEntity {
         return "Blog_Comments{" +
 
                 ", userId='" + userId + '\'' +
+<<<<<<< HEAD
 
+=======
+>>>>>>> 75a0f22bb20d9970ebed2ae1cfb5ba806da812c8
                 ", body='" + body + '\'' +
                 ", dateUpdated=" + dateUpdated +
 
