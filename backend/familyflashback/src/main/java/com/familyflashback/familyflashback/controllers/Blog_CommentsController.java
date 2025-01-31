@@ -22,18 +22,17 @@ public class Blog_CommentsController {
 
     @GetMapping("")
     public ResponseEntity<List<Blog_Comments>> getAllComments () {
-//        List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(id);
-//        if (!comments.isEmpty()) {
-//            return ResponseEntity.ok(comments);
-//        }
-//        return ResponseEntity.notFound().build();
-        System.out.println("ENDPOINT ACCESSED");
-//        if (cookieValue != null) {
-//            System.out.println("Cookie value: " + cookieValue);
-//        } else {
-//            System.out.println("no cookie found");
-//        }
-        return ResponseEntity.ok(new ArrayList<>());
+        System.out.println("=== START: GET /comments endpoint accessed ===");
+        
+        try {
+            System.out.println("=== PROCESSING: About to return response ===");
+            return ResponseEntity.ok(new ArrayList<>());
+        } catch (Exception e) {
+            System.out.println("=== ERROR: " + e.getMessage() + " ===");
+            return ResponseEntity.internalServerError().build();
+        } finally {
+            System.out.println("=== END: GET /comments endpoint completed ===");
+        }
     }
 
     @PostMapping
