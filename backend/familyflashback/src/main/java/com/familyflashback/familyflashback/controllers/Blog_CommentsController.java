@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,19 +21,19 @@ public class Blog_CommentsController {
     Blog_CommentsRepository blog_commentsRepository;
 
     @GetMapping("")
-    public ResponseEntity<List<Blog_Comments>> getAllComments (@CookieValue(name = "session", required = true) String cookieValue) {
+    public ResponseEntity<List<Blog_Comments>> getAllComments () {
 //        List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(id);
 //        if (!comments.isEmpty()) {
 //            return ResponseEntity.ok(comments);
 //        }
 //        return ResponseEntity.notFound().build();
-        System.out.println("lookee hereee");
-        if (cookieValue != null) {
-            System.out.println("Cookie value: " + cookieValue);
-        } else {
-            System.out.println("no cookie found");
-        }
-        return null;
+        System.out.println("ENDPOINT ACCESSED");
+//        if (cookieValue != null) {
+//            System.out.println("Cookie value: " + cookieValue);
+//        } else {
+//            System.out.println("no cookie found");
+//        }
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @PostMapping
