@@ -25,9 +25,16 @@ public class Blog_CommentsController {
     Blog_CommentsRepository blog_commentsRepository;
 
     @GetMapping
-    public ResponseEntity<List<Blog_Comments>> getAllComments () {
-        System.out.println("\n\n=== START: GET /comments endpoint accessed ===\n\n");
-        return ResponseEntity.ok(new ArrayList<>());  // Just return empty list for now
+    public ResponseEntity<List<Blog_Comments>> getAllComments(@CookieValue(name = "session", required = true) String cookieValue) {
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+            // Pass the cookieValue (session ID) to findUserById
+            String userId = findUserById(cookieValue);
+            System.out.println("User ID: " + userId);
+        } else {
+            System.out.println("no cookie found");
+        }
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @PostMapping
