@@ -34,15 +34,22 @@ public class Blog_Comments extends AbstractEntity {
     @Column(name = "update_dt")
     private LocalDateTime dateUpdated;
 
+<<<<<<< HEAD
 //    @ManyToOne
 //    @JoinColumn(name = "username", referencedColumnName = "name")
 //    private User user;
+=======
+
+>>>>>>> 75a0f22bb20d9970ebed2ae1cfb5ba806da812c8
 
     public Blog_Comments() {}
 
     public Blog_Comments(String userId, String body) {
         this.userId = userId;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 75a0f22bb20d9970ebed2ae1cfb5ba806da812c8
         this.dateUpdated = LocalDateTime.now();
         this.body = body;
 
@@ -81,7 +88,10 @@ public class Blog_Comments extends AbstractEntity {
         return "Blog_Comments{" +
 
                 ", userId='" + userId + '\'' +
+<<<<<<< HEAD
 
+=======
+>>>>>>> 75a0f22bb20d9970ebed2ae1cfb5ba806da812c8
                 ", body='" + body + '\'' +
                 ", dateUpdated=" + dateUpdated +
 
