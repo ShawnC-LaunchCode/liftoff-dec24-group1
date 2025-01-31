@@ -83,3 +83,15 @@ ADD COLUMN username VARCHAR(21);
 
 ALTER TABLE blog_comments
 ADD COLUMN parentId VARCHAR(21);
+
+ALTER TABLE blog_comments
+ADD PRIMARY KEY (id);
+
+ALTER TABLE blog_comments
+MODIFY COLUMN id INT AUTO_INCREMENT;
+
+ALTER TABLE blog_comments
+MODIFY id INT;
+
+ALTER TABLE blog_comments
+MODIFY parentId INTEGER;

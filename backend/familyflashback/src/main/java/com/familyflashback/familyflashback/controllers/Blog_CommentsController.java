@@ -1,29 +1,59 @@
 package com.familyflashback.familyflashback.controllers;
 
 import com.familyflashback.familyflashback.models.Blog_Comments;
+import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.Blog_CommentsRepository;
+import com.familyflashback.familyflashback.models.data.SessionRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.util.*;
 
 
 @RestController
-@RequestMapping("comments")
+@RequestMapping("/comments")
 public class Blog_CommentsController {
+
+    public Blog_CommentsController() {
+        System.out.println("\n\n=== Blog_CommentsController initialized ===\n\n");
+    }
 
     @Autowired
     Blog_CommentsRepository blog_commentsRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Blog_Comments>> getAllComments (@PathVariable("id") String id) {
-        List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(id);
-        if (!comments.isEmpty()) {
-            return ResponseEntity.ok(comments);
+    @Autowired
+    SessionRepository sessionRepository;
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllComments(@CookieValue(name = "session", required = true) String cookieValue) {
+        System.out.println("\n\n=== START: GET /comments endpoint accessed ===\n\n");
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
+            if (user.isPresent()) {
+                String userId = user.get().getId();
+
+            } else {
+                System.out.println("User not found for session ID: " + cookieValue);
+                response.put("error", "User not found");
+            }
+        } else {
+            System.out.println("No cookie found");
+            response.put("error", "No cookie found");
         }
-        return ResponseEntity.notFound().build();
+
+        // Adding comments to the response (you can replace with actual comments)
+        List<Blog_Comments> comments = new ArrayList<>();
+        response.put("comments", comments);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -35,6 +65,13 @@ public class Blog_CommentsController {
 
     @GetMapping("/test")
     public ResponseEntity<String> test (){
+        System.out.println("\n\n=== TEST endpoint accessed ===\n\n");
         return ResponseEntity.ok("Test endpoint success");
+    }
+
+    @GetMapping("/print")
+    public ResponseEntity<String> testPrint() {
+        System.out.println("\n\n=== PRINT TEST ===\n\n");
+        return ResponseEntity.ok("Check your console!");
     }
 }

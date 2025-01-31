@@ -2,7 +2,7 @@ import './App.css'
 import Header from './components/header';
 import Tree from './components/tree';
 import Map from './components/map';
-import Blog from './components/blog';
+import History from './components/History'
 import Support from './components/support';
 import ViewPerson from './components/viewPerson';
 import Signup from './components/signup';
@@ -38,7 +38,7 @@ function App() {
                 <Route path="/person-details" element={<ViewPerson/>}/>
               <Route path="/tree" element={<Tree />} />
               <Route path="/map" element={<Map />} />
-              <Route path="/blog" element={<Blog />} />
+              <Route path="/history" element={<History />} />
               <Route path="/support" element={<Support />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
