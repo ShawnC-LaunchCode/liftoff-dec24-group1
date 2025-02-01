@@ -20,26 +20,33 @@ export default function Login() {
             email: document.getElementById("email").value,
           };
 
-        const response = await fetch("http://localhost:8080/auth/login", {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
-
-        const result = await response.json();
-
-        if(result["error"] != null) {
+        if(userData.password == '' || userData.email == '') {
             setShowLoginFeedback(true);
-        }
+        } else {
 
-        if(result["session"] != null) {
-            document.cookie = "session=" + result["session"];
-            navigate('/');
-            window.location.reload()
+            const response = await fetch("http://localhost:8080/auth/login", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            console.log(response);
+            const result = await response.json();
+            console.log(result);
+
+            if(result["error"] != null) {
+                setShowLoginFeedback(true);
+            }
+
+            if(result["session"] != null) {
+                document.cookie = "session=" + result["session"];
+                navigate('/');
+                window.location.reload()
+            }
         }
     }
 
