@@ -59,11 +59,13 @@ public class SessionController {
 
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
-                break;
+                createdResponse.put("error", "incorrect password");
+                return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
             }
         }
 
-        return ResponseEntity.notFound().build();
+        createdResponse.put("error", "incorrect email");
+        return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/user")
