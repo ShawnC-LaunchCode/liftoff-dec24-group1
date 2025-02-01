@@ -39,6 +39,7 @@ export default function Login() {
         if(result["session"] != null) {
             document.cookie = "session=" + result["session"];
             navigate('/');
+            window.location.reload()
         }
     }
 

@@ -39,6 +39,7 @@ export default function Signup() {
         }
 
         navigate('/');
+        window.location.reload()
     }
 
     const handleClick = (event) => {

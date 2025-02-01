@@ -12,18 +12,14 @@ import About from './components/about';
 import Privacy from './components/privacy';
 import Terms from './components/terms';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
-
-
+import { useState, useEffect} from 'react'
 
 function App() {
 
-  const cookieValue = document.cookie
-  .split("; ")
-  .find((row) => row.startsWith("session="))
-  ?.split("=")[1];
-
-  
+    const cookieValue = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("session="))
+        ?.split("=")[1];
 
   return (
     <>
