@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 @Entity
 public class Blog_Comments extends AbstractEntity {
 
-
-
-
     @Column(name = "userId")
     private String userId;
 
@@ -28,7 +25,6 @@ public class Blog_Comments extends AbstractEntity {
 
     @Column(name = "update_dt")
     private LocalDateTime dateUpdated;
-
 
 
     public Blog_Comments() {}

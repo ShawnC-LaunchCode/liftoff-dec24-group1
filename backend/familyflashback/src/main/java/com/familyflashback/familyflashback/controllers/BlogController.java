@@ -44,11 +44,11 @@ public class BlogController {
         Optional<User> user = sessionRepository.findUserById(cookieValue);
 
         if (user.isPresent()) {
-            blog.setUserId(user.get().getId()); // Set the current user's ID
+            blog.setUserId(user.get().getId());
             Blog createdBlog = blogRepository.save(blog);
             return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Handle case where user is not found
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

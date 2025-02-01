@@ -44,8 +44,9 @@ FOREIGN KEY (related_image) REFERENCES image(id)
 );
 
 CREATE TABLE blog (
-header VARCHAR(50) NOT NULL,
+id VARCHAR (21) NOT NULL PRIMARY KEY,
 user_id VARCHAR(21),
+header VARCHAR(50) NOT NULL,
 body VARCHAR(5000),
 image_url VARCHAR(248),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
