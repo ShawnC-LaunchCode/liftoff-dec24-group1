@@ -4,9 +4,9 @@ import ImageUpload from "./family_history/ImageUpload";
 import Title from "./family_history/Title";
 import Comments from "./family_history/Comments";
 
-import "../history.css";
+import "../blog.css";
 
-const HistoryMain = () => {
+const Blog = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
@@ -53,4 +53,4 @@ const HistoryMain = () => {
   );
 };
 
-export default HistoryMain;
+export default Blog;
