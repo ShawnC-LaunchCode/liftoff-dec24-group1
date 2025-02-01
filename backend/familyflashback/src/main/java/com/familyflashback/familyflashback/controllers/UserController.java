@@ -36,8 +36,11 @@
               }
           }
 
+          Map<String, Object> createdResponse = new HashMap<>();
+
           if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-              return ResponseEntity.notFound().build();
+              createdResponse.put("error", "email already in use");
+              return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
           }
 
             user.hashPass();
@@ -52,7 +55,6 @@
             userRepository.save(createdUser);
             String sessionId = sessionController.setUserInSession(createdUser);
 
-            Map<String, Object> createdResponse = new HashMap<>();
             createdResponse.put("createdUser", createdUser);
             createdResponse.put("createdPerson", createdPerson);
             createdResponse.put("session", sessionId);
