@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -27,22 +29,35 @@ public class BlogController {
     @Autowired
     BlogRepository blogRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Blog> getBlog (@PathVariable("id") String id){
-        Optional<Blog> blog = blogRepository.findById(id);
-        if (blog.isPresent()){
-            Blog requestedBlog = blog.get();
-            return new ResponseEntity<>(requestedBlog, HttpStatus.OK);
-        } else{
-            return ResponseEntity.notFound().build();
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<Map<String, Object>> getBlogsByUserId(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
+            if (user.isPresent()) {
+                // Adding blogs to the response
+                List<Blog> blogs = blogRepository.findAllByUserId(userId);
+                response.put("blogs", blogs);
+            } else {
+                System.out.println("User not found for session ID: " + cookieValue);
+                response.put("error", "User not found");
+            }
+        } else {
+            System.out.println("No cookie found");
+            response.put("error", "No cookie found");
         }
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog, @CookieValue(name = "session", required = true) String cookieValue) {
-
         Optional<User> user = sessionRepository.findUserById(cookieValue);
-
         if (user.isPresent()) {
             blog.setUserId(user.get().getId());
             Blog createdBlog = blogRepository.save(blog);
@@ -65,12 +80,9 @@ public class BlogController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Blog> updateBlog (@Valid @RequestBody Blog updatedBlog, @PathVariable("id") String id){
-
         Optional<Blog> blog = blogRepository.findById(id);
-
         if(blog.isPresent()){
             Blog existingBlog = blog.get();
-
             if (updatedBlog.getHeader() != null){
                 existingBlog.setHeader(updatedBlog.getHeader());
             }
@@ -81,10 +93,8 @@ public class BlogController {
                 existingBlog.setImgUrl(updatedBlog.getImgUrl());
             }
             Blog savedUpdatedBlog = blogRepository.save(existingBlog);
-
             return new ResponseEntity<>(savedUpdatedBlog, HttpStatus.OK);
-
-        }else {
+        } else {
             return ResponseEntity.notFound().build();
         }
     }

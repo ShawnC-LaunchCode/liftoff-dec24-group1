@@ -3,7 +3,6 @@ package com.familyflashback.familyflashback.models;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Id;
-
 import java.util.Objects;
 
 @MappedSuperclass
