@@ -38,7 +38,13 @@ public class SessionController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+
+        if(cookieValue != null) {
+            if (sessionRepository.findById(cookieValue).isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+        }
 
         List<User> users = (List<User>) userRepository.findAll();
         User foundUser;

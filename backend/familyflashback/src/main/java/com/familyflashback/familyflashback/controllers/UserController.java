@@ -28,7 +28,18 @@
       SessionController sessionController;
 
       @PostMapping
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+
+          if(cookieValue != null) {
+              if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
+                  return ResponseEntity.notFound().build();
+              }
+          }
+
+          if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+              return ResponseEntity.notFound().build();
+          }
+
             user.hashPass();
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();

@@ -1,10 +1,13 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import "./signup.css"
 
 import emailIcon from "../components/assets/email.png"
 import passwordIcon from "../components/assets/password.png"
 
 export default function Login() {
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -16,6 +19,7 @@ export default function Login() {
 
         const response = await fetch("http://localhost:8080/auth/login", {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -25,8 +29,10 @@ export default function Login() {
 
         const result = await response.json();
         console.log(result);
-        document.cookie = "session=" + result["session"];
-        alert("Form submitted");
+        if(result["session"] != null) {
+            document.cookie = "session=" + result["session"];
+        }
+        navigate('/');
     }
 
     const handleClick = (event) => {
