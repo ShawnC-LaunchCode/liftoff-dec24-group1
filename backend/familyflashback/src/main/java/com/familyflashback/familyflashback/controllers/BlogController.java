@@ -30,6 +30,13 @@ public class BlogController {
     BlogRepository blogRepository;
 
 
+    @GetMapping("/exists/{userId}")
+    public ResponseEntity<Boolean> checkBlogExists (@PathVariable String userId) {
+            boolean checkBlogExists = blogRepository.existsByUserId(userId);
+            return ResponseEntity.ok(checkBlogExists);
+    }
+
+
     @GetMapping("/{userId}")
     public ResponseEntity<Map<String, Object>> getBlogsByUserId(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
 

@@ -7,4 +7,5 @@ import java.util.List;
 @Repository
 public interface BlogRepository extends CrudRepository<Blog, String> {
     List<Blog> findAllByUserId(String userId);
+    boolean existsByUserId(String userId);
 }
