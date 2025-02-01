@@ -4,7 +4,8 @@ person_id VARCHAR(21),
 name VARCHAR (50)NOT NULL,
 email VARCHAR (100) NOT NULL UNIQUE,
 password VARCHAR (60) NOT NULL,
-last_login DATETIME NULL DEFAULT NULL
+last_login DATETIME NULL DEFAULT NULL,
+FOREIGN KEY (person_id) REFERENCES person(id)
 );
 
 CREATE TABLE person (
@@ -44,16 +45,17 @@ FOREIGN KEY (related_image) REFERENCES image(id)
 
 CREATE TABLE blog (
 header VARCHAR(50) NOT NULL,
+user_id VARCHAR(21),
 body VARCHAR(5000),
 image_url VARCHAR(248),
-user_id VARCHAR(21),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE blog_comments (
+id VARCHAR (21) NOT NULL PRIMARY KEY,
+user_id VARCHAR(21),
 body VARCHAR(500) NOT NULL,
 update_dt TIMESTAMP,
-user_id VARCHAR(21),
 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
@@ -64,34 +66,12 @@ FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
 
--- ALTER queries
 
-ALTER TABLE user
-ADD CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES person(id);
 
-ALTER TABLE blog_comments
-ADD COLUMN id VARCHAR(21);
 
-ALTER TABLE blog_comments
-CHANGE user_id userId VARCHAR(21);
 
-ALTER TABLE blog_comments
-CHANGE update_dt createdAt TIMESTAMP;
 
-ALTER TABLE blog_comments
-ADD COLUMN username VARCHAR(21);
 
-ALTER TABLE blog_comments
-ADD COLUMN parentId VARCHAR(21);
 
-ALTER TABLE blog_comments
-ADD PRIMARY KEY (id);
 
-ALTER TABLE blog_comments
-MODIFY COLUMN id INT AUTO_INCREMENT;
 
-ALTER TABLE blog_comments
-MODIFY id INT;
-
-ALTER TABLE blog_comments
-MODIFY parentId INTEGER;

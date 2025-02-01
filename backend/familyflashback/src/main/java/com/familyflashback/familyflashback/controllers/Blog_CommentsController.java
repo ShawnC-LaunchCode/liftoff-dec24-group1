@@ -17,15 +17,42 @@ import java.util.*;
 @RequestMapping("/comments")
 public class Blog_CommentsController {
 
-    public Blog_CommentsController() {
-        System.out.println("\n\n=== Blog_CommentsController initialized ===\n\n");
-    }
-
     @Autowired
     Blog_CommentsRepository blog_commentsRepository;
-
     @Autowired
     SessionRepository sessionRepository;
+
+
+    // Added this new endpoint to fetch comments by userId
+    @GetMapping("/{userId}")
+    public ResponseEntity<Map<String, Object>> getCommentsByUserId(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
+        System.out.println("\n\n=== START: GET /comments/{userId} endpoint accessed ===\n\n");
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
+            if (user.isPresent()) {
+                // Adding comments to the response
+                List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
+                response.put("comments", comments);
+            } else {
+                System.out.println("User not found for session ID: " + cookieValue);
+                response.put("error", "User not found");
+            }
+        } else {
+            System.out.println("No cookie found");
+            response.put("error", "No cookie found");
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
 
 
     @GetMapping
@@ -41,9 +68,6 @@ public class Blog_CommentsController {
             if (user.isPresent()) {
                 String userId = user.get().getId();
                 // Adding comments to the response (you can replace with actual comments)
-                List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
-                response.put("comments", comments);
-
                 List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
                 response.put("comments", comments);
 
