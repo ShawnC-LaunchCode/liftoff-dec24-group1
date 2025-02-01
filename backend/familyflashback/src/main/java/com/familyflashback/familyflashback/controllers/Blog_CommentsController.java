@@ -71,6 +71,22 @@ public class Blog_CommentsController {
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Blog_Comments> updateComments(@Valid @RequestBody Blog_Comments updatedComments, @PathVariable("id") String id) {
+        Optional<Blog_Comments> comments = blog_commentsRepository.findById(id);
+        if (comments.isPresent()) {
+            Blog_Comments existingComments = comments.get();
+            if (updatedComments.getBody() != null) {
+                existingComments.setBody(updatedComments.getBody());
+            }
+            Blog_Comments savedUpdatedComments = blog_commentsRepository.save(existingComments);
+            return new ResponseEntity<>(savedUpdatedComments, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @GetMapping("/test")
     public ResponseEntity<String> test (){
         System.out.println("\n\n=== TEST endpoint accessed ===\n\n");
