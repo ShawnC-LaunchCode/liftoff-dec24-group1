@@ -2,6 +2,7 @@ package com.familyflashback.familyflashback;
 
 import com.familyflashback.familyflashback.models.Session;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -34,26 +35,22 @@ public class AuthFilter implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws IOException {
 
-
-        String sessionID = request.getHeader("session");
-
         // Don't require sign-in for whitelisted pages
         if (isWhitelisted(request.getRequestURI())) {
             // returning true indicates that the request may proceed
             return true;
         }
 
-        // Check to see if the session id exists in the session table
-        if(sessionID != null) {
-            Optional<Session> session = sessionRepository.findById(sessionID);
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            String sessionID = cookies[0].getValue();
 
-            if (session.isPresent()) {
-                return true;
+            if(sessionID != null) {
+                Optional<Session> session = sessionRepository.findById(sessionID);
+                return session.isPresent();
             }
         }
 
-        // The user is NOT logged in
-        //response.sendRedirect("");
         return false;
     }
 }

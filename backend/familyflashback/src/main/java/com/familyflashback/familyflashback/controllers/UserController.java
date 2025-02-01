@@ -28,7 +28,21 @@
       SessionController sessionController;
 
       @PostMapping
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+
+          if(cookieValue != null) {
+              if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
+                  return ResponseEntity.notFound().build();
+              }
+          }
+
+          Map<String, Object> createdResponse = new HashMap<>();
+
+          if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+              createdResponse.put("error", "email already in use");
+              return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
+          }
+
             user.hashPass();
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
@@ -41,7 +55,6 @@
             userRepository.save(createdUser);
             String sessionId = sessionController.setUserInSession(createdUser);
 
-            Map<String, Object> createdResponse = new HashMap<>();
             createdResponse.put("createdUser", createdUser);
             createdResponse.put("createdPerson", createdPerson);
             createdResponse.put("session", sessionId);

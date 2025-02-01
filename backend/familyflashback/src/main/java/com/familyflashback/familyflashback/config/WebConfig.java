@@ -20,6 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
+    /*
     // Create spring-managed object to allow the app to access our filter
     @Bean
     public HandlerInterceptor authenticationFilter() {
@@ -31,4 +32,5 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor( authenticationFilter() );
     }
+     */
 }

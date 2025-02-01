@@ -32,13 +32,19 @@ public class SessionController {
         return addedSession.getId();
     }
 
-    public boolean isSessionActive(String userId) {
-        Optional<Session> session = sessionRepository.findByUserId(userId);
+    public boolean isSessionActive(String sessionId) {
+        Optional<Session> session = sessionRepository.findById(sessionId);
         return session.isPresent();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+
+        if(cookieValue != null) {
+            if (sessionRepository.findById(cookieValue).isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+        }
 
         List<User> users = (List<User>) userRepository.findAll();
         User foundUser;
@@ -53,26 +59,28 @@ public class SessionController {
 
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
-                break;
+                createdResponse.put("error", "incorrect password");
+                return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
             }
         }
 
-        return ResponseEntity.notFound().build();
+        createdResponse.put("error", "incorrect email");
+        return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserFromSession(@PathVariable("id") String Id) {
-        if (isSessionActive(Id)) {
-            Optional<User> user = sessionRepository.findUserById(Id);
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue) {
+        if (isSessionActive(cookieValue)) {
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
             return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
 
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/logout/{id}")
-    public ResponseEntity<String> removeUserFromSession(@PathVariable("id") String sessionId) {
-        sessionRepository.deleteById(sessionId);
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> removeUserFromSession(@CookieValue(name = "session", required = true) String cookieValue) {
+        sessionRepository.deleteById(cookieValue);
 
         return ResponseEntity.ok("User Logged Out");
     }
