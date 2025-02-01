@@ -32,8 +32,8 @@ public class SessionController {
         return addedSession.getId();
     }
 
-    public boolean isSessionActive(String userId) {
-        Optional<Session> session = sessionRepository.findByUserId(userId);
+    public boolean isSessionActive(String sessionId) {
+        Optional<Session> session = sessionRepository.findById(sessionId);
         return session.isPresent();
     }
 
@@ -60,10 +60,10 @@ public class SessionController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserFromSession(@PathVariable("id") String Id) {
-        if (isSessionActive(Id)) {
-            Optional<User> user = sessionRepository.findUserById(Id);
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue) {
+        if (isSessionActive(cookieValue)) {
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
             return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
 
