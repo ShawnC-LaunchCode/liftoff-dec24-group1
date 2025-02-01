@@ -68,10 +68,21 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Blog> deleteBlog (@PathVariable String id){
+    public ResponseEntity<Void> deleteBlog (@PathVariable String id){
         Optional<Blog> blog = blogRepository.findById(id);
         if(blog.isPresent()){
             blogRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<Void> deleteBlogsByUserId(@PathVariable String userId) {
+        List<Blog> blogs = blogRepository.findAllByUserId(userId);
+        if (!blogs.isEmpty()) {
+            blogRepository.deleteAll(blogs);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
