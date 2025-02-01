@@ -86,6 +86,18 @@ public class Blog_CommentsController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteComments(@PathVariable("id") String id) {
+        Optional<Blog_Comments> comments = blog_commentsRepository.findById(id);
+
+        if (comments.isPresent()) {
+            blog_commentsRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @GetMapping("/test")
     public ResponseEntity<String> test (){
