@@ -1,7 +1,10 @@
 package com.familyflashback.familyflashback.controllers;
 
 import com.familyflashback.familyflashback.models.Blog;
+import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.BlogRepository;
+import com.familyflashback.familyflashback.models.data.SessionRepository;
+import com.familyflashback.familyflashback.models.data.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("blog")
 public class BlogController {
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    SessionRepository sessionRepository;
 
     @Autowired
     BlogRepository blogRepository;
@@ -30,9 +39,17 @@ public class BlogController {
     }
 
     @PostMapping
-    public ResponseEntity<Blog> createBlog (@Valid @RequestBody Blog blog){
-        Blog createdBlog = blogRepository.save(blog);
-        return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
+    public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog, @CookieValue(name = "session", required = true) String cookieValue) {
+
+        Optional<User> user = sessionRepository.findUserById(cookieValue);
+
+        if (user.isPresent()) {
+            blog.setUserId(user.get().getId()); // Set the current user's ID
+            Blog createdBlog = blogRepository.save(blog);
+            return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Handle case where user is not found
+        }
     }
 
     @DeleteMapping("/{id}")
