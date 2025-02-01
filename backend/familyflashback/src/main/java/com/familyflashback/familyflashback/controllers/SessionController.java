@@ -76,9 +76,9 @@ public class SessionController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/logout/{id}")
-    public ResponseEntity<String> removeUserFromSession(@PathVariable("id") String sessionId) {
-        sessionRepository.deleteById(sessionId);
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> removeUserFromSession(@CookieValue(name = "session", required = true) String cookieValue) {
+        sessionRepository.deleteById(cookieValue);
 
         return ResponseEntity.ok("User Logged Out");
     }

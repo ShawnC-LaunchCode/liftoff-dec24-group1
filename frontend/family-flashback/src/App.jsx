@@ -1,5 +1,6 @@
 import './App.css'
 import Header from './components/header';
+import Home from './components/home';
 import Tree from './components/tree';
 import Map from './components/map';
 import Blog from './components/blog';
@@ -30,6 +31,7 @@ function App() {
           <div className='App'>
             <Header />
             <Routes>
+                <Route path="/home" element={<Home />} />
               <Route path="/tree" element={<Tree />} />
               <Route path="/map" element={<Map />} />
               <Route path="/blog" element={<Blog />} />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import "./signup.css"
 
@@ -7,6 +8,8 @@ import emailIcon from "../components/assets/email.png"
 import passwordIcon from "../components/assets/password.png"
 
 export default function Signup() {
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -31,8 +34,11 @@ export default function Signup() {
 
         const result = await response.json();
         console.log(result);
-        document.cookie = "session=" + result["session"];
-        alert("Form submitted");
+        if(result["session"] != null) {
+            document.cookie = "session=" + result["session"];
+        }
+
+        navigate('/');
     }
 
     const handleClick = (event) => {
