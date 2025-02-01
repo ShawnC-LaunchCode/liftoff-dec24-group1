@@ -32,7 +32,7 @@ function App() {
             <Routes>
               <Route path="/tree" element={<Tree />} />
               <Route path="/map" element={<Map />} />
-              <Route path="/history" element={<Blog />} />
+              <Route path="/blog" element={<Blog />} />
               <Route path="/support" element={<Support />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />

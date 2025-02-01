@@ -1,56 +1,36 @@
-import React, {useState, useEffect} from "react";
-import Textbox from "./family_history/TextBox";
-import ImageUpload from "./family_history/ImageUpload";
-import Title from "./family_history/Title";
-// import Comments from "./family_history/Comments";
-
-import "../blog.css";
-
-const Blog = () => {
-  // const [currentUserId, setCurrentUserId] = useState(null);
-
-  // useEffect(() => {
-  //   const fetchCurrentUserId = async () => {
-  //     try {
-  //       //replace currentUserId with proper endpoint, or endpoint needs created
-  //       const response = await fetch('http://localhost:8080/');
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       console.log('Fetched JSON data:', data); // Log the JSON data to the console
-  //       setCurrentUserId(data.id);
-  //     } catch (error) {
-  //       console.error('Error fetching current user ID:', error);
-  //     }
-  //   };
+  import React, { useState, useEffect } from "react";
+  import { Redirect } from "react-router-dom";
   
-  //   fetchCurrentUserId();
-  // }, []);
-
-  // if (currentUserId === null) {
-  //   return <div>Loading...</div>; // Display a loading state while fetching user ID
-  // }
-
-  return (
-    <div>
-      <h1>
-        <Title />
-      </h1>
-      <section>
-        <div>
-          <ImageUpload />
-        </div>
-        <h2 className="textbox">
-          <Textbox />
-        </h2>
-        <div>
-          {/* change currentUserId here if needed currentUserId={currentUserId}*/}
-          {/* <Comments /> */}
-        </div>
-      </section>
-    </div>
-  );
-};
-
-export default Blog;
+  const Blog = () => {
+    const [blogExists, setBlogExists] = useState(false);
+  
+    useEffect(() => {
+      const fetchBlogExists = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/blog/exists`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setBlogExists(data.exists);
+        } catch (error) {
+          console.error("Error fetching blog exists:", error);
+        }
+      };
+  
+      fetchBlogExists();
+    }, []);
+  
+    if (blogExists) {
+      return <Redirect to="/blog/edit" />; // Redirect to the blog edit page if blog exists
+    } else {
+      return (
+            <div>
+              {/* Add a button or link to redirect to the blog edit page */}
+              <button onClick={() => window.location.href = "/blog/edit"}>Create Blog</button>
+            </div>
+      );
+    }
+  };
+  
+  export default Blog;

@@ -30,10 +30,25 @@ public class BlogController {
     BlogRepository blogRepository;
 
 
-    @GetMapping("/exists/{userId}")
-    public ResponseEntity<Boolean> checkBlogExists (@PathVariable String userId) {
-            boolean checkBlogExists = blogRepository.existsByUserId(userId);
-            return ResponseEntity.ok(checkBlogExists);
+    @GetMapping("/exists")
+    public ResponseEntity<Boolean> checkBlogExists(@CookieValue(name = "session", required = true) String cookieValue) {
+        boolean blogExists = false;
+
+        if (cookieValue != null) {
+            System.out.println("Cookie value: " + cookieValue);
+
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
+            if (user.isPresent()) {
+                String userId = user.get().getId();
+                blogExists = blogRepository.existsByUserId(userId);
+            } else {
+                System.out.println("User not found for session ID: " + cookieValue);
+            }
+        } else {
+            System.out.println("No cookie found");
+        }
+
+        return ResponseEntity.ok(blogExists);
     }
 
 
