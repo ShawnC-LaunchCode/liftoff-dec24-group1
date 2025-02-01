@@ -12,7 +12,7 @@ const FamilyTree = () => {
   // I think something like <div onClick={() => handleRootPersonClick(rootId)}>Person thingy</div>
   // But for testing in the meantime...
   useEffect(() => {
-    setRootPerson('dct4GZiwTnIvLg1YD7bAW');
+    setRootPerson('2eYXHCTZFbO54mBzy55MM');
   }, []);
 
 

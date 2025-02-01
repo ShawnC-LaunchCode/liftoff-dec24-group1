@@ -9,6 +9,7 @@ import {
   minHeight,
   minWidth,
   padding,
+  width,
 } from '@mui/system';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,7 +17,6 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
-
 
 function ViewPerson() {
   const navigate = useNavigate();
@@ -34,11 +34,8 @@ function ViewPerson() {
 
   const [warningIsOpen, setWarningIsOpen] = useState(false);
   const [successIsOpen, setSuccessIsOpen] = useState(false);
-  const [imgFilesData, setImageFilesData] = useState({
-    url: '',
-    userId: '',
-  });
   const [file, setFile] = useState(null);
+  const [imageGallery, setImageGallery] = useState(null);
 
   const location = useLocation();
   const { rootPerson } = location.state || {};
@@ -108,6 +105,7 @@ function ViewPerson() {
         deathDate: rootPersonData.deathDate || '',
         birthTown: rootPersonData.birthTown || '',
       }));
+      getImages();
     }
   }, [rootPersonData]);
 
@@ -146,6 +144,19 @@ function ViewPerson() {
   };
 
   const handleDeleteUser = () => {
+    // Delete request to delete person
+    fetch(`http://localhost:8080/persons/${rootPerson}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Person deleted');
+        } else {
+          console.log('Error: Person not found');
+        }
+      })
+      .catch((error) => console.log('Error:', error));
+
     navigate('/tree');
   };
 
@@ -187,42 +198,78 @@ function ViewPerson() {
       });
 
     console.log(requestData);
-
-    console.log(formData); // For testing
     setIsDisabled(true);
   };
-
-
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-    //   setImage(URL.createObjectURL(selectedFile)); // Preview image
-      setFile(selectedFile); // Store file for upload
-      console.log(selectedFile);
+      setFile(selectedFile);
+      console.log(file);
     }
   };
 
   const handleFileUpload = () => {
-    if (rootPersonData?.user.id){
-        console.log("user is" + rootPersonData.user.id);
-        if (!file) {
-            alert('Please select an image file.');
-            return;
-          }
-          console.log("file to be uploaded" + file);  
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+
+    formData.append('userId', rootPersonData.user.id);
+    console.log(formData);
+
+    fetch('http://localhost:8080/images', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Upload successful', data);
+      })
+      .catch((error) => {
+        console.error('Upload failed', error);
+      });
   };
+
+  const getImages = () => {
+    fetch(`http://localhost:8080/images/all?userId=${rootPersonData.user.id}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Convert the byte[] data to base64 strings for rendering
+        const base64Images = data.map((imageData) => {
+          const base64String = btoa(
+            String.fromCharCode(...new Uint8Array(imageData))
+          );
+          return `data:image/jpeg;base64,${base64String}`;
+        });
+        setImageGallery(base64Images);
+
+        console.log('Upload successful', data);
+        setImageGallery(data);
+      })
+      .catch((error) => {
+        console.error('Upload failed', error);
+      });
+  };
+
+  function setBlobImages(photo) {
+    if (photo === undefined) {
+      return undefined;
+    } else if (photo.imageData) {
+      // Return the base64 string directly for the image
+      return `data:image/png;base64,${photo.imageData}`;
+    } else {
+      console.error('Invalid image source:', photo);
+      return undefined;
+    }
+  }
+
+  console.log(imageGallery);
 
   return (
     <div style={containerStyle}>
       <div style={contentStyle}>
         <div style={{ ...boxStyle, ...topStyle }}>
-          <div style={profilePicStyle}>
-            <div style={profilePicInnerStyle}>
-              <img src=''></img>
-            </div>
-          </div>
           <div style={profileDetailsStyle}>
             <div style={profileHeadingStyle}>
               <input
@@ -334,7 +381,6 @@ function ViewPerson() {
         <div style={{ ...boxStyle, ...bottomStyle }}>
           <div style={imgBoxStyle}>
             <div style={imgBoxHeaderStyle}>
-              {/* <label for='images'>Images</label> */}
               <input
                 type='file'
                 id='images'
@@ -342,11 +388,34 @@ function ViewPerson() {
                 accept='image/png, image/jpeg'
                 onChange={handleFileChange}
               />
-              <Button variant='outlined' size='small' onClick={handleFileUpload}>
+              <Button
+                variant='outlined'
+                size='small'
+                onClick={handleFileUpload}
+              >
                 Upload
               </Button>
             </div>
-            <div style={imgContentStyle}>Images will be here</div>
+            <div style={imgContentStyle}>
+              {imageGallery?.map((imageSrc, index) => {
+                return (
+                  <div
+                    key={index}
+                    style={{
+                      width: '150px',
+                      height: '150px',
+                      overflow: 'hidden',
+                      display: 'inline-block',
+                      marginRight: '5px',
+                    }}
+                  >
+                    <img alt='Uploaded Image' src={setBlobImages(imageSrc)} />
+                    {console.log(setBlobImages(imageSrc))}
+                    {console.log(imageSrc)}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -387,9 +456,10 @@ function ViewPerson() {
                 </div>
               }
             >
-              Are you sure you want to permanently delete {rootPersonData?.name}
+              Are you sure you want to delete {rootPersonData?.name}
               ? <br />
-              This action CANNOT be undone.
+              <br />
+              All children will be deleted.
             </Alert>
           )}
 
@@ -404,22 +474,19 @@ function ViewPerson() {
   );
 }
 
-const profilePicInnerStyle = {
-  border: '1px solid black',
-  borderRadius: '5px',
-  padding: '10px',
-  margin: '10px auto',
-};
-
 const imgBoxHeaderStyle = {
   display: 'flex',
   justifyContent: 'space-between',
 };
 
 const imgContentStyle = {
-  backgroundColor: 'grey',
+  backgroundColor: '#DCDCDC',
   margin: '10px auto',
   width: '100%',
+  padding: '5px 0px 5px 5px',
+  height: '100%',
+  maxHeight: '300px',
+  overflow: 'auto',
 };
 
 const imgBoxStyle = {
@@ -448,13 +515,8 @@ const inputGroupStyle = {
   justifyContent: 'space-between',
 };
 
-const labelStyle = {
-  //paddingRight: '10px',
-};
-
 const inputStyle = {
   width: '70%',
-  //   padding: '10px',
 };
 
 const activeInputStyle = {
@@ -469,7 +531,6 @@ const personDetailsStyle = {
   borderRadius: '5px',
   padding: '10px',
   margin: '10px auto',
-  //height: '80%',
 };
 
 const profileHeadingStyle = {
@@ -499,7 +560,6 @@ const h2Style = {
 
 const containerStyle = {
   backgroundImage: 'radial-gradient(circle, white, #5A4FCF)',
-  height: '80vh',
 };
 
 const contentStyle = {
@@ -512,12 +572,10 @@ const contentStyle = {
 };
 
 const boxStyle = {
-  //border: '1px solid #5A4FCF',
   borderRadius: '10px',
   width: '95%',
   margin: '15px auto 0 auto',
   backgroundColor: '#D3D3D3',
-  //background: 'radial-gradient(circle, white 0%, #5A4FCF 0%, #D3D3D3 100%)',
   padding: '10px',
   boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
 };
@@ -525,26 +583,15 @@ const boxStyle = {
 const topStyle = {
   display: 'flex',
   flexDirection: 'row',
-  //flexWrap: 'wrap',
-  //minHeight: '34vh',
   gap: '10px',
   margin: 'auto',
-};
-
-const profilePicStyle = {
-  backgroundColor: 'white',
-  padding: '10px',
-  border: '1px solid #5A4FCF',
-  minWidth: '150px',
-  width: '20%',
-  borderRadius: '10px',
 };
 
 const profileDetailsStyle = {
   backgroundColor: 'white',
   padding: '10px',
   border: '1px solid #5A4FCF',
-  width: '40%',
+  width: '50%',
   borderRadius: '10px',
 };
 
@@ -552,8 +599,7 @@ const bioStyle = {
   backgroundColor: 'white',
   padding: '10px',
   border: '1px solid #5A4FCF',
-  //minWidth: '225px',
-  width: '38%',
+  width: '50%',
   display: 'flex',
   flexDirection: 'column',
   borderRadius: '10px',
@@ -562,7 +608,6 @@ const bioStyle = {
 const bioContentStyle = {
   width: '100%',
   height: '100%',
-  // overflowY: 'scroll',
   border: '1px solid black',
   borderRadius: '5px',
   padding: '10px',
@@ -583,7 +628,8 @@ const activeBioContentStyle = {
 const bottomStyle = {
   marginBottom: '15px',
   padding: '10px',
-  minHeight: '41vh',
+  //minHeight: '41vh',
+  height: '100%',
 };
 
 const submitButtonStyle = {
