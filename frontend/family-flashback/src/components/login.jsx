@@ -49,7 +49,6 @@ export default function Login() {
             ?.split("=")[1];
 
             if(session != null) {
-                alert();
                 navigate('/');
                 window.location.reload()
             }
