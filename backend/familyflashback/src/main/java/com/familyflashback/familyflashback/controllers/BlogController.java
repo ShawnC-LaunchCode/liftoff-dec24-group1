@@ -34,54 +34,68 @@ public class BlogController {
     public ResponseEntity<Boolean> checkBlogExists(@CookieValue(name = "session", required = true) String cookieValue) {
         boolean blogExists = false;
 
+        try {
+            if (cookieValue != null) {
+                System.out.println("Cookie value: " + cookieValue);
+
+                Optional<User> user = sessionRepository.findUserById(cookieValue);
+                if (user.isPresent()) {
+                    String userId = user.get().getId();
+                    System.out.println("User ID: " + userId);
+                    blogExists = blogRepository.existsByUserId(userId);
+                    System.out.println("Blog exists: " + blogExists);
+                } else {
+                    System.out.println("User not found for session ID: " + cookieValue);
+                }
+            } else {
+                System.out.println("No cookie found");
+            }
+
+            return ResponseEntity.ok(blogExists);
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<Blog> getBlogByUserId(@CookieValue(name = "session", required = true) String cookieValue) {
         if (cookieValue != null) {
             System.out.println("Cookie value: " + cookieValue);
 
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             if (user.isPresent()) {
                 String userId = user.get().getId();
-                blogExists = blogRepository.existsByUserId(userId);
+                Optional<Blog> blogOptional = blogRepository.findByUserId(userId);
+                if (blogOptional.isPresent()) {
+                    return ResponseEntity.ok(blogOptional.get());
+                } else {
+                    System.out.println("No blog found for user ID: " + userId);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
             } else {
                 System.out.println("User not found for session ID: " + cookieValue);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
         } else {
             System.out.println("No cookie found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.ok(blogExists);
     }
 
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<Map<String, Object>> getBlogsByUserId(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
-
-        Map<String, Object> response = new HashMap<>();
-
-        if (cookieValue != null) {
-            System.out.println("Cookie value: " + cookieValue);
-
-            Optional<User> user = sessionRepository.findUserById(cookieValue);
-            if (user.isPresent()) {
-                // Adding blogs to the response
-                List<Blog> blogs = blogRepository.findAllByUserId(userId);
-                response.put("blogs", blogs);
-            } else {
-                System.out.println("User not found for session ID: " + cookieValue);
-                response.put("error", "User not found");
-            }
-        } else {
-            System.out.println("No cookie found");
-            response.put("error", "No cookie found");
-        }
-
-        return ResponseEntity.ok(response);
-    }
 
     @PostMapping
     public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog, @CookieValue(name = "session", required = true) String cookieValue) {
         Optional<User> user = sessionRepository.findUserById(cookieValue);
         if (user.isPresent()) {
-            blog.setUserId(user.get().getId());
+            String userId = user.get().getId();
+            // Check if a blog already exists for this user
+            if (blogRepository.existsByUserId(userId)) {
+                System.out.println("A blog already exists for this user");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            blog.setUserId(userId);
             Blog createdBlog = blogRepository.save(blog);
             return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
         } else {
@@ -89,27 +103,17 @@ public class BlogController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBlog (@PathVariable String id){
-        Optional<Blog> blog = blogRepository.findById(id);
-        if(blog.isPresent()){
-            blogRepository.deleteById(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteBlogByUserId(@PathVariable String userId) {
+        Optional<Blog> blogOptional = blogRepository.findByUserId(userId);
+        if (blogOptional.isPresent()) {
+            blogRepository.delete(blogOptional.get());
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<Void> deleteBlogsByUserId(@PathVariable String userId) {
-        List<Blog> blogs = blogRepository.findAllByUserId(userId);
-        if (!blogs.isEmpty()) {
-            blogRepository.deleteAll(blogs);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Blog> updateBlog (@Valid @RequestBody Blog updatedBlog, @PathVariable("id") String id){
