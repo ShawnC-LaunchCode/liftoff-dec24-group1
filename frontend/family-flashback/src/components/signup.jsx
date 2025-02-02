@@ -45,7 +45,12 @@ export default function Signup() {
                 setShowEmailFeedback(true);
             }
 
-            if(result["session"] != null) {
+            const session = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("session="))
+            ?.split("=")[1];
+
+            if(session != null) {
                 //document.cookie = "session=" + result["session"];
                 navigate('/');
                 window.location.reload()
