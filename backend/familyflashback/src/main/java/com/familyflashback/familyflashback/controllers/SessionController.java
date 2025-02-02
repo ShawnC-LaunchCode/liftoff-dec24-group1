@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class SessionController {
         for (User u : users) {
             if(u.getEmail().equals(user.getEmail())) {
                 if(u.isMatchingPassword(user.getPassword())) {
+                    u.setLastLogin(LocalDateTime.now());
                     String createdSession = setUserInSession(u);
                     Cookie newCookie = new Cookie("session", createdSession);
                     newCookie.setPath("/");

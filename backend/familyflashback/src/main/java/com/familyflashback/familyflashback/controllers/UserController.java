@@ -12,6 +12,7 @@
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.time.LocalDateTime;
  import java.util.HashMap;
  import java.util.Map;
  import java.util.Optional;
@@ -47,6 +48,7 @@
           }
 
             user.hashPass();
+            user.setLastLogin(LocalDateTime.now());
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
             personCopy.setName(user.getName());
