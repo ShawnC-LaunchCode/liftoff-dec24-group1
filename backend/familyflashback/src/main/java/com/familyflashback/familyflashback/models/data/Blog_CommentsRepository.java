@@ -12,4 +12,7 @@ public interface Blog_CommentsRepository extends CrudRepository<Blog_Comments, S
 
     @Query("SELECT comments FROM Blog_Comments comments WHERE comments.userId = :userId")
     List<Blog_Comments> findAllByUserId(String userId);
+
+    @Query("SELECT comments FROM Blog_Comments comments WHERE comments.blog.id = :blogId")
+    List<Blog_Comments> findAllByBlogId(String blogId);
 }

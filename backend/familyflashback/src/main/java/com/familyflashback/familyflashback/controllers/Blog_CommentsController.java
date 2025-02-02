@@ -1,7 +1,9 @@
 package com.familyflashback.familyflashback.controllers;
 
+import com.familyflashback.familyflashback.models.Blog;
 import com.familyflashback.familyflashback.models.Blog_Comments;
 import com.familyflashback.familyflashback.models.User;
+import com.familyflashback.familyflashback.models.data.BlogRepository;
 import com.familyflashback.familyflashback.models.data.Blog_CommentsRepository;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
 import jakarta.validation.Valid;
@@ -20,6 +22,8 @@ public class Blog_CommentsController {
     Blog_CommentsRepository blog_commentsRepository;
     @Autowired
     SessionRepository sessionRepository;
+    @Autowired
+    BlogRepository blogRepository;
 
     // Get all comments
     @GetMapping
@@ -65,8 +69,20 @@ public class Blog_CommentsController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<Blog_Comments> addComment (@Valid @RequestBody Blog_Comments blog_comment){
+    //Get by Blog id
+    @GetMapping("/blog/{blogId}")
+    public List<Blog_Comments> getCommentsByBlogId(@PathVariable String blogId) {
+        return blog_commentsRepository.findAllByBlogId(blogId);
+    }
+
+    @PostMapping("/{blogId}")
+    public ResponseEntity<Blog_Comments> addComment (@Valid @RequestBody Blog_Comments blog_comment, @PathVariable String blogId){
+        Optional <Blog> blog = blogRepository.findById(blogId);
+
+        if (blog.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        blog_comment.setBlog(blog.get());
         Blog_Comments comment = blog_commentsRepository.save(blog_comment);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }

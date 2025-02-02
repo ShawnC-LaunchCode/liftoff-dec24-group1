@@ -2,6 +2,8 @@ package com.familyflashback.familyflashback.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -19,13 +21,19 @@ public class Blog_Comments extends AbstractEntity {
     @Column(name = "update_dt")
     private LocalDateTime dateUpdated;
 
+    @ManyToOne
+    @JoinColumn(name = "blog_id", nullable = false)
+    private Blog blog;
+
+
 
     public Blog_Comments() {}
 
-    public Blog_Comments(String userId, String body) {
+    public Blog_Comments(String userId, String body, Blog blog) {
         this.userId = userId;
         this.dateUpdated = LocalDateTime.now();
         this.body = body;
+        this.blog = blog;
     }
 
 
@@ -54,6 +62,13 @@ public class Blog_Comments extends AbstractEntity {
         this.body = body;
     }
 
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
+    }
 
     @Override
     public String toString() {
@@ -61,6 +76,7 @@ public class Blog_Comments extends AbstractEntity {
                 ", userId='" + userId + '\'' +
                 ", body='" + body + '\'' +
                 ", dateUpdated=" + dateUpdated +
+                ", blog=" + blog +
                 '}';
     }
 }
