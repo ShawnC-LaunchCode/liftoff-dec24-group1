@@ -65,10 +65,6 @@
             newCookie.setPath("/");
             response.addCookie(newCookie);
 
-            Cookie userIdCookie = new Cookie("userId", createdUser.getId());
-            userIdCookie.setPath("/");
-            response.addCookie(userIdCookie);
-
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }
 

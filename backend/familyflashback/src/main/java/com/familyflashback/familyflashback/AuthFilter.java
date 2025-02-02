@@ -47,7 +47,10 @@ public class AuthFilter implements HandlerInterceptor {
 
             if(sessionID != null) {
                 Optional<Session> session = sessionRepository.findById(sessionID);
-                return session.isPresent();
+                if(session.isPresent()) {
+                    request.setAttribute("userId", session.get().getUserID().getId());
+                    return true;
+                }
             }
         }
 

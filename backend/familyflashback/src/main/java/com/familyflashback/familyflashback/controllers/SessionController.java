@@ -5,6 +5,7 @@ import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,6 @@ public class SessionController {
                     newCookie.setPath("/");
                     response.addCookie(newCookie);
 
-                    Cookie userIdCookie = new Cookie("userId", u.getId());
-                    userIdCookie.setPath("/");
-                    response.addCookie(userIdCookie);
-
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
                 createdResponse.put("error", "passwords do not match");
@@ -78,8 +75,9 @@ public class SessionController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue) {
+    public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue, HttpServletRequest request) {
         if (isSessionActive(cookieValue)) {
+            System.out.println(request.getAttribute("userId"));
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
