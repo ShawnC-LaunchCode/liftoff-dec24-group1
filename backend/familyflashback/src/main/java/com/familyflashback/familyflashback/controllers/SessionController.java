@@ -58,8 +58,9 @@ public class SessionController {
             if(u.getEmail().equals(user.getEmail())) {
                 if(u.isMatchingPassword(user.getPassword())) {
                     String createdSession = setUserInSession(u);
-                    createdResponse.put("session", createdSession);
-                    response.addCookie(new Cookie("session", createdSession));
+                    Cookie newCookie = new Cookie("session", createdSession);
+                    newCookie.setPath("/");
+                    response.addCookie(newCookie);
 
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }

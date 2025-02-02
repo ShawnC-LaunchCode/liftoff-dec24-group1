@@ -48,8 +48,8 @@ export default function Login() {
             .find((row) => row.startsWith("session="))
             ?.split("=")[1];
 
-            if(result["session"] != null) {
-                document.cookie = "session=" + result["session"];
+            if(session != null) {
+                //document.cookie = "session=" + result["session"];
                 navigate('/');
                 window.location.reload()
             }

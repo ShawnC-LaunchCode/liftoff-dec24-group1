@@ -74,7 +74,7 @@
       }
 
       @PatchMapping("/{id}")
-      public ResponseEntity<Map<String, Object>> updateUser(@Valid @RequestBody User updatedUser, @CookieValue(name = "session", required = false) String cookieValue) {
+      public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser, @CookieValue(name = "session", required = false) String cookieValue) {
           Optional<User> user = userRepository.findById(Id);
 
           if (user.isPresent()) {
