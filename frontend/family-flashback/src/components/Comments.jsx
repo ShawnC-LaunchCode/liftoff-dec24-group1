@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import "./commentSystem.css";
-// import Comment from "./Comment";
+import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 
-// Contains the whole comment section
+//Renders comment section
 const Comments = ({blogId}) => {
 
   const[comments, setComments] = useState([]);
@@ -12,7 +12,6 @@ const Comments = ({blogId}) => {
   const [activeComment, setActiveComment] = useState(null);
 
 
-  //fetches need .then()
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -70,13 +69,32 @@ const Comments = ({blogId}) => {
   }
 };
 
+const deleteComment = async (id) => {
+  if (window.confirm("Are you sure you want to delete this comment?")) {
+    try {
+      const response = await fetch(`http://localhost:8080/comments/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to delete comment: ${response.status}`);
+      }
+      const updatedComments = comments.filter(comment => comment.id !== id);
+      setComments(updatedComments);
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+};
+
+
+
 
 
 return (
   <div className="comments">
       <h3 className="comments-title">Comments</h3>
-      {error && <div className="error-message">Error: {error}</div>}
-      <div className="comment-form-title">Write a comment</div>
+      <div className="comment-form-title">Write comment</div>
       <CommentForm submitLabel="Write" handleSubmit={addComment} />
       <div className="comments-container">
           {comments.map(comment => (
@@ -86,7 +104,7 @@ return (
                   activeComment={activeComment}
                   setActiveComment={setActiveComment}
                   addComment={addComment}
-                  // deleteComment={deleteComment}
+                  deleteComment={deleteComment}
                   // updateComment={updateComment}
                   currentUserId={currentUserId}
               />
