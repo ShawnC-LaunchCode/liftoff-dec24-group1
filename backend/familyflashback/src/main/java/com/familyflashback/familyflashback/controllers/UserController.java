@@ -27,7 +27,7 @@
       @Autowired
       SessionController sessionController;
 
-      @PostMapping
+      @PostMapping("create")
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
 
           if(cookieValue != null) {

@@ -31,7 +31,7 @@ export default function Signup() {
         if(userData.password == '' || userData.email == '' || userData.name == '' || document.getElementById("passConfirm").value == '') {
             setShowEmptyFeedback(true);
         } else if (!showPasswordFeedback) {
-            const response = await fetch("http://localhost:8080/user", {
+            const response = await fetch("http://localhost:8080/user/create", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
