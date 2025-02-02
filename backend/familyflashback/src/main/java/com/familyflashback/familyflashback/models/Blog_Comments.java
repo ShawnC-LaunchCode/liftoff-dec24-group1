@@ -14,6 +14,9 @@ public class Blog_Comments extends AbstractEntity {
     @Column(name = "userId")
     private String userId;
 
+    @Column(name = "name")
+    private String name;
+
     @Size(max = 500, message = "Cannot exceed 500 characters")
     @NotNull
     private String body;
@@ -45,6 +48,13 @@ public class Blog_Comments extends AbstractEntity {
         this.userId = userId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public LocalDateTime getDateUpdated() {
         return dateUpdated;

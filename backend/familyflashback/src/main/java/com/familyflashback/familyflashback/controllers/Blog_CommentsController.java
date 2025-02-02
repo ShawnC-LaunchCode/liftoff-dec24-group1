@@ -6,6 +6,7 @@ import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.BlogRepository;
 import com.familyflashback.familyflashback.models.data.Blog_CommentsRepository;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
+import com.familyflashback.familyflashback.models.data.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class Blog_CommentsController {
     SessionRepository sessionRepository;
     @Autowired
     BlogRepository blogRepository;
+    @Autowired
+    UserRepository userRepository;
 
     // Get all comments
     @GetMapping
@@ -76,16 +79,28 @@ public class Blog_CommentsController {
     }
 
     @PostMapping("/{blogId}")
-    public ResponseEntity<Blog_Comments> addComment (@Valid @RequestBody Blog_Comments blog_comment, @PathVariable String blogId){
-        Optional <Blog> blog = blogRepository.findById(blogId);
-
-        if (blog.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Blog_Comments> addComment (@Valid @RequestBody Blog_Comments blog_comment, @PathVariable String blogId,
+                                                     @CookieValue(name = "session", required = true) String cookieValue) {
+        System.out.println("Session cookie value: " + cookieValue);
+        Optional<User> user = sessionRepository.findUserById(cookieValue);
+        if (user.isPresent()) {
+            String name = user.get().getName();
+            System.out.println("Name has been extracted from cookie");
+            String userId = user.get().getId();
+            Optional<Blog> blog = blogRepository.findById(blogId);
+            if (blog.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            blog_comment.setUserId(userId);
+            blog_comment.setName(name);
+            blog_comment.setBlog(blog.get());
+            Blog_Comments comment = blog_commentsRepository.save(blog_comment);
+            return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        blog_comment.setBlog(blog.get());
-        Blog_Comments comment = blog_commentsRepository.save(blog_comment);
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<Blog_Comments> updateComments(@Valid @RequestBody Blog_Comments updatedComments, @PathVariable("id") String id) {
