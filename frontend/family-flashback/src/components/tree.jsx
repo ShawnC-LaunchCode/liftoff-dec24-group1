@@ -5,17 +5,6 @@ import ModalManager from './modalManager';
 
 const FamilyTree = () => {
 
-  const [rootPerson, setRootPerson] = useState(null);
-  const handleRootPersonClick = (rootPersonId) => {
-    setRootPerson(rootPersonId); 
-  };
-  // I think something like <div onClick={() => handleRootPersonClick(rootId)}>Person thingy</div>
-  // But for testing in the meantime...
-  useEffect(() => {
-    setRootPerson('2eYXHCTZFbO54mBzy55MM');
-  }, []);
-
-
   const [familyData, setFamilyData] = useState({
     name: "Me",
     parents: [
@@ -136,14 +125,10 @@ const FamilyTree = () => {
       <div className="flex justify-center min-w-max">
         <TreeNode node={familyData} />
       </div>
-      {rootPerson && (
-        <ModalManager rootPerson={rootPerson}>
+        <ModalManager >
           <AddPersonButton />
         </ModalManager>
-      )}
-      {rootPerson && (
-      <ViewPersonButton rootPerson={rootPerson}/>
-      )}
+      <ViewPersonButton />
     </div>
   );
 };

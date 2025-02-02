@@ -3,6 +3,9 @@ import { Modal, Box} from '@mui/material';
 import AddPersonForm from './addPerson'; 
 
 const ModalManager = ({ children, rootPerson }) => {
+
+    rootPerson = '2eYXHCTZFbO54mBzy55MM';
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -11,6 +14,8 @@ const ModalManager = ({ children, rootPerson }) => {
       setOpen(false);
     }, 2000); 
   };
+
+
 
   return (
     <>

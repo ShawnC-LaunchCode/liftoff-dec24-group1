@@ -37,9 +37,12 @@ function ViewPerson() {
   const [file, setFile] = useState(null);
   const [imageGallery, setImageGallery] = useState(null);
 
-  const location = useLocation();
-  const { rootPerson } = location.state || {};
+  const [imageUrl, setImageUrl] = useState(null);
 
+  const location = useLocation();
+  let { rootPerson } = location.state || {};
+
+  rootPerson = 'amkqxIGscuTjltOkSLsF5';
   console.log('rootperson ' + rootPerson);
 
   // Request for rootPersonData
@@ -212,8 +215,8 @@ function ViewPerson() {
   const handleFileUpload = () => {
     const formData = new FormData();
     formData.append('file', file);
-
     formData.append('userId', rootPersonData.user.id);
+    formData.append('personId', rootPerson);
     console.log(formData);
 
     fetch('http://localhost:8080/images', {
@@ -222,10 +225,18 @@ function ViewPerson() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Upload successful', data);
+        console.log(`data from POST: ${data}
+            data.filePath: ${data.filePath}
+            data.message: ${data.message}
+            data.resourceUrl: ${data.resourceUrl}
+            data.resourceUri: ${data.resourceUri}
+            data.resourceName: ${data.resourceName}
+            `);
+
       })
       .catch((error) => {
-        console.error('Upload failed', error);
+        console.error('Error uploading image:', error);
+        alert('Error uploading image.');
       });
   };
 
@@ -233,38 +244,42 @@ function ViewPerson() {
     fetch(`http://localhost:8080/images/all?userId=${rootPersonData.user.id}`, {
       method: 'GET',
     })
-      .then((response) => response.json())
-      .then((data) => {
-        // Convert the byte[] data to base64 strings for rendering
-        const base64Images = data.map((imageData) => {
-          const base64String = btoa(
-            String.fromCharCode(...new Uint8Array(imageData))
-          );
-          return `data:image/jpeg;base64,${base64String}`;
-        });
-        setImageGallery(base64Images);
+      .then((response) => response.blob()) // Get the response as a Blob
+      .then((blobData) => {
+        console.log('Fetched Blob data:', blobData);
 
-        console.log('Upload successful', data);
-        setImageGallery(data);
+        // Create an object URL from the Blob data
+        const imageURL = URL.createObjectURL(blobData);
+
+        // Update the image gallery with the object URL
+        setImageGallery([imageURL]);
+
+        console.log(
+          'Images fetched and object URL created successfully',
+          imageURL
+        );
       })
       .catch((error) => {
-        console.error('Upload failed', error);
+        console.error('Failed to fetch images', error);
       });
   };
 
-  function setBlobImages(photo) {
-    if (photo === undefined) {
-      return undefined;
-    } else if (photo.imageData) {
-      // Return the base64 string directly for the image
-      return `data:image/png;base64,${photo.imageData}`;
-    } else {
-      console.error('Invalid image source:', photo);
-      return undefined;
-    }
-  }
+  // function setBlobImages(photo){
+  //     if(photo === undefined){
+  //         console.log("undefined");
+  //         return undefined
+  //     }
+  //     else{
+  //         console.log("value")
+  //         var binaryData = [];
+  //         binaryData.push(photo);
+  //         return URL.createObjectURL(new Blob(binaryData))
+  //     }
+  // }
 
   console.log(imageGallery);
+
+  
 
   return (
     <div style={containerStyle}>
@@ -385,7 +400,7 @@ function ViewPerson() {
                 type='file'
                 id='images'
                 name='images'
-                accept='image/png, image/jpeg'
+                accept='image/*'
                 onChange={handleFileChange}
               />
               <Button
@@ -397,7 +412,7 @@ function ViewPerson() {
               </Button>
             </div>
             <div style={imgContentStyle}>
-              {imageGallery?.map((imageSrc, index) => {
+              {/* {imageGallery?.map((imageUrl, index) => {
                 return (
                   <div
                     key={index}
@@ -409,12 +424,13 @@ function ViewPerson() {
                       marginRight: '5px',
                     }}
                   >
-                    <img alt='Uploaded Image' src={setBlobImages(imageSrc)} />
-                    {console.log(setBlobImages(imageSrc))}
-                    {console.log(imageSrc)}
+                    <img alt='Uploaded Image' src={imageUrl} />
                   </div>
                 );
-              })}
+              })} */}
+              <img src="http://localhost:8080/uploads/userPersonIdIssue2.png"></img>
+              <img src="http://localhost:8080/uploads/userPersonIdIssue.png"></img>
+              <img src="http://localhost:8080/uploads/Screenshot 2025-02-02 023748.png"></img>
             </div>
           </div>
         </div>
