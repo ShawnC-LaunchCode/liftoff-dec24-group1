@@ -47,7 +47,6 @@ public class SessionController {
         }
 
         List<User> users = (List<User>) userRepository.findAll();
-        User foundUser;
 
         Map<String, String> createdResponse = new HashMap<>();
 
