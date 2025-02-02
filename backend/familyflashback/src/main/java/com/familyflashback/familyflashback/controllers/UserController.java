@@ -59,6 +59,17 @@
           return ResponseEntity.notFound().build();
       }
 
+//      @GetMapping("/current")
+//      public ResponseEntity<User> getCurrentUser(@PathVariable String id, @CookieValue(name= "session", required = false) String cookieValue) {
+//          if (cookieValue != null && sessionController.isSessionActive(cookieValue)) {
+//              Optional<User> user = userRepository.findById(cookieValue);
+//              return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//          }
+//
+//          return ResponseEntity.ok(null);
+//      }
+
+
       @PatchMapping("/{id}")
       public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
           Optional<User> user = userRepository.findById(Id);

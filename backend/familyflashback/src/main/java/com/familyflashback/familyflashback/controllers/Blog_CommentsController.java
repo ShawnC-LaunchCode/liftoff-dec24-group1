@@ -81,11 +81,9 @@ public class Blog_CommentsController {
     @PostMapping("/{blogId}")
     public ResponseEntity<Blog_Comments> addComment (@Valid @RequestBody Blog_Comments blog_comment, @PathVariable String blogId,
                                                      @CookieValue(name = "session", required = true) String cookieValue) {
-        System.out.println("Session cookie value: " + cookieValue);
         Optional<User> user = sessionRepository.findUserById(cookieValue);
         if (user.isPresent()) {
             String name = user.get().getName();
-            System.out.println("Name has been extracted from cookie");
             String userId = user.get().getId();
             Optional<Blog> blog = blogRepository.findById(blogId);
             if (blog.isEmpty()) {

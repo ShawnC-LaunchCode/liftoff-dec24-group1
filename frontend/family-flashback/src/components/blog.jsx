@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../blog.css';
+import Comments from "./Comments";
 
 const Blog = () => {
   const [blogExists, setBlogExists] = useState(false);
@@ -40,6 +41,7 @@ const Blog = () => {
         <h1>{blog.header}</h1>
         <p>{blog.body}</p>
         <button onClick={handleEditClick}>Edit Blog</button>
+        <Comments blogId={blog.id} />
       </div>
     );
   } else {
