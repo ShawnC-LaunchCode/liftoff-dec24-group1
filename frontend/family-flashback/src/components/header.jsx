@@ -20,11 +20,16 @@ const authNavigation = [
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
+
   return (
     <header className="bg-white">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
               alt=""
@@ -43,20 +48,26 @@ export default function Header() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        <div className="hidden lg:flex lg:gap-x-12">
-          {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
-              {item.name}
-            </a>
-          ))}
-        </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
-          {authNavigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
-              {item.name}
-            </a>
-          ))}
-        </div>
+        {cookieValue != null &&
+            <div className="hidden lg:flex lg:gap-x-12">
+                {navigation.map((item) => (
+                    <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+                        {item.name}
+                    </a>
+                ))}
+            </div>
+        }
+        {cookieValue == null ?
+            (<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+                {authNavigation.map((item) => (
+                            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+                              {item.name}
+                            </a>
+                          ))}
+                      </div>)
+            :(<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+                <a href='/account' className="text-sm/6 font-semibold text-gray-900">Account</a>
+                </div>)}
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />

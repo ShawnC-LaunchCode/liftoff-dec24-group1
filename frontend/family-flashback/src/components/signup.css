@@ -72,6 +72,13 @@
     background: #444444;
 }
 
+.login-denied{
+    margin: auto;
+        padding-top: 10px;
+
+    color: red;
+}
+
 .recover-password{
     margin: auto;
     padding-top: 10px;

@@ -1,22 +1,23 @@
 .web-footer{
-    margin-top: auto;
     background: rgb(255, 255, 255);
-
     height: 60px;
+    width: 100%;
+    display: flex;
+    position: fixed;
+    bottom: 0;
 }
 
 .footer-links{
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding-top: 15px;
-    gap: 30px;
+    align-content: center;
+    gap: 45px;
+    padding-left: 35px;
 }
 
-.logout{
+.logout-link{
     display: flex;
-    justify-content: center;
+    margin-left: auto;
     align-items: center;
-    padding-left: 300px;
-    gap: 30px;
+    padding-right: 35px;
 }

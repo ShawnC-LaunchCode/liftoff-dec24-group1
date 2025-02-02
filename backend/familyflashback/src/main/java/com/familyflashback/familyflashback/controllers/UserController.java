@@ -5,12 +5,15 @@
  import com.familyflashback.familyflashback.models.data.PersonRepository;
  import com.familyflashback.familyflashback.models.data.SessionRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
+ import jakarta.servlet.http.Cookie;
+ import jakarta.servlet.http.HttpServletResponse;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.http.HttpStatus;
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 
+ import java.time.LocalDateTime;
  import java.util.HashMap;
  import java.util.Map;
  import java.util.Optional;
@@ -31,9 +34,26 @@
       @Autowired
      SessionRepository sessionRepository;
 
-      @PostMapping
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
+
+      @PostMapping("/create")
+      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, HttpServletResponse response, @CookieValue(name = "session", required = false) String cookieValue) {
+
+          Map<String, Object> createdResponse = new HashMap<>();
+
+          if(cookieValue != null) {
+              if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
+                  createdResponse.put("error", "session already exists");
+                  return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
+              }
+          }
+
+          if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+              createdResponse.put("error", "email already in use");
+              return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
+          }
+
             user.hashPass();
+            user.setLastLogin(LocalDateTime.now());
             User createdUser = userRepository.save(user);
             Person personCopy = new Person();
             personCopy.setName(user.getName());
@@ -45,10 +65,12 @@
             userRepository.save(createdUser);
             String sessionId = sessionController.setUserInSession(createdUser);
 
-            Map<String, Object> createdResponse = new HashMap<>();
             createdResponse.put("createdUser", createdUser);
             createdResponse.put("createdPerson", createdPerson);
-            createdResponse.put("session", sessionId);
+
+            Cookie newCookie = new Cookie("session", sessionId);
+            newCookie.setPath("/");
+            response.addCookie(newCookie);
 
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }
