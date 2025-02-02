@@ -34,16 +34,21 @@ export default function Login() {
                 body: JSON.stringify(userData),
             });
 
-            console.log(response);
             const result = await response.json();
-            console.log(result);
 
-            if(result["error"] != null) {
+            if(result["error"] == "passwords do not match" || result["error"] == "incorrect email") {
                 setShowLoginFeedback(true);
+            } else if (result["error"] == "session already exists") {
+                navigate('/');
+                window.location.reload()
             }
 
-            if(result["session"] != null) {
-                document.cookie = "session=" + result["session"];
+            const session = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("session="))
+            ?.split("=")[1];
+
+            if(session != null) {
                 navigate('/');
                 window.location.reload()
             }
