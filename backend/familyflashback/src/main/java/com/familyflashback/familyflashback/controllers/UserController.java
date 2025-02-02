@@ -60,10 +60,14 @@
 
             createdResponse.put("createdUser", createdUser);
             createdResponse.put("createdPerson", createdPerson);
-            //createdResponse.put("session", sessionId);
+
             Cookie newCookie = new Cookie("session", sessionId);
             newCookie.setPath("/");
             response.addCookie(newCookie);
+
+            Cookie userIdCookie = new Cookie("userId", createdUser.getId());
+            userIdCookie.setPath("/");
+            response.addCookie(userIdCookie);
 
             return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
       }

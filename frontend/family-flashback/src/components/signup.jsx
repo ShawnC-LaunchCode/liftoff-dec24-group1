@@ -51,7 +51,6 @@ export default function Signup() {
             ?.split("=")[1];
 
             if(session != null) {
-                //document.cookie = "session=" + result["session"];
                 navigate('/');
                 window.location.reload()
             }

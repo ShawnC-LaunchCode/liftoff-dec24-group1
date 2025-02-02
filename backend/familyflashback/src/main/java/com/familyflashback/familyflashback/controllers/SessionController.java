@@ -62,6 +62,10 @@ public class SessionController {
                     newCookie.setPath("/");
                     response.addCookie(newCookie);
 
+                    Cookie userIdCookie = new Cookie("userId", u.getId());
+                    userIdCookie.setPath("/");
+                    response.addCookie(userIdCookie);
+
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
                 createdResponse.put("error", "passwords do not match");

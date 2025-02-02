@@ -49,7 +49,7 @@ export default function Login() {
             ?.split("=")[1];
 
             if(session != null) {
-                //document.cookie = "session=" + result["session"];
+                alert();
                 navigate('/');
                 window.location.reload()
             }
