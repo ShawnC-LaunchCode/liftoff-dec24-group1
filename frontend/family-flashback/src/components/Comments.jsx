@@ -6,8 +6,7 @@ import CommentForm from "./CommentForm";
 //Renders comment section
 const Comments = ({blogId}) => {
 
-  const[comments, setComments] = useState([]);
-  const[error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [activeComment, setActiveComment] = useState(null);
 
@@ -25,7 +24,7 @@ const Comments = ({blogId}) => {
         const data = await response.json();
         setComments(data);
       } catch (error) {
-        setError(error.message);
+        console.error('There was a problem with the fetch operation:', error);
       }
     };
 
@@ -43,7 +42,7 @@ const Comments = ({blogId}) => {
   
     fetchComments();
     fetchCurrentUser();
-  }, [blogId]);
+  }, [blogId]); // Dependency array, runs only when blogId changes
 
 
 
@@ -61,11 +60,11 @@ const Comments = ({blogId}) => {
       if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
       }
-
       const newComment = await response.json();
       setComments([...comments, newComment]);
+      setActiveComment(null);
   } catch (error) {
-      setError(error.message);
+    console.error('There was a problem with the addComment operation:', error);
   }
 };
 
@@ -82,10 +81,36 @@ const deleteComment = async (id) => {
       const updatedComments = comments.filter(comment => comment.id !== id);
       setComments(updatedComments);
     } catch (error) {
-      setError(error.message);
+      console.error('There was a problem with the deleteComment operation:', error);
     }
   }
 };
+
+const updateComment = async (text, id) => {
+  try {
+    const response = await fetch(`http://localhost:8080/comments/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ body: text }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to update comment: ${response.status}`);
+    }
+      const updatedComments = comments.map((comment) => {
+        if (comment.id === id) {
+          return { ...comment, body: text };
+        }
+        return comment;
+      });
+      setComments(updatedComments);
+      setActiveComment(null);
+    } catch (error) {
+      console.error('There was a problem with the updateComment operation:', error);
+    }
+  };
 
 
 
@@ -105,7 +130,7 @@ return (
                   setActiveComment={setActiveComment}
                   addComment={addComment}
                   deleteComment={deleteComment}
-                  // updateComment={updateComment}
+                  updateComment={updateComment}
                   currentUserId={currentUserId}
               />
           ))}
