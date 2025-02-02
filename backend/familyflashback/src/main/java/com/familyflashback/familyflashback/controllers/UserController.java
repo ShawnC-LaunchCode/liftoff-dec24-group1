@@ -3,6 +3,7 @@
  import com.familyflashback.familyflashback.models.Person;
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
+ import com.familyflashback.familyflashback.models.data.SessionRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@
 
       @Autowired
       SessionController sessionController;
+
+      @Autowired
+     SessionRepository sessionRepository;
 
       @PostMapping
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user) {
@@ -59,15 +63,22 @@
           return ResponseEntity.notFound().build();
       }
 
-//      @GetMapping("/current")
-//      public ResponseEntity<User> getCurrentUser(@PathVariable String id, @CookieValue(name= "session", required = false) String cookieValue) {
-//          if (cookieValue != null && sessionController.isSessionActive(cookieValue)) {
-//              Optional<User> user = userRepository.findById(cookieValue);
-//              return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//          }
-//
-//          return ResponseEntity.ok(null);
-//      }
+     @GetMapping("/blog/{userId}")
+     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
+         Map<String, Object> response = new HashMap<>();
+
+         System.out.println("Cookie value: " + cookieValue);
+
+         Optional<User> user = sessionRepository.findUserById(cookieValue);
+         if (user.isPresent()) {
+             response.put("user", user.get());
+         } else {
+             System.out.println("User not found for session ID: " + cookieValue);
+             response.put("error", "User not found");
+         }
+
+         return ResponseEntity.ok(response);
+     }
 
 
       @PatchMapping("/{id}")

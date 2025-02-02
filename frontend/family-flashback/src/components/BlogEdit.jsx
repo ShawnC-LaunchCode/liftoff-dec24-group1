@@ -99,23 +99,20 @@ const BlogEdit = () => {
     }
     const userId = blog.userId;
 
-    fetch(`http://localhost:8080/blog/${userId}`, {
-      method: "DELETE",
-      credentials: 'include'
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        console.log("Blog deleted");
-        setShowPopup(true);
+    if (window.confirm("Are you sure you want to delete this blog?")) {
+      fetch(`http://localhost:8080/blog/${userId}`, {
+        method: "DELETE",
+        credentials: "include",
       })
-      .catch((error) => console.error("Error deleting blog:", error));
-  };
-
-  const handlePopupClose = () => {
-    setShowPopup(false);
-    navigate("/create-blog");
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          window.alert("Blog deleted successfully.");
+          navigate("/create-blog");
+        })
+        .catch((error) => console.error("Error deleting blog:", error));
+    }
   };
 
   return (
@@ -127,12 +124,6 @@ const BlogEdit = () => {
         <button type="submit">Save</button>
       </form>
       <button onClick={deleteBlog}>Delete Blog</button>
-      {showPopup && (
-        <div className="popup">
-          <p>Blog deleted successfully.</p>
-          <button onClick={handlePopupClose}>OK</button>
-        </div>
-      )}
     </div>
   );
 };

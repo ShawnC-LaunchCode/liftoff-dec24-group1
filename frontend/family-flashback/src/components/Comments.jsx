@@ -11,6 +11,8 @@ const Comments = ({blogId}) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [activeComment, setActiveComment] = useState(null);
 
+
+  //fetches need .then()
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -28,22 +30,18 @@ const Comments = ({blogId}) => {
       }
     };
 
-    const fetchCurrentUser = async () => {
-      const response = await fetch(`http://localhost:8080/user/current`, {
+    const fetchCurrentUser = async (userId) => {
+      const response = await fetch(`http://localhost:8080/user/blog/${userId}`, {
           method: 'GET',
           credentials: 'include',
       });
-      console.log("Response:", response); // Debugging statement
       if (!response.ok) {
-          setError(`Error: ${response.status}`);
-          return;
+        throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log("Fetched data:", data); // Debugging statement
       setCurrentUserId(data.id);
   };
   
-
     fetchComments();
     fetchCurrentUser();
   }, [blogId]);
@@ -88,8 +86,8 @@ return (
                   activeComment={activeComment}
                   setActiveComment={setActiveComment}
                   addComment={addComment}
-                  deleteComment={deleteComment}
-                  updateComment={updateComment}
+                  // deleteComment={deleteComment}
+                  // updateComment={updateComment}
                   currentUserId={currentUserId}
               />
           ))}
