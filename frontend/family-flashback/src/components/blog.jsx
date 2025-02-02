@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import '../blog.css';
 
 const Blog = () => {
   const [blogExists, setBlogExists] = useState(false);
+  const [blog, setBlog] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogExists = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/blog/exists`, {
+        const response = await fetch(`http://localhost:8080/blog`, {
           credentials: 'include'
         });
-        if (!response.ok) {
+        if (response.status === 204) {
+          setBlogExists(false);
+        } else if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          const data = await response.json();
+          setBlogExists(true);
+          setBlog(data);
         }
-        const blogExists = await response.json();
-        setBlogExists(blogExists);
       } catch (error) {
         console.error("Error fetching blog exists:", error);
       }
@@ -23,13 +30,22 @@ const Blog = () => {
     fetchBlogExists();
   }, []);
 
+  const handleEditClick = () => {
+    navigate("/blog/edit");
+  };
+
   if (blogExists) {
-    return <Navigate to="/blog/edit" replace={true} />;
+    return (
+      <div>
+        <h1>{blog.header}</h1>
+        <p>{blog.body}</p>
+        <button onClick={handleEditClick}>Edit Blog</button>
+      </div>
+    );
   } else {
     return (
       <div>
-        {/* Add a button or link to redirect to the blog edit page */}
-        <button onClick={() => window.location.href = "/blog/edit"}>Create Blog</button>
+        <button onClick={() => navigate("/blog/edit")}>Create Blog</button>
       </div>
     );
   }

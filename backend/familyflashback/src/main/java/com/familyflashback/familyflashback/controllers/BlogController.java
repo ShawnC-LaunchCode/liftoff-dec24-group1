@@ -72,7 +72,7 @@ public class BlogController {
                     return ResponseEntity.ok(blogOptional.get());
                 } else {
                     System.out.println("No blog found for user ID: " + userId);
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
                 }
             } else {
                 System.out.println("User not found for session ID: " + cookieValue);
