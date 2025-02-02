@@ -53,7 +53,6 @@ public class SessionController {
         }
 
         List<User> users = (List<User>) userRepository.findAll();
-        User foundUser;
 
         for (User u : users) {
             if(u.getEmail().equals(user.getEmail())) {
