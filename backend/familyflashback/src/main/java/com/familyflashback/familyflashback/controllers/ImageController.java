@@ -1,50 +1,145 @@
- package com.familyflashback.familyflashback.controllers;
+package com.familyflashback.familyflashback.controllers;
 
- import com.familyflashback.familyflashback.models.Image;
- import com.familyflashback.familyflashback.models.data.ImageRepository;
- import jakarta.validation.Valid;
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.http.HttpStatus;
- import org.springframework.http.ResponseEntity;
+import com.familyflashback.familyflashback.models.Image;
+import com.familyflashback.familyflashback.models.User;
+import com.familyflashback.familyflashback.models.data.ImageRepository;
+import com.familyflashback.familyflashback.models.data.Person_ImageRepository;
+import com.familyflashback.familyflashback.models.data.UserRepository;
 
- import org.springframework.web.bind.annotation.*;
+import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 
- import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
- @RestController
- @RequestMapping("images")
- public class ImageController {
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-     @Autowired
-     private ImageRepository imageRepository;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
-     @PostMapping
-     public ResponseEntity<Image> addImage(@Valid @RequestBody Image image) {
-         Image addedImage = imageRepository.save(image);
-         return new ResponseEntity<>(addedImage, HttpStatus.CREATED);
-     }
+@RestController
+@RequestMapping("images")
+public class ImageController {
 
-     @DeleteMapping("/{id}")
-     public ResponseEntity<Image> deleteImage(@PathVariable("id") String Id) {
-         Optional<Image> image = imageRepository.findById(Id);
-         if (image.isPresent()) {
-             imageRepository.deleteById(Id);
-             return ResponseEntity.noContent().build();
-         } else {
-             return ResponseEntity.notFound().build();
-         }
-     }
+    @Autowired
+    private ImageRepository imageRepository;
 
-     @GetMapping("/{id}")
-     public ResponseEntity<Image> getImage(@PathVariable("id") String Id) {
-         Optional<Image> image = imageRepository.findById(Id);
-         return image.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-     }
+    @Autowired
+    private UserRepository userRepository;
 
-     @GetMapping("/test")
-     public ResponseEntity<String> testEndpoint() {
-         return ResponseEntity.ok("Test endpoint hit!!");
-     }
- }
+    @Autowired
+    private Person_ImageRepository person_imageRepository;
+
+    @Value("${image.upload.dir}")
+    private String uploadDir;
+
+    @PostMapping
+    public ResponseEntity<Map<String, String>> addImage(@RequestParam("file") MultipartFile file, @RequestParam String userId, @RequestParam String personId) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            String filePath = saveImage(file);
+            Path path = Path.of(filePath);
+            System.out.println("Path is " + path);
+
+            Resource resource = new UrlResource(path.toUri());
+            System.out.println("Url resource is " + resource);
+
+            Image image = new Image();
+            Optional<User> user = userRepository.findById(userId);
+            if(user.isEmpty()){
+                response.put("message", "User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            image.setPersonId(personId);
+            image.setUrl(filePath);
+            image.setUser(user.get());
+            imageRepository.save(image);
+
+            response.put("filePath", filePath);
+            response.put("message", "Image uploaded successfully");
+            response.put("resourceUrl", resource.getURL().toString());
+            response.put("resourceUri", resource.getURI().toString());
+            response.put("resourceName", resource.getFilename());
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            response.put("message", "Error uploading image");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
+    private String saveImage(MultipartFile file) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String fileName = file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return filePath.toString();
+    }
+
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Image> deleteImage(@PathVariable("id") String Id) {
+        Optional<Image> image = imageRepository.findById(Id);
+        if (image.isPresent()) {
+            imageRepository.deleteById(Id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Image> getImage(@PathVariable("id") String Id) {
+//        Optional<Image> image = imageRepository.findById(Id);
+//        return image.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, String>> getAllImages(@RequestParam String personId) {
+        Map<String, String> response = new HashMap<>();
+
+        List<Image> images = imageRepository.findAllByPersonId(personId);
+
+        if (images.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+// Get file info for the images match the person id
+        // add the image.filename to the response
+
+        //add the localhost to the response and combined name to hte response as the url
+
+        //ie http://localhost:8080/uploads/userPersonIdIssue2.png
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Test endpoint hit!!");
+    }
+}
+
+
 
 

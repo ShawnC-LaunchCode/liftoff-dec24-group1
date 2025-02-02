@@ -1,49 +1,63 @@
- package com.familyflashback.familyflashback.models;
+package com.familyflashback.familyflashback.models;
 
- import jakarta.persistence.*;
- import jakarta.validation.constraints.NotBlank;
- import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+import java.util.Arrays;
 
 
- @Entity
- public class Image extends AbstractEntity {
+@Entity
+public class Image extends AbstractEntity {
 
-     @ManyToOne
-     @JoinColumn(name = "user_id")
-     private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-     @NotBlank(message = "Url is required")
-     @Size(max = 248, message = "Cannot exceed 248 characters")
-     private String url;
+    @Column(name = "url")
+    private String url;
 
-     public Image() {}
+    @Column(name = "person_id")
+    private String personId;
 
-     public Image(String url, User user) {
-         this.url = url;
-         this.user = user;
-     }
+    public Image() {}
 
-     public User getUser() {
-         return user;
-     }
+    public Image(String url, User user, String personId) {
+        this.url = url;
+        this.user = user;
+        this.personId = personId;
+    }
 
-     public void setUser(User user) {
-         this.user = user;
-     }
+    public User getUser() {
+        return user;
+    }
 
-     public String getUrl() {
-         return url;
-     }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-     public void setUrl(String url) {
-         this.url = url;
-     }
+    public String getUrl() {
+        return url;
+    }
 
-     @Override
-     public String toString() {
-         return "Image{" +
-                 "user=" + user +
-                 ", url='" + url + '\'' +
-                 '}';
-     }
- }
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "user=" + user +
+                ", url='" + url + '\'' +
+                ", personId='" + personId + '\'' +
+                '}';
+    }
+}
