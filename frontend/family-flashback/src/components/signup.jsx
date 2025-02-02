@@ -26,8 +26,6 @@ export default function Signup() {
             email: document.getElementById("email").value,
           };
 
-        console.log(userData);
-
         if(userData.password == '' || userData.email == '' || userData.name == '' || document.getElementById("passConfirm").value == '') {
             setShowEmptyFeedback(true);
         } else if (!showPasswordFeedback) {
@@ -42,7 +40,6 @@ export default function Signup() {
             });
 
             const result = await response.json();
-            console.log(result);
 
             if(result["error"] = "email already in use") {
                 setShowEmailFeedback(true);

@@ -4,6 +4,8 @@ import com.familyflashback.familyflashback.models.Session;
 import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,34 +40,36 @@ public class SessionController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+    public ResponseEntity<Map<String, String>> validateUser(@Valid @RequestBody User user, HttpServletResponse response, @CookieValue(name = "session", required = false) String cookieValue) {
+
+        Map<String, String> createdResponse = new HashMap<>();
 
         if(cookieValue != null) {
             if (sessionRepository.findById(cookieValue).isPresent()) {
-                return ResponseEntity.notFound().build();
+                createdResponse.put("error", "session already exists");
+                return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
             }
         }
 
         List<User> users = (List<User>) userRepository.findAll();
         User foundUser;
 
-        Map<String, String> createdResponse = new HashMap<>();
-
         for (User u : users) {
             if(u.getEmail().equals(user.getEmail())) {
                 if(u.isMatchingPassword(user.getPassword())) {
                     String createdSession = setUserInSession(u);
                     createdResponse.put("session", createdSession);
+                    //response.addCookie(new Cookie("session", createdSession));
 
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
-                createdResponse.put("error", "incorrect password");
-                return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
+                createdResponse.put("error", "passwords do not match");
+                return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
             }
         }
 
         createdResponse.put("error", "incorrect email");
-        return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/user")

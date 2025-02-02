@@ -30,17 +30,18 @@
       @PostMapping
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
 
+          Map<String, Object> createdResponse = new HashMap<>();
+
           if(cookieValue != null) {
               if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
-                  return ResponseEntity.notFound().build();
+                  createdResponse.put("error", "session already exists");
+                  return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
               }
           }
 
-          Map<String, Object> createdResponse = new HashMap<>();
-
           if(userRepository.findByEmail(user.getEmail()).isPresent()) {
               createdResponse.put("error", "email already in use");
-              return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
+              return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
           }
 
             user.hashPass();
