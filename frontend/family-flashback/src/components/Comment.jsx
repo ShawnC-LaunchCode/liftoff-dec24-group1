@@ -2,7 +2,6 @@ import CommentForm from "./CommentForm";
 import "./commentSystem.css";
 import userIcon from "./assets/user-icon.png";
 
-//Renders individual comment
 
 const Comment = ({
   comment,
@@ -10,17 +9,16 @@ const Comment = ({
   activeComment,
   updateComment,
   deleteComment,
-  addComment,
   currentUserId,
 }) => {
   const isEditing =
     activeComment &&
     activeComment.id === comment.id &&
     activeComment.type === "editing";
-  const canEdit = currentUserId === comment.userId;
-  const canDelete = currentUserId === comment.userId;
+  const canEdit = currentUserId === comment.user_id;
+  const canDelete = currentUserId === comment.user_id;
   const update_dt = comment.update_dt;
-  console.log(update_dt); //needs fixed
+  //console.log(update_dt); //needs fixed
 
   return (
     <div className="comment">
@@ -32,7 +30,31 @@ const Comment = ({
           <div className="comment-author">{comment.name}</div>
           <div>{update_dt}</div>
         </div>
-        <div className="comment-text">{comment.body}</div>
+        {!isEditing && <div className="comment-text">{comment.body}</div>}
+        {isEditing && (
+          <CommentForm submitLabel="Update" 
+            hasCancelButton 
+            initialText={comment.body} 
+            handleSubmit={(text) => updateComment(text, comment.id)} 
+            handleCancel={() => setActiveComment(null)} 
+          />
+        )}
+        <div className="comment-actions">
+            {canEdit && (
+                <div 
+                    className="comment-action"
+                    onClick={() => setActiveComment({ id: comment.id, type: "editing" })}
+                >
+                Edit
+                </div>)}
+            { canDelete && (
+                <div 
+                    className="comment-action"
+                    onClick={() => deleteComment(comment.id)}
+                >
+                Delete
+                </div>)}
+        </div>
       </div>
     </div>
   );

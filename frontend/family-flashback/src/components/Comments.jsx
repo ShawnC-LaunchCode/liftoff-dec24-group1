@@ -3,7 +3,7 @@ import "./commentSystem.css";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 
-//Renders comment section
+
 const Comments = ({blogId}) => {
 
   const [comments, setComments] = useState([]);
@@ -89,7 +89,7 @@ const deleteComment = async (id) => {
 const updateComment = async (text, id) => {
   try {
     const response = await fetch(`http://localhost:8080/comments/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const updateComment = async (text, id) => {
     if (!response.ok) {
       throw new Error(`Failed to update comment: ${response.status}`);
     }
-      const updatedComments = comments.map((comment) => {
+      const updatedComments = comments.map(comment => {
         if (comment.id === id) {
           return { ...comment, body: text };
         }

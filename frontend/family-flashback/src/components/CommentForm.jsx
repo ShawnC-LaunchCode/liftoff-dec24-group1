@@ -7,11 +7,9 @@ const CommentForm = ({
     hasCancelButton = false,
     initialText = '',
     handleCancel,
-
 }) => {
-
+    
     const [text, setText] = useState(initialText);
-
     const isTextareaDisabled = text.length === 0;
 
     const onSubmit = event => {
