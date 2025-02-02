@@ -1,6 +1,7 @@
 import './App.css'
 import Header from './components/header';
 import Home from './components/home';
+import Account from './components/account'
 import Tree from './components/tree';
 import Map from './components/map';
 import Blog from './components/blog';
@@ -34,6 +35,7 @@ function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />

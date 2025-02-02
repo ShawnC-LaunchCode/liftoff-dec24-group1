@@ -66,7 +66,7 @@ const cookieValue = document.cookie
                           ))}
                       </div>)
             :(<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
-                <a href='/' className="text-sm/6 font-semibold text-gray-900">Account</a>
+                <a href='/account' className="text-sm/6 font-semibold text-gray-900">Account</a>
                 </div>)}
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

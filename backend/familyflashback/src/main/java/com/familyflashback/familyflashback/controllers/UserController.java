@@ -27,7 +27,7 @@
       @Autowired
       SessionController sessionController;
 
-      @PostMapping
+      @PostMapping("/create")
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
 
           Map<String, Object> createdResponse = new HashMap<>();
@@ -74,7 +74,7 @@
       }
 
       @PatchMapping("/{id}")
-      public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
+      public ResponseEntity<Map<String, Object>> updateUser(@Valid @RequestBody User updatedUser, @CookieValue(name = "session", required = false) String cookieValue) {
           Optional<User> user = userRepository.findById(Id);
 
           if (user.isPresent()) {

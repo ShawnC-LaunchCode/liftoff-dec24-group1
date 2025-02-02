@@ -59,7 +59,7 @@ public class SessionController {
                 if(u.isMatchingPassword(user.getPassword())) {
                     String createdSession = setUserInSession(u);
                     createdResponse.put("session", createdSession);
-                    //response.addCookie(new Cookie("session", createdSession));
+                    response.addCookie(new Cookie("session", createdSession));
 
                     return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
                 }
