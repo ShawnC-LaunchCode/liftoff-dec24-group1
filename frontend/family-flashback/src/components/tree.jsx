@@ -1,137 +1,87 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import AddPersonButton from './addPersonButton';
 import ViewPersonButton from './viewPersonButton';
 import ModalManager from './modalManager';
+import {
+  ReactFlow,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from '@xyflow/react';
+ 
+import '@xyflow/react/dist/style.css';
+ 
+const canvasWidth = 800; // Set your canvas width
+const canvasHeight = 600; // Set your canvas height
 
-const FamilyTree = () => {
+const initialNodes = [
+  { id: '1', position: { x: canvasWidth / 2, y: canvasHeight / 2 }, data: { label: 'Root User' } },
+  { id: '2', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 1' } },
+  { id: '3', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 + 100 }, data: { label: 'Child 2' } },
+  { id: '4', position: { x: canvasWidth / 2 - 100, y: canvasHeight / 2 - 100 }, data: { label: 'Child 1' } },
+  { id: '5', position: { x: canvasWidth / 2 + 100, y: canvasHeight / 2 - 100 }, data: { label: 'Child 2' } },
+];
 
-  const [familyData, setFamilyData] = useState({
-    name: "Me",
-    parents: [
-      {
-        name: "Father",
-        parents: [
-          {
-            name: "Grandfather (Paternal)",
-            parents: []
-          },
-          {
-            name: "Grandmother (Paternal)",
-            parents: []
-          }
-        ]
-      },
-      {
-        name: "Mother",
-        parents: [
-          {
-            name: "Grandfather (Maternal)",
-            parents: []
-          },
-          {
-            name: "Grandmother (Maternal)",
-            parents: []
-          }
-        ]
-      }
-    ],
-    children: [
-      {
-        name: "Child 1",
-        children: []
-      },
-      {
-        name: "Child 2",
-        children: []
-      }
-    ]
-  });
+const initialEdges = [
+  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e1-4', source: '1', target: '4' },
+  { id: 'e1-5', source: '1', target: '5' }
+];
 
-
-  const TreeNode = ({ node, direction = 'root' }) => {
-    const [isChildrenExpanded, setIsChildrenExpanded] = useState(true);
-    const [isParentsExpanded, setIsParentsExpanded] = useState(true);
-
-
-    return (
-      <div className="flex flex-col items-center">
-        {/* Parents section - always visible for root node */}
-        {direction !== 'down' && node.parents && node.parents.length > 0 && isParentsExpanded && (
-          <>
-            <div className="flex gap-48">
-              {node.parents.map((parent, index) => (
-                <div key={index} className="relative">
-                  <TreeNode node={parent} direction="up" />
-                  <div className="absolute bottom-0 left-1/2 w-[2px] h-20 bg-gray-700 transform -translate-x-1/2" />
-                </div>
-              ))}
-            </div>
-            {node.parents.length > 1 && (
-              <div className="relative w-[400px] h-[2px] bg-gray-700" />
-            )}
-          </>
-        )}
-
-        {/* Current node */}
-        <div className={`px-8 py-4 border-2 ${direction === 'root' ? 'border-blue-500' : 'border-gray-700'} rounded-lg bg-white shadow-md`}>
-          <div className="flex items-center gap-2">
-            <span>{node.name}</span>
-            {/* Only show collapse button for children if there are children */}
-            {node.children?.length > 0 && (
-              <button
-                onClick={() => setIsChildrenExpanded(!isChildrenExpanded)}
-                className="ml-2 text-gray-600 hover:text-gray-900"
-              >
-                {isChildrenExpanded ? '▼' : '▶'}
-              </button>
-            )}
-            {/* Show separate collapse button for parents if not root */}
-            {direction !== 'root' && node.parents?.length > 0 && (
-              <button
-                onClick={() => setIsParentsExpanded(!isParentsExpanded)}
-                className="ml-2 text-gray-600 hover:text-gray-900"
-              >
-                {isParentsExpanded ? '▲' : '▴'}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Children section */}
-        {direction !== 'up' && node.children && node.children.length > 0 && isChildrenExpanded && (
-          <>
-            <div className="w-[2px] h-20 bg-gray-700" />
+export default function Tree() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+ 
+  useEffect(() => {
+    fetch('http://localhost:8080/user/LOTxIUI-uvUtkU1h5QScK')
+      .then(response => response.json())
+      .then(data => {
+        fetch(`http://localhost:8080/persons/${data.personID}`)
+          .then(response => response.json())
+          .then(personData => {
+            console.log('Person API Response data:', personData);
             
-            {node.children.length > 1 && (
-              <div className="relative w-[400px] h-[2px] bg-gray-700" />
-            )}
-            
-            <div className="flex gap-48">
-              {node.children.map((child, index) => (
-                <div key={index} className="relative">
-                  <TreeNode node={child} direction="down" />
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
+            // Update the node with id '1' to include the person's name
+            setNodes((nds) =>
+              nds.map((node) => {
+                if (node.id === '1') {
+                  return { ...node, data: { ...node.data, label: personData.user.name } };
+                }
+                return node;
+              })
+            );
 
+            console.log('User Name:', personData.user.name);
+          })
+          .catch(error => {
+            console.error('Error fetching person data:', error);
+          });
+        console.log('User API Response data:', data);
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+  }, []);
 
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges],
+  );
+ 
   return (
-    <div className="p-8 w-full overflow-x-auto">
-      <div className="flex justify-center min-w-max">
-        <TreeNode node={familyData} />
-      </div>
-        <ModalManager >
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+      />
+         <ModalManager >
           <AddPersonButton />
         </ModalManager>
       <ViewPersonButton />
     </div>
   );
-};
-
-
-export default FamilyTree;
+}
