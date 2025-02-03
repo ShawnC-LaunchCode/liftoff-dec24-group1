@@ -93,7 +93,7 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable("id") String Id, @Valid @RequestBody Person updatedPerson) {
+    public ResponseEntity<Person> updatePerson(@PathVariable("id") String Id, @RequestBody Person updatedPerson) {
         Optional<Person> person = personRepository.findById(Id);
         if (person.isPresent()) {
             Person existingPerson = person.get();
@@ -112,6 +112,12 @@ public class PersonController {
             }
             if (updatedPerson.getDeathDate() != null) {
                 existingPerson.setDeathDate(updatedPerson.getDeathDate());
+            }
+            if (updatedPerson.getGender() != null) {
+                existingPerson.setGender(updatedPerson.getGender());
+            }
+            if (updatedPerson.getGenerationLevel() != null) {
+                existingPerson.setGenerationLevel(updatedPerson.getGenerationLevel());
             }
 
             Person savedUpdatedPerson = personRepository.save(existingPerson);

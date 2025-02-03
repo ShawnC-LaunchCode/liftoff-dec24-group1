@@ -4,6 +4,7 @@ import com.familyflashback.familyflashback.models.Person;
 import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.PersonRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -118,6 +119,19 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Test endpoint hit");
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<User> getCurrentUser(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        System.out.println("USER ID IN REQUEST IS " + userId);
+        
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }
