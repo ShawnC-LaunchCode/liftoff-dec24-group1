@@ -1,15 +1,17 @@
 package com.familyflashback.familyflashback.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
 @Entity
-public class Blog {
+public class Blog extends AbstractEntity {
 
-    @Id
+
     @Column(name = "user_id")
     private String userId;
 
