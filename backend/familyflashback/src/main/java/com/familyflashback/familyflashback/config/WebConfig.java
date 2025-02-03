@@ -28,24 +28,22 @@ public class WebConfig implements WebMvcConfigurer {
 
     }
 
+    // Create spring-managed object to allow the app to access our filter
+    @Bean
+    public HandlerInterceptor authenticationFilter() {
+        return new AuthFilter();
+    }
 
+    // Register the filter with the Spring container
     @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor( authenticationFilter() );
+    }
+
+      @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve files from ./uploads/ via /uploads/ URL path
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:./uploads/");
     }
 
-
-//    // Create spring-managed object to allow the app to access our filter
-//    @Bean
-//    public HandlerInterceptor authenticationFilter() {
-//        return new AuthFilter();
-//    }
-
-    // Register the filter with the Spring container
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor( authenticationFilter() );
-//    }
 }

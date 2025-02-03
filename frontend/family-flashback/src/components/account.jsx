@@ -4,20 +4,20 @@ import "./signup.css"
 import emailIcon from "../components/assets/email.png"
 import passwordIcon from "../components/assets/password.png"
 
-export default function About() {
+export default function Account() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const response = await fetch("http://localhost:8080/auth/user", {
-      method: 'GET',
+      method: 'PATCH',
       credentials: 'include',
       headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
       },
     });
-  
+
     const result = await response.json();
     console.log(result);
   }

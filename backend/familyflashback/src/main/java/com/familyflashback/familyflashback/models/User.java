@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -31,12 +31,13 @@ public class User extends AbstractEntity {
     @Column(name = "person_id")
     private String personID;
 
-    private LocalDate lastLogin;
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
     public User() {}
 
     public User(String password, String name, String email) {
-        this.lastLogin = LocalDate.now();
+        this.lastLogin = LocalDateTime.now();
         this.password = encoder.encode(password);
         this.name = name;
         this.email = email;
@@ -74,11 +75,11 @@ public class User extends AbstractEntity {
         this.password = password;
     }
 
-    public LocalDate getLastLogin() {
+    public LocalDateTime getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(LocalDate lastLogin) {
+    public void setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
 
