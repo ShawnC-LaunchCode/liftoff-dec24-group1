@@ -1,6 +1,5 @@
 package com.familyflashback.familyflashback.controllers;
 
-<<<<<<< HEAD
 import com.familyflashback.familyflashback.models.Person;
 import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.PersonRepository;
@@ -11,20 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-=======
- import com.familyflashback.familyflashback.models.Person;
- import com.familyflashback.familyflashback.models.User;
- import com.familyflashback.familyflashback.models.data.PersonRepository;
- import com.familyflashback.familyflashback.models.data.SessionRepository;
- import com.familyflashback.familyflashback.models.data.UserRepository;
- import jakarta.servlet.http.Cookie;
- import jakarta.servlet.http.HttpServletResponse;
- import jakarta.validation.Valid;
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.http.HttpStatus;
- import org.springframework.http.ResponseEntity;
- import org.springframework.web.bind.annotation.*;
->>>>>>> origin/main
 
 import java.util.HashMap;
 import java.util.Map;

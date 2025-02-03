@@ -101,8 +101,6 @@ public class BlogController {
     @GetMapping("/session")
     public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue, HttpServletRequest request) {
         if (sessionController.isSessionActive(cookieValue)) {
-            String userId = (String) request.getAttribute("userId");
-//            System.out.println("User ID: " + userId);
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
