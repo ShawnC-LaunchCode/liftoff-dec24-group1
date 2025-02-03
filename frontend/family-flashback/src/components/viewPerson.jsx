@@ -232,7 +232,6 @@ function ViewPerson() {
             data.resourceUri: ${data.resourceUri}
             data.resourceName: ${data.resourceName}
             `);
-
       })
       .catch((error) => {
         console.error('Error uploading image:', error);
@@ -244,13 +243,10 @@ function ViewPerson() {
     fetch(`http://localhost:8080/images/all?personId=${rootPerson}`, {
       method: 'GET',
     })
-      .then((response) => response.json()) // Get the response as a Blob
+      .then((response) => response.json())
       .then((data) => {
         console.log('Fetched image data: ', data);
-
-setImageGallery(data.allImageUrls);
-        // Update the image gallery with the object URL
-        //setImageGallery([imageURL]);
+        setImageGallery(data.allImageUrls);
       })
       .catch((error) => {
         console.error('Failed to fetch images', error);
@@ -258,8 +254,6 @@ setImageGallery(data.allImageUrls);
   };
 
   console.log(imageGallery);
-
-  
 
   return (
     <div style={containerStyle}>

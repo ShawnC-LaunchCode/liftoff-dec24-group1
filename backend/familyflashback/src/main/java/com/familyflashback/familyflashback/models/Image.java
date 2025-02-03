@@ -1,10 +1,5 @@
 package com.familyflashback.familyflashback.models;
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
-import java.util.Arrays;
 
 
 @Entity

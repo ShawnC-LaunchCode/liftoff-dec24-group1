@@ -5,8 +5,6 @@ import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.ImageRepository;
 import com.familyflashback.familyflashback.models.data.Person_ImageRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
-
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
