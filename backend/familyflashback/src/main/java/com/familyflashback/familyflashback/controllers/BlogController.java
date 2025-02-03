@@ -144,13 +144,16 @@ public class BlogController {
 
 @GetMapping("/{id}")
 public ResponseEntity<Blog> getBlogById(@PathVariable("id") String id) {
-    Optional<Blog> blog = blogRepository.findById(id);
+    System.out.println("Fetching blog with id: " + id);
+        Optional<Blog> blog = blogRepository.findById(id);
     if (blog.isPresent()) {
+        System.out.println("Found blog: " + blog.get());
         return ResponseEntity.ok(blog.get());
     } else {
+        System.out.println("Blog not found");
         return ResponseEntity.notFound().build();
-    }
 }
+    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Blog> updateBlog (@Valid @RequestBody Blog updatedBlog, @PathVariable("id") String id){

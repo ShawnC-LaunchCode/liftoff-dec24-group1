@@ -64,7 +64,7 @@ const Blog = () => {
   };
 
   const handleBlogClick = () => {
-    navigate(`/blog/${userBlog.id}`);
+    navigate("/blog/user");
   };
 
   return (

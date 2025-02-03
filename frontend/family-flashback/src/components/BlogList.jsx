@@ -25,7 +25,7 @@ const BlogList = () => {
       }, []);
 
       const handleBlogClick = (blogId) => {
-        navigate(`/blog/${blogId}`);
+        navigate(`/blog/${blogId}`); //might have to change
       };
 
       return (
