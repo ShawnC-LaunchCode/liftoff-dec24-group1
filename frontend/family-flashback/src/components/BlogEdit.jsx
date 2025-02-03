@@ -60,7 +60,7 @@ const BlogEdit = () => {
         return response.json();
       })
       .then(data => {
-        console.log("Blog created successfully:", data);
+       // console.log("Blog created successfully:", data);
         navigate("/blog/user");
       })
       .catch(error => {
@@ -82,7 +82,7 @@ const BlogEdit = () => {
         return response.json();
       })
       .then(data => {
-        console.log("Blog updated successfully:", data);
+        //console.log("Blog updated successfully:", data);
         navigate("/blog/user");
       })
       .catch(error => {
