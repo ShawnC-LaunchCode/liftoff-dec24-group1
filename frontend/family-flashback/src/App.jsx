@@ -17,6 +17,7 @@ import BlogCreate from './components/BlogCreate';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState, useEffect} from 'react'
 import BlogByUser from './components/BlogByUser';
+import BlogByFamily from './components/BlogByFamily';
 
 function App() {
 
@@ -32,7 +33,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/create" element={<BlogCreate />} />
               <Route path="/blog/user" element={<BlogByUser />} />
-              
+              <Route path="/blog/family/:blogId" element={<BlogByFamily />} />
               <Route path="/blog/edit" element={<BlogEdit />} />
               <Route path="/support" element={<Support />} />
               <Route path="/signup" element={<Signup />} />

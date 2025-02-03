@@ -15,6 +15,7 @@ const BlogList = () => {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+            console.log(data);
             setBlogs(data);
           } catch (error) {
             console.error("Error fetching blogs:", error);
@@ -25,7 +26,7 @@ const BlogList = () => {
       }, []);
 
       const handleBlogClick = (blogId) => {
-        navigate(`/blog/${blogId}`); //might have to change
+        navigate(`/blog/family/${blogId}`); //might have to change
       };
 
       return (
@@ -35,7 +36,7 @@ const BlogList = () => {
             <ul>
               {blogs.map((blog) => (
                 <li key={blog.id}>
-                  <a onClick={() => handleBlogClick(blog.id)}>{blog.header}</a>
+                  <button onClick={() => handleBlogClick(blog.id)}>{blog.header}</button>
                 </li>
               ))}
             </ul>

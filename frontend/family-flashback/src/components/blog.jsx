@@ -45,8 +45,6 @@ const Blog = () => {
             const blogData = await blogResponse.json();
             setUserBlogExists(true);
             setUserBlog(blogData);
-            console.log(userBlogExists);
-            //console.log(`Fetched blogId: ${blogData.id}`);
           }
         } catch (error) {
           console.error("Error fetching user's blog:", error);
