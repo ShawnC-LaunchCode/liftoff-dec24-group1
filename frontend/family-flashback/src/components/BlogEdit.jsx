@@ -5,7 +5,6 @@ const BlogEdit = () => {
   const [blog, setBlog] = useState(null);
   const [header, setHeader] = useState("");
   const [body, setBody] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
