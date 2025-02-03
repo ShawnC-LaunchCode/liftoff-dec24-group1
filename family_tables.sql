@@ -11,10 +11,14 @@ CREATE TABLE person (
 id VARCHAR(21) NOT NULL PRIMARY KEY,
 user_id VARCHAR(21) NOT NULL,
 name VARCHAR(50) NOT NULL,
-birth_date DATE,
-death_date DATE, 
-birth_town VARCHAR(50),
-bio VARCHAR(500)
+gender VARCHAR(1) DEFAULT NULL,
+birth_date DATE DEFAULT NULL,
+death_date DATE DEFAULT NULL,
+birth_town VARCHAR(50) DEFAULT NULL,
+bio VARCHAR(500) DEFAULT NULL,
+generation_level INT DEFAULT NULL,
+KEY user_id (user_id),
+CONSTRAINT person_ibfk_1 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE image (
@@ -26,12 +30,13 @@ FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE person_person (
-root_person VARCHAR(21) NOT NULL,
-related_person VARCHAR(21) NOT NULL, 
-relationship VARCHAR(50) NOT NULL,
-PRIMARY KEY (root_person, related_person),
-FOREIGN KEY (root_person) REFERENCES person(id),
-FOREIGN KEY (related_person) REFERENCES person(id)
+person_id VARCHAR(21) NOT NULL,
+relative_id VARCHAR(21) NOT NULL,
+relationship_type ENUM('parent','child','spouse','sibling') DEFAULT NULL,
+PRIMARY KEY (person_id, relative_id),
+KEY relative_id (relative_id),
+FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE,
+FOREIGN KEY (relative_id) REFERENCES person(id) ON DELETE CASCADE
 );
 
 CREATE TABLE person_image(

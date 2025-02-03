@@ -1,5 +1,17 @@
- package com.familyflashback.familyflashback.controllers;
+package com.familyflashback.familyflashback.controllers;
 
+<<<<<<< HEAD
+import com.familyflashback.familyflashback.models.Person;
+import com.familyflashback.familyflashback.models.User;
+import com.familyflashback.familyflashback.models.data.PersonRepository;
+import com.familyflashback.familyflashback.models.data.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+=======
  import com.familyflashback.familyflashback.models.Person;
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
@@ -12,146 +24,129 @@
  import org.springframework.http.HttpStatus;
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
+>>>>>>> origin/main
 
- import java.time.LocalDateTime;
- import java.util.HashMap;
- import java.util.Map;
- import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
- @RestController
- @RequestMapping("user")
- public class UserController {
+@RestController
+@RequestMapping("user")
+public class UserController {
 
-      @Autowired
-      UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-      @Autowired
-      PersonRepository personRepository;
+    @Autowired
+    PersonRepository personRepository;
 
-      @Autowired
-      SessionController sessionController;
+    @Autowired
+    SessionController sessionController;
 
-      @Autowired
-     SessionRepository sessionRepository;
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
 
+        if(cookieValue != null) {
+            if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+        }
 
-      @PostMapping("/create")
-      public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, HttpServletResponse response, @CookieValue(name = "session", required = false) String cookieValue) {
+        Map<String, Object> createdResponse = new HashMap<>();
 
-          Map<String, Object> createdResponse = new HashMap<>();
+        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+            createdResponse.put("error", "email already in use");
+            return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
+        }
 
-          if(cookieValue != null) {
-              if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
-                  createdResponse.put("error", "session already exists");
-                  return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
-              }
-          }
+        user.hashPass();
+        User createdUser = userRepository.save(user);
+        Person personCopy = new Person();
+        personCopy.setName(user.getName());
+        personCopy.setUser(user);
+        personCopy.setGenerationLevel(0);
+        Person createdPerson = personRepository.save(personCopy);
+        System.out.println("Person Id for user " + createdUser.getId() + " is " + createdPerson.getId());
 
-          if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-              createdResponse.put("error", "email already in use");
-              return new ResponseEntity<>(createdResponse, HttpStatus.BAD_REQUEST);
-          }
+        createdUser.setPersonID(createdPerson.getId());
+        userRepository.save(createdUser);
+        String sessionId = sessionController.setUserInSession(createdUser);
 
-            user.hashPass();
-            user.setLastLogin(LocalDateTime.now());
-            User createdUser = userRepository.save(user);
-            Person personCopy = new Person();
-            personCopy.setName(user.getName());
-            personCopy.setUser(user);
-            Person createdPerson = personRepository.save(personCopy);
-            System.out.println("Person Id for user " + createdUser.getId() + " is " + createdPerson.getId());
+        createdResponse.put("createdUser", createdUser);
+        createdResponse.put("createdPerson", createdPerson);
+        createdResponse.put("session", sessionId);
 
-            createdUser.setPersonID(createdPerson.getId());
-            userRepository.save(createdUser);
-            String sessionId = sessionController.setUserInSession(createdUser);
+        return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
+    }
 
-            createdResponse.put("createdUser", createdUser);
-            createdResponse.put("createdPerson", createdPerson);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
+        Optional<User> user = userRepository.findById(Id);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-            Cookie newCookie = new Cookie("session", sessionId);
-            newCookie.setPath("/");
-            response.addCookie(newCookie);
+    @PatchMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
+        Optional<User> user = userRepository.findById(Id);
 
-            return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
-      }
+        if (user.isPresent()) {
+            User existingUser = user.get();
+            Optional<Person> person = personRepository.findByUsersPersonId(existingUser.getPersonID());
+            Person existingPerson = person.get();
 
-      @GetMapping("/{id}")
-      public ResponseEntity<User> getUser(@PathVariable("id") String Id) {
-          if (sessionController.isSessionActive(Id)) {
-              Optional<User> user = userRepository.findById(Id);
-              return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-          }
+            if (updatedUser.getName() != null) {
+                existingUser.setName(updatedUser.getName());
+                existingPerson.setName(updatedUser.getName());
+            }
+            if (updatedUser.getPassword() != null) {
+                existingUser.setPassword(updatedUser.getPassword());
+            }
+            if (updatedUser.getEmail() != null) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
 
-          return ResponseEntity.notFound().build();
-      }
+            User savedUpdatedUser = userRepository.save(existingUser);
+            Person savedUpdatedPerson = personRepository.save(existingPerson);
 
-     @GetMapping("/blog/{userId}")
-     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
-         Map<String, Object> response = new HashMap<>();
+            Map<String, Object> updatedResponse = new HashMap<>();
+            updatedResponse.put("updatedUser", savedUpdatedUser);
+            updatedResponse.put("updatedPerson", savedUpdatedPerson);
 
-         System.out.println("Cookie value: " + cookieValue);
+            return new ResponseEntity<>(updatedResponse, HttpStatus.OK);
+        } else {
+            System.out.println("User " + Id + " does not exist.");
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-         Optional<User> user = sessionRepository.findUserById(cookieValue);
-         if (user.isPresent()) {
-             response.put("user", user.get());
-         } else {
-             System.out.println("User not found for session ID: " + cookieValue);
-             response.put("error", "User not found");
-         }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable("id") String Id) {
+        Optional<User> user = userRepository.findById(Id);
+        if (user.isPresent()) {
+            userRepository.deleteById(Id);
+            return ResponseEntity.noContent().build();
+        } else {
+            System.out.println("User " + Id + " does not exist.");
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-         return ResponseEntity.ok(response);
-     }
+    @GetMapping()
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Test endpoint hit");
+    }
 
-
-      @PatchMapping("/{id}")
-      public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {
-          Optional<User> user = userRepository.findById(Id);
-
-          if (user.isPresent()) {
-              User existingUser = user.get();
-              Optional<Person> person = personRepository.findByUsersPersonId(existingUser.getPersonID());
-              Person existingPerson = person.get();
-
-              if (updatedUser.getName() != null) {
-                  existingUser.setName(updatedUser.getName());
-                  existingPerson.setName(updatedUser.getName());
-              }
-              if (updatedUser.getPassword() != null) {
-                  existingUser.setPassword(updatedUser.getPassword());
-              }
-              if (updatedUser.getEmail() != null) {
-                  existingUser.setEmail(updatedUser.getEmail());
-              }
-
-              User savedUpdatedUser = userRepository.save(existingUser);
-              Person savedUpdatedPerson = personRepository.save(existingPerson);
-
-              Map<String, Object> updatedResponse = new HashMap<>();
-              updatedResponse.put("updatedUser", savedUpdatedUser);
-              updatedResponse.put("updatedPerson", savedUpdatedPerson);
-
-              return new ResponseEntity<>(updatedResponse, HttpStatus.OK);
-          } else {
-              System.out.println("User " + Id + " does not exist.");
-              return ResponseEntity.notFound().build();
-          }
-      }
-
-     @DeleteMapping("/{id}")
-     public ResponseEntity<User> deleteUser(@PathVariable("id") String Id) {
-         Optional<User> user = userRepository.findById(Id);
-         if (user.isPresent()) {
-             userRepository.deleteById(Id);
-             return ResponseEntity.noContent().build();
-         } else {
-             System.out.println("User " + Id + " does not exist.");
-             return ResponseEntity.notFound().build();
-         }
-     }
-
-     @GetMapping()
-     public ResponseEntity<String> testEndpoint() {
-         return ResponseEntity.ok("Test endpoint hit");
-     }
+    @GetMapping("/current")
+    public ResponseEntity<User> getCurrentUser(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        System.out.println("USER ID IN REQUEST IS " + userId);
+        
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }
