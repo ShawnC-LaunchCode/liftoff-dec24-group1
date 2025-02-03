@@ -1,7 +1,12 @@
 package com.familyflashback.familyflashback.controllers;
 
+import com.familyflashback.familyflashback.dto.PersonWithRelationDTO;
 import com.familyflashback.familyflashback.models.Person;
+import com.familyflashback.familyflashback.models.Person_Person;
+import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.PersonRepository;
+import com.familyflashback.familyflashback.models.data.Person_PersonRepository;
+import com.familyflashback.familyflashback.models.data.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +24,48 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-    @PostMapping
-    public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
-        Person createdPerson = personRepository.save(person);
-        return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
+    @Autowired
+    private Person_PersonRepository person_personRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("")
+    public ResponseEntity<?> createPersonWithRelation(@Valid @RequestBody PersonWithRelationDTO dto, HttpServletRequest request) {
+        try {
+            // Create the person
+            Person newPerson = new Person();
+            newPerson.setName(dto.getName());
+            newPerson.setBirthDate(dto.getBirthDate());
+            newPerson.setDeathDate(dto.getDeathDate());
+            newPerson.setBirthTown(dto.getBirthTown());
+            newPerson.setBio(dto.getBio());
+            
+            // Get userId from request and set the user
+            String userId = (String) request.getAttribute("userId");
+            System.out.println("USER ID FROM SESSION IS " + userId);
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            newPerson.setUser(user);
+            
+            // Save the person first
+            Person savedPerson = personRepository.save(newPerson);
+            
+            // Create the relationship if rootPersonId is provided
+            if (dto.getRootPersonId() != null && !dto.getRootPersonId().isEmpty()) {
+                Person_Person relationship = new Person_Person();
+                relationship.setRootPerson(dto.getRootPersonId());
+                relationship.setRelatedPerson(savedPerson.getId());
+                relationship.setRelationship(dto.getRelationship());
+                
+                person_personRepository.save(relationship);
+            }
+            
+            return new ResponseEntity<>(savedPerson, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error creating person: " + e.getMessage(), 
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PatchMapping("/{id}")

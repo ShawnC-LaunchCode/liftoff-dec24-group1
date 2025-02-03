@@ -43,7 +43,9 @@ public class AuthFilter implements HandlerInterceptor {
 
         Cookie[] cookies = request.getCookies();
         if(cookies != null) {
+            System.out.println("COOKIES IN REQUEST ARE " + cookies);
             String sessionID = cookies[0].getValue();
+            System.out.println("SESSION IN REQUEST IS " + sessionID);
 
             if(sessionID != null) {
                 Optional<Session> session = sessionRepository.findById(sessionID);
