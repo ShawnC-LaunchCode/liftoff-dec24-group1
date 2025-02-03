@@ -5,15 +5,25 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Home', href: '/'},
+  { name: 'Home', href: '/home'},
   { name: 'Tree', href: '/tree' },
   { name: 'Map', href: '/map' },
   { name: 'Blog', href: '/blog' },
   { name: 'Support', href: '/support' },
 ]
 
+const authNavigation = [
+  { name: 'Login', href: '/login'},
+  { name: 'Sign Up', href: '/signup'},
+]
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
 
   return (
     <header className="bg-white">
@@ -38,16 +48,26 @@ export default function Header() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        <div className="hidden lg:flex lg:gap-x-12">
-          {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
-              {item.name}
-            </a>
-          ))}
-        </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/signup" className="text-sm/6 font-semibold text-gray-900">Log in / Sign Up</a>
-        </div>
+        {cookieValue != null &&
+            <div className="hidden lg:flex lg:gap-x-12">
+                {navigation.map((item) => (
+                    <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+                        {item.name}
+                    </a>
+                ))}
+            </div>
+        }
+        {cookieValue == null ?
+            (<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+                {authNavigation.map((item) => (
+                            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+                              {item.name}
+                            </a>
+                          ))}
+                      </div>)
+            :(<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-12">
+                <a href='/' className="text-sm/6 font-semibold text-gray-900">Account</a>
+                </div>)}
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />

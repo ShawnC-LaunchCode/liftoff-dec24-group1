@@ -1,4 +1,6 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
 
 import "./signup.css"
 
@@ -8,43 +10,79 @@ import passwordIcon from "../components/assets/password.png"
 
 export default function Signup() {
 
-    const handleSubmit = (event) => {
-        alert("Form submitted");
-        console.log("test");
+    const [showPasswordFeedback, setShowPasswordFeedback] = useState(false)
+    const [showEmailFeedback, setShowEmailFeedback] = useState(false)
+    const [showEmptyFeedback, setShowEmptyFeedback] = useState(false)
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        setShowEmptyFeedback(false);
 
-        /*fetch("http://localhost:8080/user", {mode: 'no-cors'}).then((response) => {
-            return response;
-        }).then((data) => {
-            console.log(data);
-        });*/
+        const userData = {
+            password: document.getElementById("pass").value,
+            name: document.getElementById("user").value,
+            email: document.getElementById("email").value,
+          };
 
+        console.log(userData);
+
+        if(userData.password == '' || userData.email == '' || userData.name == '' || document.getElementById("passConfirm").value == '') {
+            setShowEmptyFeedback(true);
+        } else if (!showPasswordFeedback) {
+            const response = await fetch("http://localhost:8080/user", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            const result = await response.json();
+            console.log(result);
+
+            if(result["error"] = "email already in use") {
+                setShowEmailFeedback(true);
+            }
+
+            if(result["session"] != null) {
+                document.cookie = "session=" + result["session"];
+                navigate('/');
+                window.location.reload()
+            }
+        }
     }
 
     const handleClick = (event) => {
         alert("Forgot Password triggered");
     }
 
-    const handleChange = (event) => {
-        const user = document.getElementById("user");
-        alert({user});
-    }
-
-    const validateUser = (event) => {
-
-
-    }
-
     const handlePassConfirmChange = (event) => {
         const password = document.getElementById("pass").value;
         const passwordConfirm = document.getElementById("passConfirm").value;
 
-        if (password === passwordConfirm) {
-            alert("Passwords Match!");
+        if (password != passwordConfirm) {
+            setShowPasswordFeedback(true);
+        } else {
+            setShowPasswordFeedback(false);
         }
     }
 
-    
+    const handleChange = (event) => {
+        if(document.getElementById("user").value != '') {
+            if(document.getElementById("email").value != '') {
+                if(document.getElementById("pass").value != '') {
+                    if(document.getElementById("passConfirm").value != '') {
+                        setShowEmptyFeedback(false);
+                    }
+                }
+            }
+        }
+    }
+
     return (
         <div className='signup-form'>
             <div className='signup-header'>
@@ -54,26 +92,41 @@ export default function Signup() {
                 <form className='signup-textfields' onSubmit={handleSubmit}>
                     <div className='signup-textfield'>
                         <img src={userIcon} alt='' />
-                        <input type='text' id='user' placeholder='name' onBlur={validateUser}/>
+                        <input type='text' id='user' placeholder='name' onChange={handleChange}/>
                     </div>
                     <div className='signup-textfield'>
                         <img src={emailIcon} alt='' />
-                        <input type="email" placeholder='email' onBlur={validateUser} />
+                        <input type="email" id='email' placeholder='email' onChange={handleChange}/>
                     </div>
                     <div className='signup-textfield'>
                         <img src={passwordIcon} alt='' />
-                        <input type='password' id='pass' placeholder='password' onBlur={validateUser}/>
+                        <input type='password' id='pass' placeholder='password' onChange={handleChange}/>
                     </div>
                     <div className='signup-textfield'>
                         <img src={passwordIcon} alt='' />
-                        <input type='password' id='passConfirm' placeholder='confirm password' onBlur={validateUser} onChange={handlePassConfirmChange}/>
+                        <input type='password' id='passConfirm' placeholder='confirm password' onChange={handlePassConfirmChange}/>
                     </div>
                     <div className='submit-button'>
-                        <input type='submit' />
+                        <button type='submit'>Sign up!</button>
                     </div>
                 </form>
             </div>
-            <div className='recover-password'>Forgot Password? <span onClick={handleClick}>Click Here.</span></div>
+            {showPasswordFeedback &&
+                <div className="login-denied">
+                    <p>Passwords do not match.</p>
+                </div>
+            }
+            {showEmptyFeedback &&
+                <div className="login-denied">
+                    <p>Please fill in all fields.</p>
+                </div>
+            }
+            {showEmailFeedback &&
+                <div className="login-denied">
+                    <p>Email already in use.</p>
+                </div>
+            }
+            <div className='recover-password'>Already Registered? <span onClick={handleClick}>Log In.</span></div>
         </div>
     )
 }

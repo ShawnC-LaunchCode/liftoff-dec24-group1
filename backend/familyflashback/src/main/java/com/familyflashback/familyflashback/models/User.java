@@ -1,18 +1,21 @@
 package com.familyflashback.familyflashback.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.time.LocalDate;
 
 
 @Entity
 @JsonIgnoreProperties(value = { "password" }, allowSetters = true)
 public class User extends AbstractEntity {
+
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private String name;
 
@@ -34,7 +37,7 @@ public class User extends AbstractEntity {
 
     public User(String password, String name, String email) {
         this.lastLogin = LocalDate.now();
-        this.password = password;
+        this.password = encoder.encode(password);
         this.name = name;
         this.email = email;
     }
@@ -85,5 +88,13 @@ public class User extends AbstractEntity {
                 ", email='" + email + '\'' +
                 ", lastLogin=" + lastLogin +
                 '}';
+    }
+
+    public void hashPass() {
+        this.password = encoder.encode(this.password);
+    }
+
+    public boolean isMatchingPassword(String password) {
+        return encoder.matches(password, this.password);
     }
 }
