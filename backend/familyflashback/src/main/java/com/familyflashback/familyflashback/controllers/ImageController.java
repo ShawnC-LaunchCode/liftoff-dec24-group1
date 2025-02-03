@@ -6,6 +6,7 @@ import com.familyflashback.familyflashback.models.data.ImageRepository;
 import com.familyflashback.familyflashback.models.data.Person_ImageRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -88,7 +89,6 @@ public class ImageController {
         return filePath.toString();
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Image> deleteImage(@PathVariable("id") String Id) {
         Optional<Image> image = imageRepository.findById(Id);
@@ -100,12 +100,29 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/")
+    public ResponseEntity<String> getImage(@RequestParam String imgId) {
+        Optional<Image> image = imageRepository.findById(imgId);
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Image> getImage(@PathVariable("id") String Id) {
-//        Optional<Image> image = imageRepository.findById(Id);
-//        return image.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//    }
+        if(image.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        String path = image.get().getUrl();
+        Path filePath = Path.of(path);
+        String fileName;
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            fileName = resource.getFilename();
+            String server = "http://localhost:8080/uploads/";
+            String url = server + fileName;
+            return ResponseEntity.ok(url);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllImages(@RequestParam String personId) {
