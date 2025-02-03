@@ -48,6 +48,7 @@ public class UserController {
         Person personCopy = new Person();
         personCopy.setName(user.getName());
         personCopy.setUser(user);
+        personCopy.setGenerationLevel(0);
         Person createdPerson = personRepository.save(personCopy);
         System.out.println("Person Id for user " + createdUser.getId() + " is " + createdPerson.getId());
 

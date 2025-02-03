@@ -4,6 +4,7 @@ import com.familyflashback.familyflashback.dto.PersonWithRelationDTO;
 import com.familyflashback.familyflashback.models.Person;
 import com.familyflashback.familyflashback.models.Person_Person;
 import com.familyflashback.familyflashback.models.User;
+import com.familyflashback.familyflashback.models.Person_Person.RelationshipType;
 import com.familyflashback.familyflashback.models.data.PersonRepository;
 import com.familyflashback.familyflashback.models.data.Person_PersonRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
@@ -40,24 +41,47 @@ public class PersonController {
             newPerson.setDeathDate(dto.getDeathDate());
             newPerson.setBirthTown(dto.getBirthTown());
             newPerson.setBio(dto.getBio());
+            newPerson.setGender(dto.getGender());
             
             // Get userId from request and set the user
             String userId = (String) request.getAttribute("userId");
-            System.out.println("USER ID FROM SESSION IS " + userId);
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             newPerson.setUser(user);
+            
+            // If there's a root person, set the generation level based on relationship
+            if (dto.getRootPersonId() != null && !dto.getRootPersonId().isEmpty()) {
+                Person rootPerson = personRepository.findById(dto.getRootPersonId())
+                    .orElseThrow(() -> new RuntimeException("Root person not found"));
+                
+                // Set generation level based on relationship type
+                switch (RelationshipType.valueOf(dto.getRelationship())) {
+                    case parent:
+                        newPerson.setGenerationLevel(rootPerson.getGenerationLevel() - 1);
+                        break;
+                    case child:
+                        newPerson.setGenerationLevel(rootPerson.getGenerationLevel() + 1);
+                        break;
+                    case spouse:
+                    case sibling:
+                        newPerson.setGenerationLevel(rootPerson.getGenerationLevel());
+                        break;
+                }
+            } else {
+                // If no root person, this is the first person in the tree
+                newPerson.setGenerationLevel(0);
+            }
             
             // Save the person first
             Person savedPerson = personRepository.save(newPerson);
             
             // Create the relationship if rootPersonId is provided
             if (dto.getRootPersonId() != null && !dto.getRootPersonId().isEmpty()) {
-                Person_Person relationship = new Person_Person();
-                relationship.setRootPerson(dto.getRootPersonId());
-                relationship.setRelatedPerson(savedPerson.getId());
-                relationship.setRelationship(dto.getRelationship());
-                
+                Person_Person relationship = new Person_Person(
+                    dto.getRelationship(),
+                    dto.getRootPersonId(),
+                    savedPerson.getId()
+                );
                 person_personRepository.save(relationship);
             }
             
@@ -111,6 +135,7 @@ public class PersonController {
     @GetMapping("/user")
     public ResponseEntity<List<Person>> getAllPersonsForUser(HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
+        System.out.println("GET ALL PEOPLE FOR USER, USER ID FROM REQUEST " + userId);
         List<Person> persons = personRepository.findAllByUserId(userId);
         if (!persons.isEmpty()) {
             return ResponseEntity.ok(persons);
@@ -128,11 +153,4 @@ public class PersonController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Test endpoint hit!!");
-    }
-
-
 }

@@ -2,8 +2,11 @@ package com.familyflashback.familyflashback.models;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Column;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,73 +16,82 @@ import java.util.Objects;
 public class Person_Person {
 
     @Id
-    private String rootPerson;
+    private String personId;
 
     @Id
-    private String relatedPerson;
+    private String relativeId;
 
-    private String relationship;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RelationshipType relationshipType;
+
+    public enum RelationshipType {
+        parent,
+        child,
+        spouse,
+        sibling
+    }
 
     public Person_Person() {}
 
     public Person_Person(String relationship, String rootPerson, String relatedPerson) {
-        this.relationship = relationship;
-        this.rootPerson = rootPerson;
-        this.relatedPerson = relatedPerson;
+        this.relationshipType = RelationshipType.valueOf(relationship);
+        this.personId = rootPerson;
+        this.relativeId = relatedPerson;
     }
 
     public String getRelationship() {
-        return relationship;
+        return relationshipType.name();
     }
 
     public void setRelationship(String relationship) {
-        this.relationship = relationship;
+        this.relationshipType = RelationshipType.valueOf(relationship.toLowerCase());
     }
 
     public String getRelatedPerson() {
-        return relatedPerson;
+        return relativeId;
     }
 
     public void setRelatedPerson(String relatedPerson) {
-        this.relatedPerson = relatedPerson;
+        this.relativeId = relatedPerson;
     }
 
     public String getRootPerson() {
-        return rootPerson;
+        return personId;
     }
 
     public void setRootPerson(String rootPerson) {
-        this.rootPerson = rootPerson;
+        this.personId = rootPerson;
     }
 
     @IdClass(CompositeKey.class)
     public static class CompositeKey implements Serializable {
 
-        private String rootPerson;
+        private String personId;
 
-        private String relatedPerson;
+        private String relativeId;
 
         public CompositeKey() {}
 
-        public CompositeKey(String rootPerson, String relatedPerson) {
-            this.rootPerson = rootPerson;
-            this.relatedPerson = relatedPerson;
+        public CompositeKey(String personId, String relativeId) {
+            this.personId = personId;
+            this.relativeId = relativeId;
         }
 
         public String getRelatedPerson() {
-            return relatedPerson;
+            return relativeId;
         }
 
         public void setRelatedPerson(String relatedPerson) {
-            this.relatedPerson = relatedPerson;
+            this.relativeId = relatedPerson;
         }
 
         public String getRootPerson() {
-            return rootPerson;
+            return personId;
         }
 
         public void setRootPerson(String rootPerson) {
-            this.rootPerson = rootPerson;
+            this.personId = rootPerson;
         }
 
         @Override
@@ -98,8 +110,8 @@ public class Person_Person {
         @Override
         public String toString() {
             return "CompositeKey{" +
-                    "rootPerson='" + rootPerson + '\'' +
-                    ", relatedPerson='" + relatedPerson + '\'' +
+                    "rootPerson='" + personId + '\'' +
+                    ", relatedPerson='" + relativeId + '\'' +
                     '}';
         }
     }

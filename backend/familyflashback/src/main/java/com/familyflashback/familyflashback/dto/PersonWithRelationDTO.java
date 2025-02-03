@@ -9,6 +9,7 @@ public class PersonWithRelationDTO {
     private String birthTown;
     private String bio;
     private String userId;
+    private String gender;
     
     // Relationship fields
     private String rootPersonId;  // The ID of the person this new person is related to
@@ -38,4 +39,7 @@ public class PersonWithRelationDTO {
     
     public String getRelationship() { return relationship; }
     public void setRelationship(String relationship) { this.relationship = relationship; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 } 

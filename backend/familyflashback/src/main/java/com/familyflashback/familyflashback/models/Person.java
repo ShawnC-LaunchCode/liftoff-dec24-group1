@@ -17,6 +17,9 @@ public class Person extends AbstractEntity {
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
 
+    @Size(max = 1, message = "Gender must be a single character")
+    private String gender;
+
     private LocalDate birthDate;
 
     private LocalDate deathDate;
@@ -27,16 +30,20 @@ public class Person extends AbstractEntity {
     @Size(max = 500, message = "Bio cannot exceed 500 characters")
     private String bio;
 
+    private Integer generationLevel;
+
 
     public Person() {}
 
-    public Person(String bio, String birthTown, LocalDate deathDate, LocalDate birthDate, String name, User user) {
+    public Person(String bio, String birthTown, LocalDate deathDate, LocalDate birthDate, String name, User user, String gender, Integer generationLevel) {
         this.bio = bio;
         this.birthTown = birthTown;
         this.deathDate = deathDate;
         this.birthDate = birthDate;
         this.name = name;
         this.user = user;
+        this.gender = gender;
+        this.generationLevel = generationLevel;
     }
 
 
@@ -89,15 +96,33 @@ public class Person extends AbstractEntity {
         this.user = user;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getGenerationLevel() {
+        return generationLevel;
+    }
+
+    public void setGenerationLevel(Integer generationLevel) {
+        this.generationLevel = generationLevel;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
                 ", user=" + user +
                 ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
                 ", birthDate=" + birthDate +
                 ", deathDate=" + deathDate +
                 ", birthTown='" + birthTown + '\'' +
                 ", bio='" + bio + '\'' +
+                ", generationLevel=" + generationLevel +
                 '}';
     }
 }
