@@ -26,12 +26,10 @@ export default function Signup() {
             email: document.getElementById("email").value,
           };
 
-        console.log(userData);
-
         if(userData.password == '' || userData.email == '' || userData.name == '' || document.getElementById("passConfirm").value == '') {
             setShowEmptyFeedback(true);
         } else if (!showPasswordFeedback) {
-            const response = await fetch("http://localhost:8080/user", {
+            const response = await fetch("http://localhost:8080/user/create", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -42,14 +40,17 @@ export default function Signup() {
             });
 
             const result = await response.json();
-            console.log(result);
 
             if(result["error"] = "email already in use") {
                 setShowEmailFeedback(true);
             }
 
-            if(result["session"] != null) {
-                document.cookie = "session=" + result["session"];
+            const session = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("session="))
+            ?.split("=")[1];
+
+            if(session != null) {
                 navigate('/');
                 window.location.reload()
             }
