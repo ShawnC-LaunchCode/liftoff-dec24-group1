@@ -49,7 +49,11 @@ function ViewPerson() {
   useEffect(() => {
     fetch(`http://localhost:8080/persons/${rootPerson}`, {
       method: 'GET',
-      credentials: 'include',  // This sends cookies with the request
+      credentials: 'include',  
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
       .then((response) => {
         if (!response.ok) {
@@ -155,6 +159,7 @@ function ViewPerson() {
     // Delete request to delete person
     fetch(`http://localhost:8080/persons/${rootPerson}`, {
       method: 'DELETE',
+      credentials: 'include',
     })
       .then((response) => {
         if (response.ok) {
@@ -184,7 +189,9 @@ function ViewPerson() {
 
     fetch(`http://localhost:8080/persons/${rootPerson}`, {
       method: 'PATCH',
+      credentials: 'include',
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: requestData,
@@ -227,6 +234,7 @@ function ViewPerson() {
     fetch('http://localhost:8080/images', {
       method: 'POST',
       body: formData,
+      credentials: 'include',
     })
       .then((response) => response.json())
       .then((data) => {
@@ -250,6 +258,10 @@ function ViewPerson() {
     fetch(`http://localhost:8080/images/all?personId=${rootPerson}`, {
       method: 'GET',
       credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
       .then((response) => response.json())
       .then((data) => {
