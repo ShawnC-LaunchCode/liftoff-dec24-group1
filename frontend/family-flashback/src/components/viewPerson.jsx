@@ -42,7 +42,7 @@ function ViewPerson() {
   const location = useLocation();
   let { rootPerson } = location.state || {};
 
-  rootPerson = 'amkqxIGscuTjltOkSLsF5';
+  rootPerson = 'PmW73lTDWEkbYIMA_luu8';
   console.log('rootperson ' + rootPerson);
 
   // Request for rootPersonData
@@ -111,6 +111,8 @@ function ViewPerson() {
       getImages();
     }
   }, [rootPersonData]);
+
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -237,6 +239,8 @@ function ViewPerson() {
         console.error('Error uploading image:', error);
         alert('Error uploading image.');
       });
+
+     getImages();
   };
 
   const getImages = () => {
