@@ -36,6 +36,29 @@ const CustomNode = ({ data, isSelected, onClick }) => {
   );
 };
 
+// Add this new edge type
+const CustomEdge = ({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  style = {}
+}) => {
+  const edgePath = `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
+  
+  return (
+    <path
+      d={edgePath}
+      className="react-flow__edge-path"
+      style={{
+        ...style,
+        strokeWidth: 2,
+        stroke: '#94a3b8',
+      }}
+    />
+  );
+};
+
 const FamilyTree = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -57,12 +80,12 @@ const FamilyTree = () => {
       
       const data = await response.json();
       
-      // Convert persons data to nodes
+      // Convert persons data to nodes with explicit positioning
       const newNodes = data.map((person) => ({
         id: person.id,
         position: { 
           x: 0, 
-          y: person.generationLevel * 200 // Increased vertical spacing
+          y: 0  // We'll set these properly below
         },
         data: {
           ...person,
@@ -70,7 +93,7 @@ const FamilyTree = () => {
         },
         type: 'custom',
         draggable: false,
-        style: { width: 'auto' } // Allow node width to be dynamic
+        style: { width: 'auto' }
       }));
 
       // Group nodes by generation level
@@ -83,35 +106,52 @@ const FamilyTree = () => {
         generationGroups[gen].push(node);
       });
 
-      // Center align nodes in each generation
-      Object.values(generationGroups).forEach(genNodes => {
-        const spacing = 300; // Increased horizontal spacing
-        const totalWidth = (genNodes.length - 1) * spacing;
-        const startX = -totalWidth / 2; // Center the group
+      // Position nodes with fixed values
+      const VERTICAL_SPACING = 200;
+      const HORIZONTAL_SPACING = 300;
+      
+      Object.entries(generationGroups).forEach(([generation, nodes]) => {
+        const yPosition = parseInt(generation) * VERTICAL_SPACING;
+        const totalWidth = (nodes.length - 1) * HORIZONTAL_SPACING;
+        const startX = -totalWidth / 2;
 
-        genNodes.forEach((node, index) => {
-          node.position.x = startX + (index * spacing);
+        nodes.forEach((node, index) => {
+          node.position = {
+            x: startX + (index * HORIZONTAL_SPACING),
+            y: yPosition
+          };
+          console.log(`Node ${node.id} positioned at:`, node.position); // Debug positioning
         });
       });
 
-      // Create edges between adjacent generations
+      // Create edges with the custom type
       const newEdges = [];
-      data.forEach(person => {
-        const closestUpperGen = data
-          .filter(p => p.generationLevel === person.generationLevel - 1)
-          .map(p => ({
-            id: `e${p.id}-${person.id}`,
-            source: p.id,
-            target: person.id,
-            type: 'smoothstep',
-            style: { stroke: '#94a3b8', strokeWidth: 2 },
-            markerEnd: {
-              type: 'arrow',
-              color: '#94a3b8',
-            },
-          }));
-        newEdges.push(...closestUpperGen);
-      });
+      const rootPerson = data.find(person => person.generationLevel === 0);
+      
+      if (rootPerson) {
+        data.forEach(person => {
+          if (person.id !== rootPerson.id) {
+            const edge = {
+              id: `e${rootPerson.id}-${person.id}`,
+              source: rootPerson.id,
+              target: person.id,
+              type: 'custom',
+              style: { 
+                stroke: '#94a3b8', 
+                strokeWidth: 2 
+              },
+              data: {
+                sourceNode: rootPerson,
+                targetNode: person
+              }
+            };
+            newEdges.push(edge);
+          }
+        });
+      }
+
+      console.log('Setting nodes:', newNodes); // Debug log
+      console.log('Setting edges:', newEdges); // Debug log
 
       setNodes(newNodes);
       setEdges(newEdges);
@@ -124,6 +164,21 @@ const FamilyTree = () => {
   useEffect(() => {
     fetchFamilyTree();
   }, []);
+
+  // Add useEffect to log state changes
+  useEffect(() => {
+    console.log('Nodes updated:', nodes);
+  }, [nodes]);
+
+  useEffect(() => {
+    console.log('Edges updated:', edges);
+  }, [edges]);
+
+  // Add this useEffect to debug state updates
+  useEffect(() => {
+    console.log('Current nodes:', nodes);
+    console.log('Current edges:', edges);
+  }, [nodes, edges]);
 
   const handleNodeClick = (person) => {
     setSelectedPerson(person);
@@ -160,13 +215,7 @@ const FamilyTree = () => {
       ) : (
         <>
           <ReactFlow
-            nodes={nodes.map(node => ({
-              ...node,
-              data: {
-                ...node.data,
-                isSelected: selectedPerson?.id === node.id
-              }
-            }))}
+            nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
@@ -174,48 +223,30 @@ const FamilyTree = () => {
               custom: (props) => (
                 <CustomNode 
                   {...props} 
-                  isSelected={props.data.isSelected}
+                  isSelected={selectedPerson?.id === props.data.id}
                   onClick={handleNodeClick}
                 />
               )
             }}
+            edgeTypes={{
+              custom: CustomEdge
+            }}
+            defaultEdgeOptions={{
+              type: 'custom',
+              animated: true
+            }}
             fitView
-            panOnScroll={true}
-            zoomOnScroll={true} // Enable zoom on scroll
-            minZoom={0.5} // Set minimum zoom level
-            maxZoom={1.5} // Set maximum zoom level
+            fitViewOptions={{ padding: 0.2 }}
+            minZoom={0.5}
+            maxZoom={1.5}
             nodesDraggable={false}
-            preventScrolling={false} // Allow scrolling
-            style={{ 
-              zIndex: 0,
-              backgroundColor: 'transparent'
-            }}
-            defaultViewport={{ zoom: 1 }}
-            fitViewOptions={{
-              padding: 0.2,
-              duration: 800
-            }}
+            elementsSelectable={true}
+            snapToGrid={true}
+            snapGrid={[15, 15]}
           >
-            <Background 
-              color="#94a3b8" 
-              style={{ backgroundColor: 'transparent' }}
-              gap={24}
-              size={1}
-            />
-            <Controls 
-              showZoom={true} // Show zoom controls
-              showFitView={true}
-              className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md"
-            />
-            <MiniMap 
-              className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md"
-              nodeColor={node => {
-                if (node.data.generationLevel === 0) return '#8b5cf6';
-                return '#cbd5e1';
-              }}
-              zoomable
-              pannable
-            />
+            <Background />
+            <Controls />
+            <MiniMap />
           </ReactFlow>
 
           {selectedPerson && (

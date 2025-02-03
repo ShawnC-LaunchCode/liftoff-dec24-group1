@@ -159,4 +159,11 @@ public class PersonController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/locations")
+    public ResponseEntity<List<String>> getAllBirthTowns(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        List<String> birthTowns = personRepository.findDistinctBirthTownByUserId(userId);
+        return ResponseEntity.ok(birthTowns);
+    }
 }
