@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -37,7 +39,6 @@ public class Blog_CommentsController {
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             if (user.isPresent()) {
                 String userId = user.get().getId();
-                // Adding comments to the response (you can replace with actual comments)
                 List<Blog_Comments> comments = blog_commentsRepository.findAllByUserId(userId);
                 response.put("comments", comments);
             } else {
@@ -92,6 +93,7 @@ public class Blog_CommentsController {
             blog_comment.setUserId(userId);
             blog_comment.setName(name);
             blog_comment.setBlog(blog.get());
+            blog_comment.setUpdate_dt(LocalDateTime.now());
             Blog_Comments comment = blog_commentsRepository.save(blog_comment);
             return new ResponseEntity<>(comment, HttpStatus.CREATED);
         } else {
@@ -108,6 +110,7 @@ public class Blog_CommentsController {
             if (updatedComments.getBody() != null) {
                 existingComments.setBody(updatedComments.getBody());
             }
+            existingComments.setUpdate_dt(LocalDateTime.now());
             Blog_Comments savedUpdatedComments = blog_commentsRepository.save(existingComments);
             return new ResponseEntity<>(savedUpdatedComments, HttpStatus.OK);
         } else {

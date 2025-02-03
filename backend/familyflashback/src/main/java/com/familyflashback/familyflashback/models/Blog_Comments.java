@@ -22,7 +22,7 @@ public class Blog_Comments extends AbstractEntity {
     private String body;
 
     @Column(name = "update_dt")
-    private LocalDateTime dateUpdated;
+    private LocalDateTime update_dt;
 
     @ManyToOne
     @JoinColumn(name = "blog_id", nullable = false)
@@ -34,7 +34,7 @@ public class Blog_Comments extends AbstractEntity {
 
     public Blog_Comments(String userId, String body, Blog blog) {
         this.userId = userId;
-        this.dateUpdated = LocalDateTime.now();
+        this.update_dt = LocalDateTime.now();
         this.body = body;
         this.blog = blog;
     }
@@ -56,12 +56,12 @@ public class Blog_Comments extends AbstractEntity {
         this.name = name;
     }
 
-    public LocalDateTime getDateUpdated() {
-        return dateUpdated;
+    public LocalDateTime getUpdate_dt() {
+        return update_dt;
     }
 
-    public void setDateUpdated(LocalDateTime dateUpdated) {
-        this.dateUpdated = dateUpdated;
+    public void setUpdate_dt(LocalDateTime update_dt) {
+        this.update_dt = update_dt;
     }
 
     public @Size(max = 500, message = "Cannot exceed 500 characters") @NotNull String getBody() {
@@ -85,7 +85,7 @@ public class Blog_Comments extends AbstractEntity {
         return "Blog_Comments{" +
                 ", userId='" + userId + '\'' +
                 ", body='" + body + '\'' +
-                ", dateUpdated=" + dateUpdated +
+                ", update_dt=" + update_dt +
                 ", blog=" + blog +
                 '}';
     }

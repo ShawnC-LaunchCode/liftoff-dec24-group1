@@ -17,8 +17,8 @@ const Comment = ({
     activeComment.type === "editing";
   const canEdit = currentUserId === comment.user_id;
   const canDelete = currentUserId === comment.user_id;
-  const update_dt = comment.update_dt;
-  //console.log(update_dt); //needs fixed
+  const update_dt = new Date (comment.update_dt).toLocaleDateString();
+   
 
   return (
     <div className="comment">
