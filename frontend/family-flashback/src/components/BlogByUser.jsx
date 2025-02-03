@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Comments from './Comments';
 import { useNavigate } from 'react-router-dom';
+import '../blog.css';
 
 const BlogByUser = () => {
 
@@ -18,7 +19,6 @@ const BlogByUser = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data);
         setUserBlog(data);
       } catch (error) {
         console.error("Error fetching user blog:", error);
@@ -33,14 +33,15 @@ const BlogByUser = () => {
   };
 
   return (
-    <div>
+    <div className="blog-page-container">
       {userBlog && (
         <div>
-          <h2>{userBlog.header}</h2>
-          <p>{userBlog.body}</p>
+          <h2 className="blog-header">{userBlog.header}</h2>
+          <p className="blog-content">{userBlog.body}</p>
           <button onClick={handleEditClick}>Edit</button>
-          {/* Display more blog details as needed */}
-          <Comments blogId={userBlog.id} />
+          <div className="comments-section">
+            <Comments blogId={userBlog.id} />
+          </div>
         </div>
       )}
     </div>

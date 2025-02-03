@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../blog.css';
-import Comments from "./Comments";
 import BlogList from "./BlogList";
 
 const Blog = () => {
@@ -66,20 +65,19 @@ const Blog = () => {
   };
 
   return (
-    <div>
-      <h1>Blog Page</h1>
-      {userBlogExists ? (
-        <div>
-          <button onClick={handleBlogClick}>Go to My Blog</button>
-        </div>
-      ) : (
-        <div>
-          <button onClick={handleCreateClick}>Create Blog</button>
-        </div>
-      )}
+    <div className="blog-container">
+      <h1 className="blog-header">Blog Page</h1>
+      <div className="blog-buttons">
+        {userBlogExists ? (
+          <button className="blog-button" onClick={handleBlogClick}>Go to My Blog</button>
+        ) : (
+          <button className="blog-button" onClick={handleCreateClick}>Create Blog</button>
+        )}
+      </div>
       <BlogList />
     </div>
   );
 };
+
 
 export default Blog;

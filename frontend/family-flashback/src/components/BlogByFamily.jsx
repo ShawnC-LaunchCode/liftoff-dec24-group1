@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Comments from './Comments';
+import '../blog.css';
 
 const BlogByFamily = () => {
   const { blogId } = useParams(); 
@@ -27,15 +28,14 @@ const BlogByFamily = () => {
   }, [blogId]);
 
   return (
-    <div>
-      
+    <div className="blog-page-container">
       {blog && (
         <div>
-            <h1> {blog.header}</h1>
-          
-          <p>{blog.body}</p>
-          <Comments blogId={blog.id} />
-          
+          <h1 className="blog-header"> {blog.header}</h1>
+          <p className="blog-content">{blog.body}</p>
+          <div className="comments-section">
+            <Comments blogId={blog.id} />
+          </div>
         </div>
       )}
     </div>

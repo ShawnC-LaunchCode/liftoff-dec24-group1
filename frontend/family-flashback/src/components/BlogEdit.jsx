@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import '../blog.css';
 
 const BlogEdit = () => {
   const [blog, setBlog] = useState(null);
@@ -119,15 +120,28 @@ const BlogEdit = () => {
   };
 
   return (
-    <div>
-      <h1>Edit Blog</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={header} onChange={handleHeaderChange} />
-        <textarea value={body} onChange={handleBodyChange} />
-        <button type="submit">Save</button>
-        <button type="cancel" onClick={handleCancel}>Cancel</button>
+    <div className="edit-blog-container">
+      <h1 className="edit-blog-header">Edit Blog</h1>
+      <form className="edit-blog-form" onSubmit={handleSubmit}>
+        <input 
+          className="edit-blog-input" 
+          type="text" 
+          value={header} 
+          onChange={handleHeaderChange} 
+          placeholder="Enter header" 
+        />
+        <textarea 
+          className="edit-blog-textarea" 
+          value={body} 
+          onChange={handleBodyChange} 
+          placeholder="Enter body" 
+        />
+        <div className="edit-blog-buttons">
+          <button className="edit-blog-button" type="submit">Save</button>
+          <button className="edit-blog-button" type="button" onClick={handleCancel}>Cancel</button>
+        </div>
       </form>
-      <button onClick={deleteBlog}>Delete Blog</button>
+      <button className="delete-blog-button" onClick={deleteBlog}>Delete Blog</button>
     </div>
   );
 };
