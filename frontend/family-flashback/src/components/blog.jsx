@@ -2,55 +2,86 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../blog.css';
 import Comments from "./Comments";
+import BlogList from "./BlogList";
 
 const Blog = () => {
-  const [blogExists, setBlogExists] = useState(false);
-  const [blog, setBlog] = useState(null);
+  const [userBlogExists, setUserBlogExists] = useState(false);
+  const [userBlog, setUserBlog] = useState(null);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBlogExists = async () => {
+    const fetchCurrentUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/blog`, {
-          credentials: 'include'
+        const response = await fetch(`http://localhost:8080/blog/session`, {
+          method: 'GET',
+          credentials: 'include',
         });
-        if (response.status === 204) {
-          setBlogExists(false);
-        } else if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        } else {
-          const data = await response.json();
-          setBlogExists(true);
-          setBlog(data);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        const data = await response.json();
+        setUserId(data.id);
       } catch (error) {
-        console.error("Error fetching blog exists:", error);
+        console.error("Error fetching user ID:", error);
       }
     };
 
-    fetchBlogExists();
+    fetchCurrentUser();
   }, []);
 
-  const handleEditClick = () => {
-    navigate("/blog/edit");
+  useEffect(() => {
+    
+      const fetchUserBlog = async () => {
+        try {
+          const blogResponse = await fetch(`http://localhost:8080/blog`, {
+            credentials: 'include'
+          });
+          if (blogResponse.status === 204) {
+            setUserBlogExists(false);
+          } else if (!blogResponse.ok) {
+            throw new Error(`HTTP error! status: ${blogResponse.status}`);
+          } else {
+            const blogData = await blogResponse.json();
+            setUserBlogExists(true);
+            setUserBlog(blogData);
+            console.log(userBlogExists);
+            //console.log(`Fetched blogId: ${blogData.id}`);
+          }
+        } catch (error) {
+          console.error("Error fetching user's blog:", error);
+        }
+      };
+
+      if (userId) {
+      fetchUserBlog();
+    }
+  }, [userId]);
+  
+
+  const handleCreateClick = () => {
+    navigate("/blog/create");
   };
 
-  if (blogExists) {
-    return (
-      <div>
-        <h1>{blog.header}</h1>
-        <p>{blog.body}</p>
-        <button onClick={handleEditClick}>Edit Blog</button>
-        <Comments blogId={blog.id} />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <button onClick={() => navigate("/blog/edit")}>Create Blog</button>
-      </div>
-    );
-  }
+  const handleBlogClick = () => {
+    navigate(`/blog/${userBlog.id}`);
+  };
+
+  return (
+    <div>
+      <h1>Blog Page</h1>
+      {userBlogExists ? (
+        <div>
+          <button onClick={handleBlogClick}>Go to My Blog</button>
+        </div>
+      ) : (
+        <div>
+          <button onClick={handleCreateClick}>Create Blog</button>
+        </div>
+      )}
+      <BlogList />
+    </div>
+  );
 };
 
 export default Blog;

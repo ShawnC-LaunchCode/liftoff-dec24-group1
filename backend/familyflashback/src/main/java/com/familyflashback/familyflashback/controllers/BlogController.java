@@ -5,12 +5,16 @@ import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.BlogRepository;
 import com.familyflashback.familyflashback.models.data.SessionRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @RestController
@@ -19,12 +23,12 @@ public class BlogController {
 
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     SessionRepository sessionRepository;
-
     @Autowired
     BlogRepository blogRepository;
+    @Autowired
+    private SessionController sessionController;
 
 
     @GetMapping("/exists")
@@ -55,15 +59,28 @@ public class BlogController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Blog>> getAllBlogs() {
+        Iterable<Blog> blogsIterable = blogRepository.findAll();
+        List<Blog> blogs = StreamSupport.stream(blogsIterable.spliterator(), false)
+                .collect(Collectors.toList());
+
+        if (blogs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(blogs);
+        }
+    }
 
     @GetMapping
-    public ResponseEntity<Blog> getBlogByUserId(@CookieValue(name = "session", required = true) String cookieValue) {
+    public ResponseEntity<Blog> getBlogByUserId(@CookieValue(name = "session", required = true) String cookieValue, HttpServletRequest request) {
         if (cookieValue != null) {
-            System.out.println("Cookie value: " + cookieValue);
+           // System.out.println("Cookie value: " + cookieValue);
 
             Optional<User> user = sessionRepository.findUserById(cookieValue);
             if (user.isPresent()) {
-                String userId = user.get().getId();
+                String userId = (String) request.getAttribute("userId");
+               // System.out.println(request.getAttribute("userId"));
                 Optional<Blog> blogOptional = blogRepository.findByUserId(userId);
                 if (blogOptional.isPresent()) {
                     return ResponseEntity.ok(blogOptional.get());
@@ -81,13 +98,27 @@ public class BlogController {
         }
     }
 
+    @GetMapping("/session")
+    public ResponseEntity<User> getUserFromSession(@CookieValue(name = "session", required = true) String cookieValue, HttpServletRequest request) {
+        if (sessionController.isSessionActive(cookieValue)) {
+            String userId = (String) request.getAttribute("userId");
+//            System.out.println("User ID: " + userId);
+            Optional<User> user = sessionRepository.findUserById(cookieValue);
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 
     @PostMapping
-    public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog, @CookieValue(name = "session", required = true) String cookieValue) {
+    public ResponseEntity<Blog> createBlog(@Valid @RequestBody Blog blog, @CookieValue(name = "session", required = true) String cookieValue, HttpServletRequest request) {
         Optional<User> user = sessionRepository.findUserById(cookieValue);
         if (user.isPresent()) {
-            String userId = user.get().getId();
+            String userId = (String) request.getAttribute("userId");
             // Check if a blog already exists for this user
+        System.out.println("Received blog: " + blog);
+       // System.out.println("User ID: " + userId);
             if (blogRepository.existsByUserId(userId)) {
                 System.out.println("A blog already exists for this user");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -111,6 +142,15 @@ public class BlogController {
         }
     }
 
+@GetMapping("/{id}")
+public ResponseEntity<Blog> getBlogById(@PathVariable("id") String id) {
+    Optional<Blog> blog = blogRepository.findById(id);
+    if (blog.isPresent()) {
+        return ResponseEntity.ok(blog.get());
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+}
 
     @PatchMapping("/{id}")
     public ResponseEntity<Blog> updateBlog (@Valid @RequestBody Blog updatedBlog, @PathVariable("id") String id){

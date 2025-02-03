@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 
 const BlogCreate = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [header, setHeader] = useState("");
+  const [body, setBody] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const newBlog = { title, content };
-    fetch(`http://localhost:8080/blog`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newBlog),
-    })
+    const newBlog = { header, body };
+      fetch(`http://localhost:8080/blog`, {
+        credentials: "include",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBlog),
+      })
       .then((response) => response.json())
       .then((data) => console.log(data))
-      .catch((error) => console.error("Error creating blog:", error));
-  };
+      .catch((error) => console.error("Error creating blog:", error)); 
+    };
 
   return (
     <div>
@@ -23,12 +24,12 @@ const BlogCreate = () => {
       <form onSubmit={handleSubmit}>
         <label>
           Title:
-          <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
+          <input type="text" value={header} onChange={(event) => setHeader(event.target.value)} />
         </label>
         <br />
         <label>
           Content:
-          <textarea value={content} onChange={(event) => setContent(event.target.value)} />
+          <textarea value={body} onChange={(event) => setBody(event.target.value)} />
         </label>
         <br />
         <button type="submit">Create Blog</button>

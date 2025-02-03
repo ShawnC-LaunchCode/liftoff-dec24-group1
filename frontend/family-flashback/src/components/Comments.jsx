@@ -28,8 +28,8 @@ const Comments = ({blogId}) => {
       }
     };
 
-    const fetchCurrentUser = async (userId) => {
-      const response = await fetch(`http://localhost:8080/user/blog/${userId}`, {
+    const fetchCurrentUser = async () => {
+      const response = await fetch(`http://localhost:8080/blog/session`, {
           method: 'GET',
           credentials: 'include',
       });

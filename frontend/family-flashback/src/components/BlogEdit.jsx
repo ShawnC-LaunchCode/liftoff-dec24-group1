@@ -20,7 +20,6 @@ const BlogEdit = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           } else {
             const data = await response.json();
-            console.log(data);
             setBlog(data);
             setHeader(data.header || "");
             setBody(data.body || "");
@@ -41,7 +40,7 @@ const BlogEdit = () => {
     setBody(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const updatedBlog = { header, body };
 
