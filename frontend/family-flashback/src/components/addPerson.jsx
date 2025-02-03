@@ -20,6 +20,9 @@ function AddPersonForm({ handleClose, rootPerson }) {
     },
   });
 
+  rootPerson = 'PmW73lTDWEkbYIMA_luu8';
+  console.log('rootperson ' + rootPerson);
+
   let rootPersonName;
 
   // Request for rootPersonData

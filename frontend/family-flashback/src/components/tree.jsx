@@ -34,7 +34,7 @@ export default function Tree() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
  
   useEffect(() => {
-    fetch('http://localhost:8080/user/LOTxIUI-uvUtkU1h5QScK')
+    fetch('http://localhost:8080/user/wVqpY5TRr2I7r8vnW5KPs')
       .then(response => response.json())
       .then(data => {
         fetch(`http://localhost:8080/persons/${data.personID}`)
@@ -70,7 +70,14 @@ export default function Tree() {
   );
  
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div>
+      <div style={{display: 'flex'}}>
+         <ModalManager >
+          <AddPersonButton />
+        </ModalManager>
+      <ViewPersonButton />
+      </div>
+    <div style={{ width: '100vw', height: '75vh' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -78,10 +85,7 @@ export default function Tree() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
       />
-         <ModalManager >
-          <AddPersonButton />
-        </ModalManager>
-      <ViewPersonButton />
+    </div>
     </div>
   );
 }

@@ -4,7 +4,8 @@ import AddPersonForm from './addPerson';
 
 const ModalManager = ({ children, rootPerson }) => {
 
-    rootPerson = '2eYXHCTZFbO54mBzy55MM';
+  rootPerson = 'PmW73lTDWEkbYIMA_luu8';
+  console.log('rootperson ' + rootPerson);
 
   const [open, setOpen] = useState(false);
 
