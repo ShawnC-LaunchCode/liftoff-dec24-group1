@@ -241,41 +241,21 @@ function ViewPerson() {
   };
 
   const getImages = () => {
-    fetch(`http://localhost:8080/images/all?userId=${rootPersonData.user.id}`, {
+    fetch(`http://localhost:8080/images/all?personId=${rootPerson}`, {
       method: 'GET',
     })
-      .then((response) => response.blob()) // Get the response as a Blob
-      .then((blobData) => {
-        console.log('Fetched Blob data:', blobData);
+      .then((response) => response.json()) // Get the response as a Blob
+      .then((data) => {
+        console.log('Fetched image data: ', data);
 
-        // Create an object URL from the Blob data
-        const imageURL = URL.createObjectURL(blobData);
-
+setImageGallery(data.allImageUrls);
         // Update the image gallery with the object URL
-        setImageGallery([imageURL]);
-
-        console.log(
-          'Images fetched and object URL created successfully',
-          imageURL
-        );
+        //setImageGallery([imageURL]);
       })
       .catch((error) => {
         console.error('Failed to fetch images', error);
       });
   };
-
-  // function setBlobImages(photo){
-  //     if(photo === undefined){
-  //         console.log("undefined");
-  //         return undefined
-  //     }
-  //     else{
-  //         console.log("value")
-  //         var binaryData = [];
-  //         binaryData.push(photo);
-  //         return URL.createObjectURL(new Blob(binaryData))
-  //     }
-  // }
 
   console.log(imageGallery);
 
@@ -412,7 +392,7 @@ function ViewPerson() {
               </Button>
             </div>
             <div style={imgContentStyle}>
-              {/* {imageGallery?.map((imageUrl, index) => {
+              {imageGallery?.map((imageUrl, index) => {
                 return (
                   <div
                     key={index}
@@ -427,10 +407,7 @@ function ViewPerson() {
                     <img alt='Uploaded Image' src={imageUrl} />
                   </div>
                 );
-              })} */}
-              <img src="http://localhost:8080/uploads/userPersonIdIssue2.png"></img>
-              <img src="http://localhost:8080/uploads/userPersonIdIssue.png"></img>
-              <img src="http://localhost:8080/uploads/Screenshot 2025-02-02 023748.png"></img>
+              })}
             </div>
           </div>
         </div>

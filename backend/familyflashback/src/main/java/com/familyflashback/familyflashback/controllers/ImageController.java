@@ -6,22 +6,18 @@ import com.familyflashback.familyflashback.models.data.ImageRepository;
 import com.familyflashback.familyflashback.models.data.Person_ImageRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,7 +75,6 @@ public class ImageController {
         }
     }
 
-
     private String saveImage(MultipartFile file) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
@@ -92,7 +87,6 @@ public class ImageController {
 
         return filePath.toString();
     }
-
 
 
     @DeleteMapping("/{id}")
@@ -114,23 +108,36 @@ public class ImageController {
 //    }
 
     @GetMapping("/all")
-    public ResponseEntity<Map<String, String>> getAllImages(@RequestParam String personId) {
-        Map<String, String> response = new HashMap<>();
-
+    public ResponseEntity<Map<String, Object>> getAllImages(@RequestParam String personId) {
+        Map<String, Object> response = new HashMap<>();
         List<Image> images = imageRepository.findAllByPersonId(personId);
 
         if (images.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-// Get file info for the images match the person id
-        // add the image.filename to the response
+        List<String> imageUrls = new ArrayList<>();
 
-        //add the localhost to the response and combined name to hte response as the url
+        for (Image image : images) {
+            String path = image.getUrl();
 
-        //ie http://localhost:8080/uploads/userPersonIdIssue2.png
+            Path filePath = Path.of(path);
+            String fileName;
+            try {
+                Resource resource = new UrlResource(filePath.toUri());
+                fileName = resource.getFilename();
+                String server = "http://localhost:8080/uploads/";
+                String url = server + fileName;
+                imageUrls.add(url);
 
-
+            } catch (IOException e) {
+                e.printStackTrace();
+                response.put("message", "Error retrieving images");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        }
+        response.put("message", "Image urls retrieved successfully");
+        response.put("allImageUrls", imageUrls);
         return ResponseEntity.ok(response);
     }
 
