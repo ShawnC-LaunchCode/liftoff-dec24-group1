@@ -18,8 +18,16 @@ const BlogByUser = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data = await response.json();
-        setUserBlog(data);
+  
+        const responseText = await response.text();
+        // console.log("Raw response:", responseText);
+  
+        if (responseText) {
+          const data = JSON.parse(responseText);
+          setUserBlog(data);
+        } else {
+          console.error("Empty response from server");
+        }
       } catch (error) {
         console.error("Error fetching user blog:", error);
       }

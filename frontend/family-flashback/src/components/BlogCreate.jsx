@@ -24,24 +24,38 @@ const BlogCreate = () => {
       navigate("/blog/user");
     };
 
-  return (
-    <div>
-      <h1>Create Blog</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Title:
-          <input type="text" value={header} onChange={(event) => setHeader(event.target.value)} />
-        </label>
-        <br />
-        <label>
-          Content:
-          <textarea value={body} onChange={(event) => setBody(event.target.value)} />
-        </label>
-        <br />
-        <button type="button" onClick={handleCreateClick}>Create Blog</button>
-      </form>
-    </div>
+    return (
+      <div className="create-blog-container">
+        <h1 className="create-blog-header">Create Blog</h1>
+        <form className="create-blog-form" onSubmit={handleSubmit}>
+          <label>
+            Title:
+            <input 
+              type="text" 
+              value={header} 
+              onChange={(event) => setHeader(event.target.value)} 
+              className="create-blog-input"
+            />
+          </label>
+          <label>
+            Content:
+            <textarea 
+              value={body} 
+              onChange={(event) => setBody(event.target.value)} 
+              className="create-blog-textarea"
+            />
+          </label>
+          <button 
+            type="submit" 
+            onClick={handleCreateClick} 
+            className="create-blog-button"
+          >
+            Create Blog
+          </button>
+        </form>
+      </div>
   );
+  
 };
 
 export default BlogCreate;
