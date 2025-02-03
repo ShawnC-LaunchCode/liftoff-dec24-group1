@@ -47,7 +47,10 @@ function ViewPerson() {
 
   // Request for rootPersonData
   useEffect(() => {
-    fetch(`http://localhost:8080/persons/${rootPerson}`)
+    fetch(`http://localhost:8080/persons/${rootPerson}`, {
+      method: 'GET',
+      credentials: 'include',  // This sends cookies with the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to get rootPerson details');
@@ -246,6 +249,7 @@ function ViewPerson() {
   const getImages = () => {
     fetch(`http://localhost:8080/images/all?personId=${rootPerson}`, {
       method: 'GET',
+      credentials: 'include',
     })
       .then((response) => response.json())
       .then((data) => {
