@@ -16,7 +16,6 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log("Fetching user data...");
                 const userResponse = await fetch("http://localhost:8080/user/current", {
                     method: 'GET',
                     credentials: 'include',
@@ -25,21 +24,15 @@ export default function Home() {
                         'Content-Type': 'application/json'
                     }
                 });
-
-                console.log("User response status:", userResponse.status);
                 
                 if (userResponse.ok) {
                     const userData = await userResponse.json();
-                    console.log("User data received:", userData);
                     setUserData(userData);
                 } else {
-                    console.error("Failed to fetch user data:", userResponse.status);
                     const errorText = await userResponse.text();
-                    console.error("Error response:", errorText);
                     setError(`Failed to fetch user data: ${userResponse.status}`);
                 }
             } catch (error) {
-                console.error("Error in fetchData:", error);
                 setError(error.message);
             } finally {
                 setLoading(false);
@@ -48,9 +41,6 @@ export default function Home() {
 
         fetchData();
     }, []);
-
-    // Add debugging output for render
-    console.log("Current userData:", userData);
 
     if (loading) {
         return (
