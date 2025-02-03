@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BlogCreate = () => {
   const [header, setHeader] = useState("");
   const [body, setBody] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,6 +18,10 @@ const BlogCreate = () => {
       .then((response) => response.json())
       .then((data) => console.log(data))
       .catch((error) => console.error("Error creating blog:", error)); 
+    };
+
+    const handleCreateClick = () => {
+      navigate("/blog/user");
     };
 
   return (
@@ -32,7 +38,7 @@ const BlogCreate = () => {
           <textarea value={body} onChange={(event) => setBody(event.target.value)} />
         </label>
         <br />
-        <button type="submit">Create Blog</button>
+        <button type="button" onClick={handleCreateClick}>Create Blog</button>
       </form>
     </div>
   );
