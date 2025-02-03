@@ -3,6 +3,7 @@
  import com.familyflashback.familyflashback.models.Person;
  import com.familyflashback.familyflashback.models.User;
  import com.familyflashback.familyflashback.models.data.PersonRepository;
+ import com.familyflashback.familyflashback.models.data.SessionRepository;
  import com.familyflashback.familyflashback.models.data.UserRepository;
  import jakarta.servlet.http.Cookie;
  import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,10 @@
 
       @Autowired
       SessionController sessionController;
+
+      @Autowired
+     SessionRepository sessionRepository;
+
 
       @PostMapping("/create")
       public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, HttpServletResponse response, @CookieValue(name = "session", required = false) String cookieValue) {
@@ -79,6 +84,24 @@
 
           return ResponseEntity.notFound().build();
       }
+
+     @GetMapping("/blog/{userId}")
+     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable String userId, @CookieValue(name = "session", required = true) String cookieValue) {
+         Map<String, Object> response = new HashMap<>();
+
+         System.out.println("Cookie value: " + cookieValue);
+
+         Optional<User> user = sessionRepository.findUserById(cookieValue);
+         if (user.isPresent()) {
+             response.put("user", user.get());
+         } else {
+             System.out.println("User not found for session ID: " + cookieValue);
+             response.put("error", "User not found");
+         }
+
+         return ResponseEntity.ok(response);
+     }
+
 
       @PatchMapping("/{id}")
       public ResponseEntity<Map<String, Object>> updateUser(@PathVariable("id") String Id, @Valid @RequestBody User updatedUser) {

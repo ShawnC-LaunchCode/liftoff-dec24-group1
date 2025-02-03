@@ -8,6 +8,7 @@ public class FamilyflashbackApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FamilyflashbackApplication.class, args);
+		System.out.println("=== Family Flashback Application Started Successfully! ===");
 	}
 
 }
