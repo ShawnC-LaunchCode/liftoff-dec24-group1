@@ -60,7 +60,7 @@ const BlogEdit = () => {
       })
       .then(data => {
         console.log("Blog created successfully:", data);
-        navigate("/blog");
+        navigate("/blog/user");
       })
       .catch(error => {
         console.error("Error creating blog:", error);
@@ -82,13 +82,14 @@ const BlogEdit = () => {
       })
       .then(data => {
         console.log("Blog updated successfully:", data);
-        navigate("/blog");
+        navigate("/blog/user");
       })
       .catch(error => {
         console.error("Error updating blog:", error);
       });
     }
   };
+
 
   const deleteBlog = () => {
     if (!blog) {
@@ -107,10 +108,14 @@ const BlogEdit = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           window.alert("Blog deleted successfully.");
-          navigate("/create-blog");
+          navigate("/blog");
         })
         .catch((error) => console.error("Error deleting blog:", error));
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/blog/user");
   };
 
   return (
@@ -120,6 +125,7 @@ const BlogEdit = () => {
         <input type="text" value={header} onChange={handleHeaderChange} />
         <textarea value={body} onChange={handleBodyChange} />
         <button type="submit">Save</button>
+        <button type="cancel" onClick={handleCancel}>Cancel</button>
       </form>
       <button onClick={deleteBlog}>Delete Blog</button>
     </div>
