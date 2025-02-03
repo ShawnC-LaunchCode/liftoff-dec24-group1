@@ -3,14 +3,22 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
     const [userData, setUserData] = useState(null);
-    const [treeStats, setTreeStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Static sample stats data
+    const treeStats = {
+        totalMembers: 12,
+        generations: 4,
+        livingMembers: 8
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch user data
+                console.log("Fetching user data...");
                 const userResponse = await fetch("http://localhost:8080/user/current", {
+                    method: 'GET',
                     credentials: 'include',
                     headers: {
                         'Accept': 'application/json',
@@ -18,25 +26,21 @@ export default function Home() {
                     }
                 });
 
-                // Fetch tree statistics
-                const statsResponse = await fetch("http://localhost:8080/persons/stats", {
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (userResponse.ok && statsResponse.ok) {
+                console.log("User response status:", userResponse.status);
+                
+                if (userResponse.ok) {
                     const userData = await userResponse.json();
-                    const statsData = await statsResponse.json();
+                    console.log("User data received:", userData);
                     setUserData(userData);
-                    setTreeStats(statsData);
                 } else {
-                    console.error("Failed to fetch data");
+                    console.error("Failed to fetch user data:", userResponse.status);
+                    const errorText = await userResponse.text();
+                    console.error("Error response:", errorText);
+                    setError(`Failed to fetch user data: ${userResponse.status}`);
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error in fetchData:", error);
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -44,6 +48,9 @@ export default function Home() {
 
         fetchData();
     }, []);
+
+    // Add debugging output for render
+    console.log("Current userData:", userData);
 
     if (loading) {
         return (
@@ -53,12 +60,23 @@ export default function Home() {
         );
     }
 
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 className="text-red-600 font-semibold mb-2">Error Loading Data</h2>
+                    <p className="text-gray-600">{error}</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             {/* Header */}
             <header className="bg-white shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <h1 className="text-3xl font-bold text-gray-900">Welcome to Your Family Flashback</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">Welcome to Your Family Tree</h1>
                 </div>
             </header>
 
@@ -69,12 +87,16 @@ export default function Home() {
                         <div className="flex items-center gap-6">
                             <div className="h-24 w-24 rounded-full bg-white/20 flex items-center justify-center">
                                 <span className="text-3xl text-white font-semibold">
-                                    {userData?.name?.charAt(0) || '?'}
+                                    {userData?.name ? userData.name.charAt(0) : '?'}
                                 </span>
                             </div>
                             <div>
-                                <h2 className="text-2xl font-semibold text-white mb-2">{userData?.name}</h2>
-                                <p className="text-indigo-100">{userData?.email}</p>
+                                <h2 className="text-2xl font-semibold text-white mb-2">
+                                    {userData?.name || 'Unknown User'}
+                                </h2>
+                                <p className="text-indigo-100">
+                                    {userData?.email || 'No email available'}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -84,19 +106,19 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                         <div className="text-4xl font-bold text-indigo-600 mb-2">
-                            {treeStats?.totalMembers || 0}
+                            {treeStats.totalMembers}
                         </div>
                         <div className="text-gray-600">Total Family Members</div>
                     </div>
                     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                         <div className="text-4xl font-bold text-emerald-600 mb-2">
-                            {treeStats?.generations || 0}
+                            {treeStats.generations}
                         </div>
                         <div className="text-gray-600">Generations</div>
                     </div>
                     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                         <div className="text-4xl font-bold text-violet-600 mb-2">
-                            {treeStats?.livingMembers || 0}
+                            {treeStats.livingMembers}
                         </div>
                         <div className="text-gray-600">Living Members</div>
                     </div>

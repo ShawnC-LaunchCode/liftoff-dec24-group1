@@ -19,9 +19,16 @@ public class AuthFilter implements HandlerInterceptor {
     @Autowired
     SessionRepository sessionRepository;
 
-    private static final List<String> whitelist = Arrays.asList("/auth/login", "/user");
+    private static final List<String> whitelist = Arrays.asList("/auth/login");
+    private static final String USER_CREATE_PATH = "/user";
 
-    private static boolean isWhitelisted(String path) {
+    private static boolean isWhitelisted(String path, String method) {
+        // Special case for POST /user
+        if (path.equals(USER_CREATE_PATH) && method.equals("POST")) {
+            return true;
+        }
+        
+        // Check other whitelist paths
         for (String pathRoot : whitelist) {
             if (path.startsWith(pathRoot)) {
                 return true;
@@ -36,7 +43,7 @@ public class AuthFilter implements HandlerInterceptor {
                              Object handler) throws IOException {
 
         // Don't require sign-in for whitelisted pages
-        if (isWhitelisted(request.getRequestURI())) {
+        if (isWhitelisted(request.getRequestURI(), request.getMethod())) {
             // returning true indicates that the request may proceed
             return true;
         }
