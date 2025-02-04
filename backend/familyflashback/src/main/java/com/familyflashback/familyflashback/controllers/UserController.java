@@ -4,7 +4,10 @@ import com.familyflashback.familyflashback.models.Person;
 import com.familyflashback.familyflashback.models.User;
 import com.familyflashback.familyflashback.models.data.PersonRepository;
 import com.familyflashback.familyflashback.models.data.UserRepository;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +32,7 @@ public class UserController {
     SessionController sessionController;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue) {
+    public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody User user, @CookieValue(name = "session", required = false) String cookieValue, HttpServletResponse response ) {
 
         if(cookieValue != null) {
             if (sessionController.sessionRepository.findById(cookieValue).isPresent()) {
@@ -38,7 +41,6 @@ public class UserController {
         }
 
         Map<String, Object> createdResponse = new HashMap<>();
-
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
             createdResponse.put("error", "email already in use");
             return new ResponseEntity<>(createdResponse, HttpStatus.ACCEPTED);
@@ -59,7 +61,10 @@ public class UserController {
 
         createdResponse.put("createdUser", createdUser);
         createdResponse.put("createdPerson", createdPerson);
-        createdResponse.put("session", sessionId);
+
+        Cookie newCookie = new Cookie("session", sessionId);
+        newCookie.setPath("/");
+        response.addCookie(newCookie);
 
         return new ResponseEntity<>(createdResponse, HttpStatus.CREATED);
     }
