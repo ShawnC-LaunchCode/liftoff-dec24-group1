@@ -36,13 +36,7 @@ export default function Footer() {
     return (
         <div>
             <footer className="web-footer">
-                <div className="footer-links">
-                    {navigation.map((item) => (
-                        <a key={item.name} href={item.href}>
-                            {item.name}
-                        </a>
-                    ))}
-                </div>
+
                 {cookieValue != null &&
                     <div className="logout-link">
                         <button>
